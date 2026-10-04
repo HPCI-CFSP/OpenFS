@@ -1,0 +1,1235 @@
+{
+  "schema_version": "1.0",
+  "publication_approval_id": "DIR-900143",
+  "summary": {
+    "ja": "公開許可された16件の異なる指標を掲載します。IO500-inspired IOR・mdtestは容量を限定した実験で、IO500® Foundationによる未検証（unverified）の結果です。MLPerf Storageは限定pilotで正式準拠は未確認。いずれも公式・合成スコアではありません。",
+    "en": "16 disclosure-approved observations of different metrics. Bounded IO500-inspired IOR/mdtest experiments are unverified by IO500® Foundation. MLPerf Storage results are limited pilots with compliance unestablished. No official or composite score is reported."
+  },
+  "systems": [
+    {
+      "id": "SYS-FUGAKU",
+      "name": {
+        "ja": "富岳",
+        "en": "Fugaku"
+      }
+    },
+    {
+      "id": "SYS-RIKYU",
+      "name": {
+        "ja": "理究",
+        "en": "RIKYU"
+      }
+    }
+  ],
+  "families": [
+    "IOR",
+    "mdtest",
+    "MLPerf Storage",
+    "HPL",
+    "HPCG",
+    "Graph500",
+    "IO500"
+  ],
+  "results": [
+    {
+      "id": "Training / UNet3D",
+      "system_id": "SYS-RIKYU",
+      "family": "MLPerf Storage",
+      "title": {
+        "ja": "Training / UNet3D",
+        "en": "Training / UNet3D"
+      },
+      "status": {
+        "ja": "実験pilot・公式スコアではありません",
+        "en": "Experimental pilot; not an official score"
+      },
+      "date": "2026-10-03",
+      "software": "MLPerf Storage commit ce28a9888076eba5a58fdd93d1c0258bf27b7aa2",
+      "conditions": {
+        "ja": "1ノード・1 MPI rank、256ファイル、34.95 GiB、1回の実行内5 epochs（独立5反復ではありません）。計算はsleepで模擬。",
+        "en": "1 node, 1 MPI rank, 256 files, 34.95 GiB; 5 epochs within one run (not 5 independent repetitions), accelerator computation emulated by sleep."
+      },
+      "metrics": [
+        {
+          "label": "Samples",
+          "value": 43.1523,
+          "unit": "samples/s"
+        },
+        {
+          "label": "Logical I/O",
+          "value": 6033.0975,
+          "unit": "MiB/s"
+        }
+      ],
+      "limitations": [
+        {
+          "ja": "DRAMより小さいデータ。potential-caching=1。物理Lustre帯域ではありません。",
+          "en": "Dataset below DRAM capacity; potential-caching=1; not physical Lustre bandwidth."
+        },
+        {
+          "ja": "URI adapterと縮小データ条件を使用。正式準拠は確認していません。",
+          "en": "URI adapter and reduced dataset; official compliance is not established."
+        },
+        {
+          "ja": "共有環境の観測です。global cache flushは行っておらず、専有ストレージの最大性能を示しません。",
+          "en": "Shared-environment observation without global cache flush; does not establish dedicated storage peak performance."
+        }
+      ]
+    },
+    {
+      "id": "Checkpointing / Llama3-8B",
+      "system_id": "SYS-RIKYU",
+      "family": "MLPerf Storage",
+      "title": {
+        "ja": "Checkpointing / Llama3-8B",
+        "en": "Checkpointing / Llama3-8B"
+      },
+      "status": {
+        "ja": "実験pilot・公式スコアではありません",
+        "en": "Experimental pilot; not an official score"
+      },
+      "date": "2026-10-03",
+      "software": "MLPerf Storage commit ce28a9888076eba5a58fdd93d1c0258bf27b7aa2",
+      "conditions": {
+        "ja": "1ホスト、8 MPI ranks、checkpoint 104.7045 GiB、10保存/読込反復。",
+        "en": "1 host, 8 MPI ranks, 104.7045 GiB checkpoint, 10 save/load repetitions."
+      },
+      "metrics": [
+        {
+          "label": "Save throughput",
+          "value": 3.539,
+          "unit": "GiB/s"
+        },
+        {
+          "label": "Load throughput",
+          "value": 13.7974,
+          "unit": "GiB/s"
+        },
+        {
+          "label": "Save duration mean",
+          "value": 29.591,
+          "unit": "s"
+        },
+        {
+          "label": "Load duration mean",
+          "value": 7.7623,
+          "unit": "s"
+        }
+      ],
+      "limitations": [
+        {
+          "ja": "potential-caching=1。logical bytes/timeであり実デバイス帯域は未検証。",
+          "en": "potential-caching=1; logical bytes/time, physical device throughput unverified."
+        },
+        {
+          "ja": "GPU計算の性能・他システムの結果を示しません。",
+          "en": "Does not measure GPU computation performance or another system."
+        },
+        {
+          "ja": "共有環境の観測です。global cache flushは行っておらず、専有ストレージの最大性能を示しません。",
+          "en": "Shared-environment observation without global cache flush; does not establish dedicated storage peak performance."
+        }
+      ]
+    },
+    {
+      "id": "KV cache / storage-8b",
+      "system_id": "SYS-RIKYU",
+      "family": "MLPerf Storage",
+      "title": {
+        "ja": "KV cache / storage-8b",
+        "en": "KV cache / storage-8b"
+      },
+      "status": {
+        "ja": "実験pilot・公式スコアではありません",
+        "en": "Experimental pilot; not an official score"
+      },
+      "date": "2026-10-03",
+      "software": "MLPerf Storage commit ce28a9888076eba5a58fdd93d1c0258bf27b7aa2",
+      "conditions": {
+        "ja": "1ホスト、128 GiB bounded payload、300秒×3反復。generation-mode=none。",
+        "en": "1 host, 128 GiB bounded payload, 3 × 300-second repetitions; generation-mode=none."
+      },
+      "metrics": [
+        {
+          "label": "Throughput mean",
+          "value": 651.4758,
+          "unit": "tokens/s"
+        }
+      ],
+      "limitations": [
+        {
+          "ja": "全反復でStorage healthとinteractive QoSが不合格。品質適格スコアではありません。",
+          "en": "Storage health and interactive QoS failed in every trial; no quality-qualified score."
+        },
+        {
+          "ja": "実LLM推論なし。buffered I/Oでcache影響があり、device preconditioningなし。",
+          "en": "No real LLM inference; buffered cache-sensitive I/O, without device preconditioning."
+        },
+        {
+          "ja": "共有環境の観測です。global cache flushは行っておらず、専有ストレージの最大性能を示しません。",
+          "en": "Shared-environment observation without global cache flush; does not establish dedicated storage peak performance."
+        }
+      ]
+    },
+    {
+      "id": "KV cache / dram-storage-8b",
+      "system_id": "SYS-RIKYU",
+      "family": "MLPerf Storage",
+      "title": {
+        "ja": "KV cache / dram-storage-8b",
+        "en": "KV cache / dram-storage-8b"
+      },
+      "status": {
+        "ja": "実験pilot・公式スコアではありません",
+        "en": "Experimental pilot; not an official score"
+      },
+      "date": "2026-10-03",
+      "software": "MLPerf Storage commit ce28a9888076eba5a58fdd93d1c0258bf27b7aa2",
+      "conditions": {
+        "ja": "1ホスト、128 GiB bounded payload、300秒×3反復。generation-mode=none。",
+        "en": "1 host, 128 GiB bounded payload, 3 × 300-second repetitions; generation-mode=none."
+      },
+      "metrics": [
+        {
+          "label": "Throughput mean",
+          "value": 417.4887,
+          "unit": "tokens/s"
+        }
+      ],
+      "limitations": [
+        {
+          "ja": "全反復でStorage healthとinteractive QoSが不合格。品質適格スコアではありません。",
+          "en": "Storage health and interactive QoS failed in every trial; no quality-qualified score."
+        },
+        {
+          "ja": "実LLM推論なし。buffered I/Oでcache影響があり、device preconditioningなし。",
+          "en": "No real LLM inference; buffered cache-sensitive I/O, without device preconditioning."
+        },
+        {
+          "ja": "共有環境の観測です。global cache flushは行っておらず、専有ストレージの最大性能を示しません。",
+          "en": "Shared-environment observation without global cache flush; does not establish dedicated storage peak performance."
+        }
+      ]
+    },
+    {
+      "id": "KV cache / storage-70b",
+      "system_id": "SYS-RIKYU",
+      "family": "MLPerf Storage",
+      "title": {
+        "ja": "KV cache / storage-70b",
+        "en": "KV cache / storage-70b"
+      },
+      "status": {
+        "ja": "実験pilot・公式スコアではありません",
+        "en": "Experimental pilot; not an official score"
+      },
+      "date": "2026-10-03",
+      "software": "MLPerf Storage commit ce28a9888076eba5a58fdd93d1c0258bf27b7aa2",
+      "conditions": {
+        "ja": "1ホスト、128 GiB bounded payload、300秒×3反復。generation-mode=none。",
+        "en": "1 host, 128 GiB bounded payload, 3 × 300-second repetitions; generation-mode=none."
+      },
+      "metrics": [
+        {
+          "label": "Throughput mean",
+          "value": 259.9284,
+          "unit": "tokens/s"
+        }
+      ],
+      "limitations": [
+        {
+          "ja": "全反復でStorage healthとinteractive QoSが不合格。品質適格スコアではありません。",
+          "en": "Storage health and interactive QoS failed in every trial; no quality-qualified score."
+        },
+        {
+          "ja": "実LLM推論なし。buffered I/Oでcache影響があり、device preconditioningなし。",
+          "en": "No real LLM inference; buffered cache-sensitive I/O, without device preconditioning."
+        },
+        {
+          "ja": "共有環境の観測です。global cache flushは行っておらず、専有ストレージの最大性能を示しません。",
+          "en": "Shared-environment observation without global cache flush; does not establish dedicated storage peak performance."
+        }
+      ]
+    },
+    {
+      "id": "IOR-easy-write-20261004",
+      "system_id": "SYS-RIKYU",
+      "family": "IOR",
+      "title": {
+        "ja": "IOR easy型 / write",
+        "en": "IOR easy-derived / write"
+      },
+      "status": {
+        "ja": "容量限定のIO500-inspired実験・Foundation未検証（unverified）・公式スコアではありません",
+        "en": "Bounded IO500-inspired experiment; unverified by IO500® Foundation; not an official score"
+      },
+      "date": "2026-10-04",
+      "software": "IOR 4.0.0 / commit 967a9f65109760db8a3ac14a7fdd007f337d2960; reference IO500 SC26 v1",
+      "conditions": {
+        "ja": "1ノード、4 MPI ranks、POSIX、3独立反復。2 MiB transfer・16 GiB/rank・file per process。barrier、fsync、read reorder offset=1、timestamp signature=27。読込は-Rのデータ検証を含みます。",
+        "en": "1 node, 4 MPI ranks, POSIX, 3 independent repetitions. 2 MiB transfer・16 GiB/rank・file per process. Barriers, fsync, read reorder offset=1, timestamp signature=27; reads include -R data verification."
+      },
+      "metrics": [
+        {
+          "label": "Pooled throughput (total bytes / total time)",
+          "value": 2.8388,
+          "unit": "GiB/s"
+        },
+        {
+          "label": "Arithmetic mean throughput",
+          "value": 2.83992,
+          "unit": "GiB/s"
+        },
+        {
+          "label": "Sample standard deviation",
+          "value": 0.06869,
+          "unit": "GiB/s"
+        },
+        {
+          "label": "Trial 1",
+          "value": 2.76228,
+          "unit": "GiB/s"
+        },
+        {
+          "label": "Trial 2",
+          "value": 2.86468,
+          "unit": "GiB/s"
+        },
+        {
+          "label": "Trial 3",
+          "value": 2.8928,
+          "unit": "GiB/s"
+        },
+        {
+          "label": "Median (3 trials)",
+          "value": 2.86468,
+          "unit": "GiB/s"
+        },
+        {
+          "label": "Minimum (3 trials)",
+          "value": 2.76228,
+          "unit": "GiB/s"
+        },
+        {
+          "label": "Maximum (3 trials)",
+          "value": 2.8928,
+          "unit": "GiB/s"
+        }
+      ],
+      "limitations": [
+        {
+          "ja": "IO500 SC26 v1を参照した固定容量実験。300秒write stonewallなし、IOR版も参照実装のpinと異なります。mdtest/findを含むIO500総合スコアを計算していません。",
+          "en": "Fixed-volume experiment based on IO500 SC26 v1, without 300-second write stonewall; IOR version differs from the reference pin. No IO500 composite score calculated."
+        },
+        {
+          "ja": "buffered I/O、global cache flushなし。1ノード内のreorderでは共有page cacheを排除できません。logical bytes/timeであり物理デバイス帯域は未検証。 キャッシュ条件は未制御です。",
+          "en": "Buffered I/O without global cache flush; same-node reorder cannot remove shared page cache. Logical bytes/time; physical device bandwidth unverified. Cache conditions are uncontrolled."
+        },
+        {
+          "ja": "hardは約1.751 GiB/反復で短時間。全反復と変動を保持し、専有環境の最大性能とは解釈しません。",
+          "en": "Hard uses approximately 1.751 GiB per repetition and is short. All repetitions and variability retained; not dedicated-system peak performance."
+        },
+        {
+          "ja": "2026-10-04に取得したSC26 v1参照条件を使用。SC26の安定化期間（10月2–16日）中のため最終確定仕様とは扱いません。",
+          "en": "Uses SC26 v1 reference conditions captured on 2026-10-04 during the October 2–16 stabilization period; not treated as finalized specifications."
+        }
+      ]
+    },
+    {
+      "id": "IOR-easy-read-20261004",
+      "system_id": "SYS-RIKYU",
+      "family": "IOR",
+      "title": {
+        "ja": "IOR easy型 / read",
+        "en": "IOR easy-derived / read"
+      },
+      "status": {
+        "ja": "容量限定のIO500-inspired実験・Foundation未検証（unverified）・公式スコアではありません",
+        "en": "Bounded IO500-inspired experiment; unverified by IO500® Foundation; not an official score"
+      },
+      "date": "2026-10-04",
+      "software": "IOR 4.0.0 / commit 967a9f65109760db8a3ac14a7fdd007f337d2960; reference IO500 SC26 v1",
+      "conditions": {
+        "ja": "1ノード、4 MPI ranks、POSIX、3独立反復。2 MiB transfer・16 GiB/rank・file per process。barrier、fsync、read reorder offset=1、timestamp signature=27。読込は-Rのデータ検証を含みます。",
+        "en": "1 node, 4 MPI ranks, POSIX, 3 independent repetitions. 2 MiB transfer・16 GiB/rank・file per process. Barriers, fsync, read reorder offset=1, timestamp signature=27; reads include -R data verification."
+      },
+      "metrics": [
+        {
+          "label": "Pooled throughput (total bytes / total time)",
+          "value": 0.46947,
+          "unit": "GiB/s"
+        },
+        {
+          "label": "Arithmetic mean throughput",
+          "value": 0.49348,
+          "unit": "GiB/s"
+        },
+        {
+          "label": "Sample standard deviation",
+          "value": 0.14219,
+          "unit": "GiB/s"
+        },
+        {
+          "label": "Trial 1",
+          "value": 0.38857,
+          "unit": "GiB/s"
+        },
+        {
+          "label": "Trial 2",
+          "value": 0.6553,
+          "unit": "GiB/s"
+        },
+        {
+          "label": "Trial 3",
+          "value": 0.43657,
+          "unit": "GiB/s"
+        },
+        {
+          "label": "Median (3 trials)",
+          "value": 0.43657,
+          "unit": "GiB/s"
+        },
+        {
+          "label": "Minimum (3 trials)",
+          "value": 0.38857,
+          "unit": "GiB/s"
+        },
+        {
+          "label": "Maximum (3 trials)",
+          "value": 0.6553,
+          "unit": "GiB/s"
+        }
+      ],
+      "limitations": [
+        {
+          "ja": "IO500 SC26 v1を参照した固定容量実験。300秒write stonewallなし、IOR版も参照実装のpinと異なります。mdtest/findを含むIO500総合スコアを計算していません。",
+          "en": "Fixed-volume experiment based on IO500 SC26 v1, without 300-second write stonewall; IOR version differs from the reference pin. No IO500 composite score calculated."
+        },
+        {
+          "ja": "buffered I/O、global cache flushなし。1ノード内のreorderでは共有page cacheを排除できません。logical bytes/timeであり物理デバイス帯域は未検証。 キャッシュ条件は未制御です。",
+          "en": "Buffered I/O without global cache flush; same-node reorder cannot remove shared page cache. Logical bytes/time; physical device bandwidth unverified. Cache conditions are uncontrolled."
+        },
+        {
+          "ja": "hardは約1.751 GiB/反復で短時間。全反復と変動を保持し、専有環境の最大性能とは解釈しません。",
+          "en": "Hard uses approximately 1.751 GiB per repetition and is short. All repetitions and variability retained; not dedicated-system peak performance."
+        },
+        {
+          "ja": "2026-10-04に取得したSC26 v1参照条件を使用。SC26の安定化期間（10月2–16日）中のため最終確定仕様とは扱いません。",
+          "en": "Uses SC26 v1 reference conditions captured on 2026-10-04 during the October 2–16 stabilization period; not treated as finalized specifications."
+        }
+      ]
+    },
+    {
+      "id": "IOR-hard-write-20261004",
+      "system_id": "SYS-RIKYU",
+      "family": "IOR",
+      "title": {
+        "ja": "IOR hard型 / write",
+        "en": "IOR hard-derived / write"
+      },
+      "status": {
+        "ja": "容量限定のIO500-inspired実験・Foundation未検証（unverified）・公式スコアではありません",
+        "en": "Bounded IO500-inspired experiment; unverified by IO500® Foundation; not an official score"
+      },
+      "date": "2026-10-04",
+      "software": "IOR 4.0.0 / commit 967a9f65109760db8a3ac14a7fdd007f337d2960; reference IO500 SC26 v1",
+      "conditions": {
+        "ja": "1ノード、4 MPI ranks、POSIX、3独立反復。47,008-byte transfer/block・10,000 segments/rank・shared file。barrier、fsync、read reorder offset=1、timestamp signature=27。読込は-Rのデータ検証を含みます。 共有ファイル内のstridedアクセスで、random I/Oではありません。",
+        "en": "1 node, 4 MPI ranks, POSIX, 3 independent repetitions. 47,008-byte transfer/block・10,000 segments/rank・shared file. Barriers, fsync, read reorder offset=1, timestamp signature=27; reads include -R data verification. Shared-file strided access, not random I/O."
+      },
+      "metrics": [
+        {
+          "label": "Pooled throughput (total bytes / total time)",
+          "value": 0.07848,
+          "unit": "GiB/s"
+        },
+        {
+          "label": "Arithmetic mean throughput",
+          "value": 0.0785,
+          "unit": "GiB/s"
+        },
+        {
+          "label": "Sample standard deviation",
+          "value": 0.00158,
+          "unit": "GiB/s"
+        },
+        {
+          "label": "Trial 1",
+          "value": 0.07698,
+          "unit": "GiB/s"
+        },
+        {
+          "label": "Trial 2",
+          "value": 0.07839,
+          "unit": "GiB/s"
+        },
+        {
+          "label": "Trial 3",
+          "value": 0.08014,
+          "unit": "GiB/s"
+        },
+        {
+          "label": "Median (3 trials)",
+          "value": 0.07839,
+          "unit": "GiB/s"
+        },
+        {
+          "label": "Minimum (3 trials)",
+          "value": 0.07698,
+          "unit": "GiB/s"
+        },
+        {
+          "label": "Maximum (3 trials)",
+          "value": 0.08014,
+          "unit": "GiB/s"
+        }
+      ],
+      "limitations": [
+        {
+          "ja": "IO500 SC26 v1を参照した固定容量実験。300秒write stonewallなし、IOR版も参照実装のpinと異なります。mdtest/findを含むIO500総合スコアを計算していません。",
+          "en": "Fixed-volume experiment based on IO500 SC26 v1, without 300-second write stonewall; IOR version differs from the reference pin. No IO500 composite score calculated."
+        },
+        {
+          "ja": "buffered I/O、global cache flushなし。1ノード内のreorderでは共有page cacheを排除できません。logical bytes/timeであり物理デバイス帯域は未検証。 キャッシュ条件は未制御です。",
+          "en": "Buffered I/O without global cache flush; same-node reorder cannot remove shared page cache. Logical bytes/time; physical device bandwidth unverified. Cache conditions are uncontrolled."
+        },
+        {
+          "ja": "hardは約1.751 GiB/反復で短時間。全反復と変動を保持し、専有環境の最大性能とは解釈しません。",
+          "en": "Hard uses approximately 1.751 GiB per repetition and is short. All repetitions and variability retained; not dedicated-system peak performance."
+        },
+        {
+          "ja": "2026-10-04に取得したSC26 v1参照条件を使用。SC26の安定化期間（10月2–16日）中のため最終確定仕様とは扱いません。",
+          "en": "Uses SC26 v1 reference conditions captured on 2026-10-04 during the October 2–16 stabilization period; not treated as finalized specifications."
+        }
+      ]
+    },
+    {
+      "id": "IOR-hard-read-20261004",
+      "system_id": "SYS-RIKYU",
+      "family": "IOR",
+      "title": {
+        "ja": "IOR hard型 / read",
+        "en": "IOR hard-derived / read"
+      },
+      "status": {
+        "ja": "容量限定のIO500-inspired実験・Foundation未検証（unverified）・公式スコアではありません",
+        "en": "Bounded IO500-inspired experiment; unverified by IO500® Foundation; not an official score"
+      },
+      "date": "2026-10-04",
+      "software": "IOR 4.0.0 / commit 967a9f65109760db8a3ac14a7fdd007f337d2960; reference IO500 SC26 v1",
+      "conditions": {
+        "ja": "1ノード、4 MPI ranks、POSIX、3独立反復。47,008-byte transfer/block・10,000 segments/rank・shared file。barrier、fsync、read reorder offset=1、timestamp signature=27。読込は-Rのデータ検証を含みます。 共有ファイル内のstridedアクセスで、random I/Oではありません。",
+        "en": "1 node, 4 MPI ranks, POSIX, 3 independent repetitions. 47,008-byte transfer/block・10,000 segments/rank・shared file. Barriers, fsync, read reorder offset=1, timestamp signature=27; reads include -R data verification. Shared-file strided access, not random I/O."
+      },
+      "metrics": [
+        {
+          "label": "Pooled throughput (total bytes / total time)",
+          "value": 0.60061,
+          "unit": "GiB/s"
+        },
+        {
+          "label": "Arithmetic mean throughput",
+          "value": 0.79045,
+          "unit": "GiB/s"
+        },
+        {
+          "label": "Sample standard deviation",
+          "value": 0.52123,
+          "unit": "GiB/s"
+        },
+        {
+          "label": "Trial 1",
+          "value": 0.61787,
+          "unit": "GiB/s"
+        },
+        {
+          "label": "Trial 2",
+          "value": 0.3774,
+          "unit": "GiB/s"
+        },
+        {
+          "label": "Trial 3",
+          "value": 1.37608,
+          "unit": "GiB/s"
+        },
+        {
+          "label": "Median (3 trials)",
+          "value": 0.61787,
+          "unit": "GiB/s"
+        },
+        {
+          "label": "Minimum (3 trials)",
+          "value": 0.3774,
+          "unit": "GiB/s"
+        },
+        {
+          "label": "Maximum (3 trials)",
+          "value": 1.37608,
+          "unit": "GiB/s"
+        }
+      ],
+      "limitations": [
+        {
+          "ja": "IO500 SC26 v1を参照した固定容量実験。300秒write stonewallなし、IOR版も参照実装のpinと異なります。mdtest/findを含むIO500総合スコアを計算していません。",
+          "en": "Fixed-volume experiment based on IO500 SC26 v1, without 300-second write stonewall; IOR version differs from the reference pin. No IO500 composite score calculated."
+        },
+        {
+          "ja": "buffered I/O、global cache flushなし。1ノード内のreorderでは共有page cacheを排除できません。logical bytes/timeであり物理デバイス帯域は未検証。 キャッシュ条件は未制御です。",
+          "en": "Buffered I/O without global cache flush; same-node reorder cannot remove shared page cache. Logical bytes/time; physical device bandwidth unverified. Cache conditions are uncontrolled."
+        },
+        {
+          "ja": "hardは約1.751 GiB/反復で短時間。全反復と変動を保持し、専有環境の最大性能とは解釈しません。",
+          "en": "Hard uses approximately 1.751 GiB per repetition and is short. All repetitions and variability retained; not dedicated-system peak performance."
+        },
+        {
+          "ja": "2026-10-04に取得したSC26 v1参照条件を使用。SC26の安定化期間（10月2–16日）中のため最終確定仕様とは扱いません。",
+          "en": "Uses SC26 v1 reference conditions captured on 2026-10-04 during the October 2–16 stabilization period; not treated as finalized specifications."
+        }
+      ]
+    },
+    {
+      "id": "MDTEST-easy-create-20261004",
+      "system_id": "SYS-RIKYU",
+      "family": "mdtest",
+      "title": {
+        "ja": "mdtest easy型 / create",
+        "en": "mdtest easy-derived / create"
+      },
+      "status": {
+        "ja": "容量限定のIO500-inspired実験・Foundation未検証（unverified）・公式スコアではありません",
+        "en": "Bounded IO500-inspired experiment; unverified by IO500® Foundation; not an official score"
+      },
+      "date": "2026-10-04",
+      "software": "mdtest / IOR 4.0.0 commit 967a9f65109760db8a3ac14a7fdd007f337d2960; reference IO500 SC26 v1",
+      "conditions": {
+        "ja": "1ノード、4 MPI ranks、POSIX、2000 files/rank（合計8000）、3独立反復、depth=0、branching=1、neighbor stride=1。0-byte files、processごとのunique directory、leafのみ(-u -L)。hard readは-Xデータ検証。IOR完了後に直列実施。",
+        "en": "1 node, 4 MPI ranks, POSIX, 2000 files/rank (8000 total), 3 independent repetitions; depth=0, branching=1, neighbor stride=1. zero-byte files, unique directory per process, leaf only (-u -L). Hard reads use -X verification. Measured serially after IOR."
+      },
+      "metrics": [
+        {
+          "label": "Pooled rate (total file operations / total time)",
+          "value": 5690.072,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Arithmetic mean rate",
+          "value": 5690.523,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Sample standard deviation",
+          "value": 62.052,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Trial 1",
+          "value": 5691.58,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Trial 2",
+          "value": 5752.04,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Trial 3",
+          "value": 5627.95,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Median (3 trials)",
+          "value": 5691.58,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Minimum (3 trials)",
+          "value": 5627.95,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Maximum (3 trials)",
+          "value": 5752.04,
+          "unit": "ops/s"
+        }
+      ],
+      "limitations": [
+        {
+          "ja": "正式設定100万files/rankから縮小し、300秒create stonewallなし。共有nodeの全I/Oをflushする-Yを省略しました。参照実装のIOR版pinとも異なります。",
+          "en": "Reduced from 1 million files/rank; no 300-second create stonewall. Global node sync (-Y) omitted to limit impact on shared users. IOR version differs from reference pin."
+        },
+        {
+          "ja": "cache flushなし。1ノード内のneighbor strideではpage cacheを除けません。cache影響を受け得るstat/readと短時間・小規模の観測であり最大性能ではありません。 キャッシュ条件は未制御です。",
+          "en": "No cache flush; same-node neighbor stride cannot eliminate page cache. Potentially cache-affected stat/read and short bounded observations, not peak performance. Cache conditions are uncontrolled."
+        },
+        {
+          "ja": "easyに正式IO500 read phaseはありません。未測定readを0で補完していません。hardはcreate/stat/read/remove全段階を保持。",
+          "en": "IO500 easy has no read phase; missing read is not imputed as zero. All hard create/stat/read/remove phases retained."
+        },
+        {
+          "ja": "2026-10-04に取得したSC26 v1参照条件を使用。SC26の安定化期間（10月2–16日）中のため最終確定仕様とは扱いません。",
+          "en": "Uses SC26 v1 reference conditions captured on 2026-10-04 during the October 2–16 stabilization period; not treated as finalized specifications."
+        },
+        {
+          "ja": "省略したmdtest -Yはノード全体のsyncです。IOR -Y（各write後fsync）とは異なります。",
+          "en": "Omitted mdtest -Y is node-wide sync; distinct from IOR -Y (fsync after each write)."
+        }
+      ]
+    },
+    {
+      "id": "MDTEST-easy-stat-20261004",
+      "system_id": "SYS-RIKYU",
+      "family": "mdtest",
+      "title": {
+        "ja": "mdtest easy型 / stat",
+        "en": "mdtest easy-derived / stat"
+      },
+      "status": {
+        "ja": "容量限定のIO500-inspired実験・Foundation未検証（unverified）・公式スコアではありません",
+        "en": "Bounded IO500-inspired experiment; unverified by IO500® Foundation; not an official score"
+      },
+      "date": "2026-10-04",
+      "software": "mdtest / IOR 4.0.0 commit 967a9f65109760db8a3ac14a7fdd007f337d2960; reference IO500 SC26 v1",
+      "conditions": {
+        "ja": "1ノード、4 MPI ranks、POSIX、2000 files/rank（合計8000）、3独立反復、depth=0、branching=1、neighbor stride=1。0-byte files、processごとのunique directory、leafのみ(-u -L)。hard readは-Xデータ検証。IOR完了後に直列実施。",
+        "en": "1 node, 4 MPI ranks, POSIX, 2000 files/rank (8000 total), 3 independent repetitions; depth=0, branching=1, neighbor stride=1. zero-byte files, unique directory per process, leaf only (-u -L). Hard reads use -X verification. Measured serially after IOR."
+      },
+      "metrics": [
+        {
+          "label": "Pooled rate (total file operations / total time)",
+          "value": 561.158,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Arithmetic mean rate",
+          "value": 597.385,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Sample standard deviation",
+          "value": 179.633,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Trial 1",
+          "value": 422.802,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Trial 2",
+          "value": 587.681,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Trial 3",
+          "value": 781.673,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Median (3 trials)",
+          "value": 587.681,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Minimum (3 trials)",
+          "value": 422.802,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Maximum (3 trials)",
+          "value": 781.673,
+          "unit": "ops/s"
+        }
+      ],
+      "limitations": [
+        {
+          "ja": "正式設定100万files/rankから縮小し、300秒create stonewallなし。共有nodeの全I/Oをflushする-Yを省略しました。参照実装のIOR版pinとも異なります。",
+          "en": "Reduced from 1 million files/rank; no 300-second create stonewall. Global node sync (-Y) omitted to limit impact on shared users. IOR version differs from reference pin."
+        },
+        {
+          "ja": "cache flushなし。1ノード内のneighbor strideではpage cacheを除けません。cache影響を受け得るstat/readと短時間・小規模の観測であり最大性能ではありません。 キャッシュ条件は未制御です。",
+          "en": "No cache flush; same-node neighbor stride cannot eliminate page cache. Potentially cache-affected stat/read and short bounded observations, not peak performance. Cache conditions are uncontrolled."
+        },
+        {
+          "ja": "easyに正式IO500 read phaseはありません。未測定readを0で補完していません。hardはcreate/stat/read/remove全段階を保持。",
+          "en": "IO500 easy has no read phase; missing read is not imputed as zero. All hard create/stat/read/remove phases retained."
+        },
+        {
+          "ja": "2026-10-04に取得したSC26 v1参照条件を使用。SC26の安定化期間（10月2–16日）中のため最終確定仕様とは扱いません。",
+          "en": "Uses SC26 v1 reference conditions captured on 2026-10-04 during the October 2–16 stabilization period; not treated as finalized specifications."
+        },
+        {
+          "ja": "省略したmdtest -Yはノード全体のsyncです。IOR -Y（各write後fsync）とは異なります。",
+          "en": "Omitted mdtest -Y is node-wide sync; distinct from IOR -Y (fsync after each write)."
+        }
+      ]
+    },
+    {
+      "id": "MDTEST-easy-remove-20261004",
+      "system_id": "SYS-RIKYU",
+      "family": "mdtest",
+      "title": {
+        "ja": "mdtest easy型 / remove",
+        "en": "mdtest easy-derived / remove"
+      },
+      "status": {
+        "ja": "容量限定のIO500-inspired実験・Foundation未検証（unverified）・公式スコアではありません",
+        "en": "Bounded IO500-inspired experiment; unverified by IO500® Foundation; not an official score"
+      },
+      "date": "2026-10-04",
+      "software": "mdtest / IOR 4.0.0 commit 967a9f65109760db8a3ac14a7fdd007f337d2960; reference IO500 SC26 v1",
+      "conditions": {
+        "ja": "1ノード、4 MPI ranks、POSIX、2000 files/rank（合計8000）、3独立反復、depth=0、branching=1、neighbor stride=1。0-byte files、processごとのunique directory、leafのみ(-u -L)。hard readは-Xデータ検証。IOR完了後に直列実施。",
+        "en": "1 node, 4 MPI ranks, POSIX, 2000 files/rank (8000 total), 3 independent repetitions; depth=0, branching=1, neighbor stride=1. zero-byte files, unique directory per process, leaf only (-u -L). Hard reads use -X verification. Measured serially after IOR."
+      },
+      "metrics": [
+        {
+          "label": "Pooled rate (total file operations / total time)",
+          "value": 9023.35,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Arithmetic mean rate",
+          "value": 9029.247,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Sample standard deviation",
+          "value": 280.099,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Trial 1",
+          "value": 9183.263,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Trial 2",
+          "value": 8705.937,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Trial 3",
+          "value": 9198.542,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Median (3 trials)",
+          "value": 9183.263,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Minimum (3 trials)",
+          "value": 8705.937,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Maximum (3 trials)",
+          "value": 9198.542,
+          "unit": "ops/s"
+        }
+      ],
+      "limitations": [
+        {
+          "ja": "正式設定100万files/rankから縮小し、300秒create stonewallなし。共有nodeの全I/Oをflushする-Yを省略しました。参照実装のIOR版pinとも異なります。",
+          "en": "Reduced from 1 million files/rank; no 300-second create stonewall. Global node sync (-Y) omitted to limit impact on shared users. IOR version differs from reference pin."
+        },
+        {
+          "ja": "cache flushなし。1ノード内のneighbor strideではpage cacheを除けません。cache影響を受け得るstat/readと短時間・小規模の観測であり最大性能ではありません。 キャッシュ条件は未制御です。",
+          "en": "No cache flush; same-node neighbor stride cannot eliminate page cache. Potentially cache-affected stat/read and short bounded observations, not peak performance. Cache conditions are uncontrolled."
+        },
+        {
+          "ja": "easyに正式IO500 read phaseはありません。未測定readを0で補完していません。hardはcreate/stat/read/remove全段階を保持。",
+          "en": "IO500 easy has no read phase; missing read is not imputed as zero. All hard create/stat/read/remove phases retained."
+        },
+        {
+          "ja": "2026-10-04に取得したSC26 v1参照条件を使用。SC26の安定化期間（10月2–16日）中のため最終確定仕様とは扱いません。",
+          "en": "Uses SC26 v1 reference conditions captured on 2026-10-04 during the October 2–16 stabilization period; not treated as finalized specifications."
+        },
+        {
+          "ja": "省略したmdtest -Yはノード全体のsyncです。IOR -Y（各write後fsync）とは異なります。",
+          "en": "Omitted mdtest -Y is node-wide sync; distinct from IOR -Y (fsync after each write)."
+        }
+      ]
+    },
+    {
+      "id": "MDTEST-hard-create-20261004",
+      "system_id": "SYS-RIKYU",
+      "family": "mdtest",
+      "title": {
+        "ja": "mdtest hard型 / create",
+        "en": "mdtest hard-derived / create"
+      },
+      "status": {
+        "ja": "容量限定のIO500-inspired実験・Foundation未検証（unverified）・公式スコアではありません",
+        "en": "Bounded IO500-inspired experiment; unverified by IO500® Foundation; not an official score"
+      },
+      "date": "2026-10-04",
+      "software": "mdtest / IOR 4.0.0 commit 967a9f65109760db8a3ac14a7fdd007f337d2960; reference IO500 SC26 v1",
+      "conditions": {
+        "ja": "1ノード、4 MPI ranks、POSIX、2000 files/rank（合計8000）、3独立反復、depth=0、branching=1、neighbor stride=1。3901-byte files、共有directory、directory overheadを計時(-t)。hard readは-Xデータ検証。IOR完了後に直列実施。",
+        "en": "1 node, 4 MPI ranks, POSIX, 2000 files/rank (8000 total), 3 independent repetitions; depth=0, branching=1, neighbor stride=1. 3901-byte files, shared directory, directory overhead timed (-t). Hard reads use -X verification. Measured serially after IOR."
+      },
+      "metrics": [
+        {
+          "label": "Pooled rate (total file operations / total time)",
+          "value": 516.641,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Arithmetic mean rate",
+          "value": 544.628,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Sample standard deviation",
+          "value": 142.988,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Trial 1",
+          "value": 387.117,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Trial 2",
+          "value": 580.507,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Trial 3",
+          "value": 666.26,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Median (3 trials)",
+          "value": 580.507,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Minimum (3 trials)",
+          "value": 387.117,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Maximum (3 trials)",
+          "value": 666.26,
+          "unit": "ops/s"
+        }
+      ],
+      "limitations": [
+        {
+          "ja": "正式設定100万files/rankから縮小し、300秒create stonewallなし。共有nodeの全I/Oをflushする-Yを省略しました。参照実装のIOR版pinとも異なります。",
+          "en": "Reduced from 1 million files/rank; no 300-second create stonewall. Global node sync (-Y) omitted to limit impact on shared users. IOR version differs from reference pin."
+        },
+        {
+          "ja": "cache flushなし。1ノード内のneighbor strideではpage cacheを除けません。cache影響を受け得るstat/readと短時間・小規模の観測であり最大性能ではありません。 キャッシュ条件は未制御です。",
+          "en": "No cache flush; same-node neighbor stride cannot eliminate page cache. Potentially cache-affected stat/read and short bounded observations, not peak performance. Cache conditions are uncontrolled."
+        },
+        {
+          "ja": "easyに正式IO500 read phaseはありません。未測定readを0で補完していません。hardはcreate/stat/read/remove全段階を保持。",
+          "en": "IO500 easy has no read phase; missing read is not imputed as zero. All hard create/stat/read/remove phases retained."
+        },
+        {
+          "ja": "2026-10-04に取得したSC26 v1参照条件を使用。SC26の安定化期間（10月2–16日）中のため最終確定仕様とは扱いません。",
+          "en": "Uses SC26 v1 reference conditions captured on 2026-10-04 during the October 2–16 stabilization period; not treated as finalized specifications."
+        },
+        {
+          "ja": "省略したmdtest -Yはノード全体のsyncです。IOR -Y（各write後fsync）とは異なります。",
+          "en": "Omitted mdtest -Y is node-wide sync; distinct from IOR -Y (fsync after each write)."
+        }
+      ]
+    },
+    {
+      "id": "MDTEST-hard-stat-20261004",
+      "system_id": "SYS-RIKYU",
+      "family": "mdtest",
+      "title": {
+        "ja": "mdtest hard型 / stat",
+        "en": "mdtest hard-derived / stat"
+      },
+      "status": {
+        "ja": "容量限定のIO500-inspired実験・Foundation未検証（unverified）・公式スコアではありません",
+        "en": "Bounded IO500-inspired experiment; unverified by IO500® Foundation; not an official score"
+      },
+      "date": "2026-10-04",
+      "software": "mdtest / IOR 4.0.0 commit 967a9f65109760db8a3ac14a7fdd007f337d2960; reference IO500 SC26 v1",
+      "conditions": {
+        "ja": "1ノード、4 MPI ranks、POSIX、2000 files/rank（合計8000）、3独立反復、depth=0、branching=1、neighbor stride=1。3901-byte files、共有directory、directory overheadを計時(-t)。hard readは-Xデータ検証。IOR完了後に直列実施。",
+        "en": "1 node, 4 MPI ranks, POSIX, 2000 files/rank (8000 total), 3 independent repetitions; depth=0, branching=1, neighbor stride=1. 3901-byte files, shared directory, directory overhead timed (-t). Hard reads use -X verification. Measured serially after IOR."
+      },
+      "metrics": [
+        {
+          "label": "Pooled rate (total file operations / total time)",
+          "value": 26666.848,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Arithmetic mean rate",
+          "value": 26667.205,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Sample standard deviation",
+          "value": 119.439,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Trial 1",
+          "value": 26531.283,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Trial 2",
+          "value": 26714.929,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Trial 3",
+          "value": 26755.403,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Median (3 trials)",
+          "value": 26714.929,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Minimum (3 trials)",
+          "value": 26531.283,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Maximum (3 trials)",
+          "value": 26755.403,
+          "unit": "ops/s"
+        }
+      ],
+      "limitations": [
+        {
+          "ja": "正式設定100万files/rankから縮小し、300秒create stonewallなし。共有nodeの全I/Oをflushする-Yを省略しました。参照実装のIOR版pinとも異なります。",
+          "en": "Reduced from 1 million files/rank; no 300-second create stonewall. Global node sync (-Y) omitted to limit impact on shared users. IOR version differs from reference pin."
+        },
+        {
+          "ja": "cache flushなし。1ノード内のneighbor strideではpage cacheを除けません。cache影響を受け得るstat/readと短時間・小規模の観測であり最大性能ではありません。 キャッシュ条件は未制御です。",
+          "en": "No cache flush; same-node neighbor stride cannot eliminate page cache. Potentially cache-affected stat/read and short bounded observations, not peak performance. Cache conditions are uncontrolled."
+        },
+        {
+          "ja": "easyに正式IO500 read phaseはありません。未測定readを0で補完していません。hardはcreate/stat/read/remove全段階を保持。",
+          "en": "IO500 easy has no read phase; missing read is not imputed as zero. All hard create/stat/read/remove phases retained."
+        },
+        {
+          "ja": "2026-10-04に取得したSC26 v1参照条件を使用。SC26の安定化期間（10月2–16日）中のため最終確定仕様とは扱いません。",
+          "en": "Uses SC26 v1 reference conditions captured on 2026-10-04 during the October 2–16 stabilization period; not treated as finalized specifications."
+        },
+        {
+          "ja": "省略したmdtest -Yはノード全体のsyncです。IOR -Y（各write後fsync）とは異なります。",
+          "en": "Omitted mdtest -Y is node-wide sync; distinct from IOR -Y (fsync after each write)."
+        }
+      ]
+    },
+    {
+      "id": "MDTEST-hard-read-20261004",
+      "system_id": "SYS-RIKYU",
+      "family": "mdtest",
+      "title": {
+        "ja": "mdtest hard型 / read",
+        "en": "mdtest hard-derived / read"
+      },
+      "status": {
+        "ja": "容量限定のIO500-inspired実験・Foundation未検証（unverified）・公式スコアではありません",
+        "en": "Bounded IO500-inspired experiment; unverified by IO500® Foundation; not an official score"
+      },
+      "date": "2026-10-04",
+      "software": "mdtest / IOR 4.0.0 commit 967a9f65109760db8a3ac14a7fdd007f337d2960; reference IO500 SC26 v1",
+      "conditions": {
+        "ja": "1ノード、4 MPI ranks、POSIX、2000 files/rank（合計8000）、3独立反復、depth=0、branching=1、neighbor stride=1。3901-byte files、共有directory、directory overheadを計時(-t)。hard readは-Xデータ検証。IOR完了後に直列実施。",
+        "en": "1 node, 4 MPI ranks, POSIX, 2000 files/rank (8000 total), 3 independent repetitions; depth=0, branching=1, neighbor stride=1. 3901-byte files, shared directory, directory overhead timed (-t). Hard reads use -X verification. Measured serially after IOR."
+      },
+      "metrics": [
+        {
+          "label": "Pooled rate (total file operations / total time)",
+          "value": 4722.563,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Arithmetic mean rate",
+          "value": 4730.019,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Sample standard deviation",
+          "value": 226.846,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Trial 1",
+          "value": 4468.604,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Trial 2",
+          "value": 4846.376,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Trial 3",
+          "value": 4875.076,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Median (3 trials)",
+          "value": 4846.376,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Minimum (3 trials)",
+          "value": 4468.604,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Maximum (3 trials)",
+          "value": 4875.076,
+          "unit": "ops/s"
+        }
+      ],
+      "limitations": [
+        {
+          "ja": "正式設定100万files/rankから縮小し、300秒create stonewallなし。共有nodeの全I/Oをflushする-Yを省略しました。参照実装のIOR版pinとも異なります。",
+          "en": "Reduced from 1 million files/rank; no 300-second create stonewall. Global node sync (-Y) omitted to limit impact on shared users. IOR version differs from reference pin."
+        },
+        {
+          "ja": "cache flushなし。1ノード内のneighbor strideではpage cacheを除けません。cache影響を受け得るstat/readと短時間・小規模の観測であり最大性能ではありません。 キャッシュ条件は未制御です。",
+          "en": "No cache flush; same-node neighbor stride cannot eliminate page cache. Potentially cache-affected stat/read and short bounded observations, not peak performance. Cache conditions are uncontrolled."
+        },
+        {
+          "ja": "easyに正式IO500 read phaseはありません。未測定readを0で補完していません。hardはcreate/stat/read/remove全段階を保持。",
+          "en": "IO500 easy has no read phase; missing read is not imputed as zero. All hard create/stat/read/remove phases retained."
+        },
+        {
+          "ja": "2026-10-04に取得したSC26 v1参照条件を使用。SC26の安定化期間（10月2–16日）中のため最終確定仕様とは扱いません。",
+          "en": "Uses SC26 v1 reference conditions captured on 2026-10-04 during the October 2–16 stabilization period; not treated as finalized specifications."
+        },
+        {
+          "ja": "省略したmdtest -Yはノード全体のsyncです。IOR -Y（各write後fsync）とは異なります。",
+          "en": "Omitted mdtest -Y is node-wide sync; distinct from IOR -Y (fsync after each write)."
+        }
+      ]
+    },
+    {
+      "id": "MDTEST-hard-remove-20261004",
+      "system_id": "SYS-RIKYU",
+      "family": "mdtest",
+      "title": {
+        "ja": "mdtest hard型 / remove",
+        "en": "mdtest hard-derived / remove"
+      },
+      "status": {
+        "ja": "容量限定のIO500-inspired実験・Foundation未検証（unverified）・公式スコアではありません",
+        "en": "Bounded IO500-inspired experiment; unverified by IO500® Foundation; not an official score"
+      },
+      "date": "2026-10-04",
+      "software": "mdtest / IOR 4.0.0 commit 967a9f65109760db8a3ac14a7fdd007f337d2960; reference IO500 SC26 v1",
+      "conditions": {
+        "ja": "1ノード、4 MPI ranks、POSIX、2000 files/rank（合計8000）、3独立反復、depth=0、branching=1、neighbor stride=1。3901-byte files、共有directory、directory overheadを計時(-t)。hard readは-Xデータ検証。IOR完了後に直列実施。",
+        "en": "1 node, 4 MPI ranks, POSIX, 2000 files/rank (8000 total), 3 independent repetitions; depth=0, branching=1, neighbor stride=1. 3901-byte files, shared directory, directory overhead timed (-t). Hard reads use -X verification. Measured serially after IOR."
+      },
+      "metrics": [
+        {
+          "label": "Pooled rate (total file operations / total time)",
+          "value": 3277.638,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Arithmetic mean rate",
+          "value": 3277.643,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Sample standard deviation",
+          "value": 4.956,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Trial 1",
+          "value": 3280.272,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Trial 2",
+          "value": 3280.73,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Trial 3",
+          "value": 3271.926,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Median (3 trials)",
+          "value": 3280.272,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Minimum (3 trials)",
+          "value": 3271.926,
+          "unit": "ops/s"
+        },
+        {
+          "label": "Maximum (3 trials)",
+          "value": 3280.73,
+          "unit": "ops/s"
+        }
+      ],
+      "limitations": [
+        {
+          "ja": "正式設定100万files/rankから縮小し、300秒create stonewallなし。共有nodeの全I/Oをflushする-Yを省略しました。参照実装のIOR版pinとも異なります。",
+          "en": "Reduced from 1 million files/rank; no 300-second create stonewall. Global node sync (-Y) omitted to limit impact on shared users. IOR version differs from reference pin."
+        },
+        {
+          "ja": "cache flushなし。1ノード内のneighbor strideではpage cacheを除けません。cache影響を受け得るstat/readと短時間・小規模の観測であり最大性能ではありません。 キャッシュ条件は未制御です。",
+          "en": "No cache flush; same-node neighbor stride cannot eliminate page cache. Potentially cache-affected stat/read and short bounded observations, not peak performance. Cache conditions are uncontrolled."
+        },
+        {
+          "ja": "easyに正式IO500 read phaseはありません。未測定readを0で補完していません。hardはcreate/stat/read/remove全段階を保持。",
+          "en": "IO500 easy has no read phase; missing read is not imputed as zero. All hard create/stat/read/remove phases retained."
+        },
+        {
+          "ja": "2026-10-04に取得したSC26 v1参照条件を使用。SC26の安定化期間（10月2–16日）中のため最終確定仕様とは扱いません。",
+          "en": "Uses SC26 v1 reference conditions captured on 2026-10-04 during the October 2–16 stabilization period; not treated as finalized specifications."
+        },
+        {
+          "ja": "省略したmdtest -Yはノード全体のsyncです。IOR -Y（各write後fsync）とは異なります。",
+          "en": "Omitted mdtest -Y is node-wide sync; distinct from IOR -Y (fsync after each write)."
+        }
+      ]
+    }
+  ],
+  "comparison_rule": {
+    "ja": "同一ソフトウェア版・シナリオ・API・ノード/MPI配置・データ量・キャッシュ条件・反復数と妥当性を揃えて比較します。未実測のシステムを補完しません。 異種指標16件を合成スコアに集約しません。IORはMiB/s÷1024でGiB/s、mdtestはops/s÷1000でkops/sに換算できます。",
+    "en": "Compare matching software versions, scenarios, APIs, node/MPI placement, data volume, cache conditions, repetitions, and validity. Missing system measurements remain missing. The 16 heterogeneous observations are not combined into a score. IOR GiB/s = MiB/s ÷ 1024; mdtest kops/s = ops/s ÷ 1000."
+  },
+  "artifact_id": "SYSTEM-BENCHMARKS-001",
+  "publication": {
+    "classification": "public",
+    "human_approval_directive_id": "DIR-900143",
+    "publication_decision_id": "PUBDEC-SYSTEM-BENCHMARKS-20261004"
+  },
+  "sources": [
+    {
+      "title": "MLPerf Storage official implementation",
+      "url": "https://github.com/mlcommons/storage/tree/ce28a9888076eba5a58fdd93d1c0258bf27b7aa2"
+    },
+    {
+      "title": "IO500 SC26 v1 reference",
+      "url": "https://github.com/IO500/io500/tree/f4492d1e665444a736c58926d198f4acfc06f62d"
+    },
+    {
+      "title": "IO500 messaging policy",
+      "url": "https://io500.org/pages/rules-messaging"
+    },
+    {
+      "title": "SC26 stabilization and submission notice",
+      "url": "https://io500.org/pages/cfs-sc26"
+    }
+  ]
+}
