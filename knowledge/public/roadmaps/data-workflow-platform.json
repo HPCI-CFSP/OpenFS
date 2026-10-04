@@ -5,7 +5,7 @@
   "status": "published",
   "domain": "system-software",
   "slug": "system-software/data-workflow-platform",
-  "as_of": "2026-10-03",
+  "as_of": "2026-10-04",
   "title_ja": "データ・AI・実験ワークフロー基盤",
   "title_en": "Data, AI, and experimental workflow platform",
   "summary_ja": "HPC、AI、データ転送、実験施設をまたぐ実行と再開可能性を扱う暫定ロードマップです。個別ツールの機能とHPCI横断サービスを区別します。",
@@ -39,14 +39,27 @@
       "name_en": "Restartable workflows",
       "summary_ja": "依存関係、再実行、監視、実行先を追跡します。",
       "summary_en": "Track dependencies, restart, monitoring, and execution backends.",
-      "current_state_ja": "Parsl、Nextflow、WHEEL等に個別機能がありますが、共通運用は未確認です。",
-      "current_state_en": "Parsl, Nextflow, WHEEL, and others provide individual capabilities; common operations remain unverified.",
+      "current_state_ja": "Parsl、Nextflow、WHEEL等に個別機能がありますが、共通運用は未確認です。 今回の限定的な追補：Pegasus5.1.3のSFAPI adapterはcredential・scope・runtime前提を残し、adaptive retryは失敗後にのみ作用し、rescue DAGはpartial job状態を復元しない。Parsl同一run cacheは例外も再利用するがcheckpointは保存せず、同時uncached呼出しは重複実行し得る。RO-Crate0.6の版組合せ・IRI変更をOPS-012と共通化し、任意status/resource記録・欠落status成功解釈を全試行監査と混同しない。施設認可・budget・失敗取消cache retryを既存workflow gateへ加える。 Workflow Run RO-Crate0.6（9月7日）はRO-Crate1.3/Workflow1.1へ整合し、旧0.1–0.5の1.1/1.0とIRIが異なる。旧0.5確認は履歴で、適合は全失敗・取消・cache・retry試行の完全性やlossless再実行を保証しない。不老・弐の大学報告による10月1日9時開始と希望home staging・利用者copy責任を反映し、3MIG queue復旧・ACL/checksum受入は未確認。Roihu文書のidentity assurance・24時間SSH certificate・CPU/GPU再build条件は実移行実績ではなく、Allas無制限容量も仮定しない。",
+      "current_state_en": "Parsl, Nextflow, WHEEL, and others provide individual capabilities; common operations remain unverified. Scoped additions in this batch: Pegasus 5.1.3 SFAPI adapters retain credential/scope/runtime prerequisites; adaptive retry acts after failures and rescue DAGs do not restore partial-job state. Parsl within-run cache can reuse exceptions while checkpoints omit them; simultaneous uncached calls may duplicate execution. Share RO-Crate 0.6 version/IRI interpretation with OPS-012: optional status/resources and omitted-status success defaults do not assure all-attempt auditing. Extend the existing workflow gate with facility authorization, budgets and failed/cancelled/cached/retry attempts. Workflow Run RO-Crate 0.6 (September 7) aligns with RO-Crate 1.3/Workflow 1.1 and changes IRIs from legacy 0.1–0.5 at 1.1/1.0. Keep historical 0.5; conformance does not assure all failed/cancelled/cached/retry attempts or lossless replay. Reflect Nagoya-reported October 1 09:00 start, requested-home staging and user copy responsibilities without MIG recovery/ACL/checksum acceptance. Roihu identity assurance, 24-hour SSH certificates and CPU/GPU rebuild requirements are documented prerequisites, not migration results or unlimited Allas capacity.",
       "hpci_implications_ja": "代表ワークフローを複数センターで同じ来歴付きで再実行する必要があります。",
       "hpci_implications_en": "Representative workflows need reproducible execution with provenance across centers.",
       "source_ids": [
         "SRC-CDS066",
         "SRC-CDS067",
-        "SRC-CDS075"
+        "SRC-CDS075",
+        "SRC-OCT05-SSW012-01",
+        "SRC-OCT05-SSW012-02",
+        "SRC-OCT05-SSW012-03",
+        "SRC-OCT05-SSW012-04",
+        "SRC-OCT05-OPS012-01",
+        "SRC-OCT05-SSW012-06",
+        "SRC-OCT05-SSW012-07",
+        "SRC-OCT05-OPS012-02",
+        "SRC-OCT05-OPS012-03",
+        "SRC-OCT05-CROSS002-01",
+        "SRC-OCT05-CROSS002-02",
+        "SRC-OCT05-CROSS002-03",
+        "SRC-OCT05-CROSS002-07"
       ]
     },
     {
@@ -132,11 +145,32 @@
             "SRC-OCT03-SSW012-NF-LINEAGE",
             "SRC-OCT03-SSW012-BLUE-PERMISSIONS",
             "SRC-OCT03-SSW012-NF-SLURM",
-            "SRC-OCT03-SSW012-NF-K8S"
+            "SRC-OCT03-SSW012-NF-K8S",
+            "SRC-OCT05-SSW012-01",
+            "SRC-OCT05-SSW012-02",
+            "SRC-OCT05-SSW012-03",
+            "SRC-OCT05-SSW012-04",
+            "SRC-OCT05-OPS012-01",
+            "SRC-OCT05-SSW012-06",
+            "SRC-OCT05-SSW012-07",
+            "SRC-OCT05-OPS012-02",
+            "SRC-OCT05-OPS012-03",
+            "SRC-OCT05-CROSS002-01",
+            "SRC-OCT05-CROSS002-02",
+            "SRC-OCT05-CROSS002-03",
+            "SRC-OCT05-CROSS002-07",
+            "SRC-OCT05-APP012-01",
+            "SRC-OCT05-APP012-02",
+            "SRC-OCT05-APP012-03",
+            "SRC-OCT05-APP014-01",
+            "SRC-OCT05-APP014-02",
+            "SRC-OCT05-APP014-03",
+            "SRC-OCT05-APP014-04",
+            "SRC-OCT05-APP014-05"
           ],
           "maturity": "pilot",
           "timing_basis": "openfs-provisional-plan",
-          "detail_en": "A provisional plan to test reproducibility for at least one simulation, AI, and experimental-data workflow. Data-path acceptance should check DTN configuration-key restoration, interrupted-transfer restart, checksums, permissions and destination logical capacity. Globus multi-DTN operation and HPCI cross-site replicas alone do not guarantee a common SLA, recovery time or deleted-file restoration. This existing Q2 gate does not change service-specific evacuation start dates or migration deadlines. Proposed acceptance criteria include preventing replay of irreversible experiments, joining successful-result lineage to failed attempts, queued-authorization revocation and worker isolation, and Slurm/Kubernetes resource and queue-time differences. Q2 2027 remains the existing OpenFS provisional plan, not a project delivery commitment.",
+          "detail_en": "A provisional plan to test reproducibility for at least one simulation, AI, and experimental-data workflow. Data-path acceptance should check DTN configuration-key restoration, interrupted-transfer restart, checksums, permissions and destination logical capacity. Globus multi-DTN operation and HPCI cross-site replicas alone do not guarantee a common SLA, recovery time or deleted-file restoration. This existing Q2 gate does not change service-specific evacuation start dates or migration deadlines. Proposed acceptance criteria include preventing replay of irreversible experiments, joining successful-result lineage to failed attempts, queued-authorization revocation and worker isolation, and Slurm/Kubernetes resource and queue-time differences. Q2 2027 remains the existing OpenFS provisional plan, not a project delivery commitment. Additional criteria: pin contexts/expanded IRIs for RO-Crate 0.6/1.3/Workflow 1.1 and legacy 0.1–0.5/1.1/1.0 and test old/new import/export. Optional status/resources do not certify all failed/cancelled/cached/retry attempts. Check facility-adapter authorization/budgets, scientific-input generation/requalification and input age/history/fallback. Schema conformance is not scientific reproduction or lossless replay.",
           "comparison_priority": "key",
           "event_type": "hpci-evaluation",
           "label_ja": "代表ワークフロー実証の暫定判断点",
@@ -145,7 +179,7 @@
           "dependency_refs": [
             "DEP-WORKFLOW-BLUEPRINT"
           ],
-          "detail_ja": "シミュレーション、AI、実験データの少なくとも各1件で再実行性を確認する暫定計画です。 データ経路の評価条件として、DTN設定鍵の復元、転送中断後の再開、checksum、アクセス権、転送先論理容量を確認する。Globusの複数DTNやHPCIの拠点間複製だけで、共通SLA・復旧時間・削除復元を保証しない。既存Q2判断点は個別サービスの退避開始日や移行期限を変更しない。 提案する受入条件は、不可逆な実験操作の再実行禁止、成功来歴と失敗試行の連結、queue権限失効とworker隔離、Slurm/Kubernetesの資源・待ち時間契約の差を含める。2027年Q2は既存のOpenFS暫定計画であり、プロジェクトの提供約束ではない。",
+          "detail_ja": "シミュレーション、AI、実験データの少なくとも各1件で再実行性を確認する暫定計画です。 データ経路の評価条件として、DTN設定鍵の復元、転送中断後の再開、checksum、アクセス権、転送先論理容量を確認する。Globusの複数DTNやHPCIの拠点間複製だけで、共通SLA・復旧時間・削除復元を保証しない。既存Q2判断点は個別サービスの退避開始日や移行期限を変更しない。 提案する受入条件は、不可逆な実験操作の再実行禁止、成功来歴と失敗試行の連結、queue権限失効とworker隔離、Slurm/Kubernetesの資源・待ち時間契約の差を含める。2027年Q2は既存のOpenFS暫定計画であり、プロジェクトの提供約束ではない。 追補条件：RO-Crate0.6/1.3/Workflow1.1と旧0.1–0.5/1.1/1.0のcontext・expanded IRIを固定して旧新import/exportを試験する。status/resource省略許容は全failed/cancelled/cached/retry試行の監査を保証しない。facility adapter認可・budget、科学入力の世代変更・再適合、入力age/history/fallbackを確認し、schema適合を科学再現やlossless replayとしない。",
           "timing_precision": "quarter"
         },
         {
@@ -287,6 +321,161 @@
       "publisher": "Seqera / Nextflow",
       "url": "https://docs.seqera.io/nextflow/executor/kubernetes",
       "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW012-01",
+      "title": "Pegasus 5.1.3 Released",
+      "publisher": "Pegasus Project / USC ISI",
+      "url": "https://pegasus.isi.edu/2026/09/12/pegasus-5-1-3-released/",
+      "source_class": "project-official",
+      "published_at": "2026-09-12"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW012-02",
+      "title": "Deployment Scenarios — Pegasus WMS 5.1.3",
+      "publisher": "Pegasus Project / USC ISI",
+      "url": "https://pegasus.isi.edu/documentation/user-guide/deployment-scenarios.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW012-03",
+      "title": "Monitoring, Debugging and Statistics — Pegasus WMS 5.1.3",
+      "publisher": "Pegasus Project / USC ISI",
+      "url": "https://pegasus.isi.edu/documentation/user-guide/monitoring-debugging-stats.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW012-04",
+      "title": "Parsl memoization and checkpointing",
+      "publisher": "Parsl Project",
+      "url": "https://parsl.readthedocs.io/en/latest/userguide/workflows/checkpoints.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-OPS012-01",
+      "title": "Changelog | Workflow Run RO-Crate",
+      "publisher": "ResearchObject / Workflow Run RO-Crate working group",
+      "url": "https://www.researchobject.org/workflow-run-crate/profiles/changelog.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW012-06",
+      "title": "Provenance Run Crate — version 0.6",
+      "publisher": "ResearchObject / Workflow Run RO-Crate working group",
+      "url": "https://www.researchobject.org/workflow-run-crate/profiles/provenance_run_crate/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW012-07",
+      "title": "Process Run Crate — version 0.6",
+      "publisher": "ResearchObject / Workflow Run RO-Crate working group",
+      "url": "https://www.researchobject.org/workflow-run-crate/profiles/process_run_crate/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-OPS012-02",
+      "title": "Workflow Run Crate",
+      "publisher": "ResearchObject / Workflow Run RO-Crate working group",
+      "url": "https://www.researchobject.org/workflow-run-crate/profiles/workflow_run_crate/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-OPS012-03",
+      "title": "Roihu data migration guide",
+      "publisher": "CSC – IT Center for Science",
+      "url": "https://docs.csc.fi/support/tutorials/roihu-data/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-CROSS002-01",
+      "title": "スーパーコンピュータ「不老・弐」利用開始のお知らせ",
+      "publisher": "Nagoya University",
+      "url": "https://icts.nagoya-u.ac.jp/ja/information/sc/2026-10-01-start.html",
+      "source_class": "project-official",
+      "published_at": "2026-10-01"
+    },
+    {
+      "source_id": "SRC-OCT05-CROSS002-02",
+      "title": "【11月2日まで無償】10月1日から「不老・弐」の利用を開始します",
+      "publisher": "Nagoya University",
+      "url": "https://www.cc.nagoya-u.ac.jp/ja/news/2026/10/system-use-start/",
+      "source_class": "project-official",
+      "published_at": "2026-09-30"
+    },
+    {
+      "source_id": "SRC-OCT05-CROSS002-03",
+      "title": "最新のシステムトラブル情報",
+      "publisher": "Nagoya University",
+      "url": "https://www.cc.nagoya-u.ac.jp/ja/news/2026/10/system-trouble-20261001/",
+      "source_class": "project-official",
+      "published_at": "2026-10-01"
+    },
+    {
+      "source_id": "SRC-OCT05-CROSS002-07",
+      "title": "運用情報",
+      "publisher": "Nagoya University",
+      "url": "https://www.cc.nagoya-u.ac.jp/ja/operation/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-APP012-01",
+      "title": "Farewell to the external AI models",
+      "publisher": "ECMWF; Zied Ben Bouallègue, Baudouin Raoult, Matthew Chantry",
+      "url": "https://www.ecmwf.int/en/about/media-centre/aifs-blog/2026/farewell-external-ai-models",
+      "source_class": "project-official",
+      "published_at": "2026-05-11"
+    },
+    {
+      "source_id": "SRC-OCT05-APP012-02",
+      "title": "Flow matching for spatio-temporal downscaling with Anemoi",
+      "publisher": "ECMWF; Simon Lang",
+      "url": "https://www.ecmwf.int/en/about/media-centre/aifs-blog/2026/flow-matching-spatio-temporal-downscaling",
+      "source_class": "project-official",
+      "published_at": "2026-09-07"
+    },
+    {
+      "source_id": "SRC-OCT05-APP012-03",
+      "title": "Overview of the NLPCC 2026 Shared Task 11: Agent-Based Experiment Reproduction from Scientific Papers",
+      "publisher": "Hanhua Hong et al., original authors via arXiv",
+      "url": "https://arxiv.org/html/2609.11117v1",
+      "source_class": "academic-primary",
+      "published_at": "2026-09-10"
+    },
+    {
+      "source_id": "SRC-OCT05-APP014-01",
+      "title": "Near-realtime MLIT data distribution suspension notice",
+      "publisher": "DIAS",
+      "url": "https://diasjp.net/information/dataset/20251117-mlit-realtime-datasets-unavailable/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-APP014-02",
+      "title": "Partial resumption notice",
+      "publisher": "DIAS",
+      "url": "https://diasjp.net/information/operation/20260727-resumption/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-APP014-03",
+      "title": "Dataset republication list",
+      "publisher": "DIAS",
+      "url": "https://diasjp.net/dataset-republication-list/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-APP014-04",
+      "title": "Application republication list",
+      "publisher": "DIAS",
+      "url": "https://diasjp.net/application-republication-list/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-APP014-05",
+      "title": "MLIT telemeter dataset availability notice",
+      "publisher": "DIAS",
+      "url": "https://diasjp.net/information/dataset/20260120-telemeter/",
+      "source_class": "project-official",
+      "published_at": "2026-01-20"
     }
   ],
   "coverage_gaps": [
@@ -318,7 +507,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-OCT03-CATALOG41-20261003",
-    "human_approval_directive_id": "DIR-900141"
+    "publication_decision_id": "PUBDEC-OCT05-CATALOG41-20261005",
+    "human_approval_directive_id": "DIR-900144"
   }
 }

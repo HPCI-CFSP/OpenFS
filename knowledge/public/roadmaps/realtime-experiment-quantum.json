@@ -5,7 +5,7 @@
   "status": "published",
   "domain": "applications",
   "slug": "applications/realtime-experiment-quantum",
-  "as_of": "2026-10-03",
+  "as_of": "2026-10-04",
   "title_ja": "緊急・リアルタイム・実験連携・量子応用",
   "title_en": "Urgent, real-time, experimental, and quantum applications",
   "summary_ja": "実験データの即時処理、緊急計算、量子・HPC連携を、個別実証から継続サービスへ移す条件を整理する暫定ロードマップです。特定実験の速度や圧縮率を他用途へ一般化しません。",
@@ -39,8 +39,8 @@
       "name_en": "Real-time experimental data processing",
       "summary_ja": "取得、圧縮、転送、解析、判断までの期限と障害処理を扱います。",
       "summary_en": "Cover acquisition, compression, transfer, analysis, decision deadlines, and failures.",
-      "current_state_ja": "理研の圧縮技術、SPring-8とGakuNin RDMの試行、APSのAI画像処理実証が公表されています。対象データと測定条件は異なります。 DIII-Dのショット間HPC解析と施設内FPGA推論は異なる測定境界を持ち、共通の全制御SLAを意味しません。",
-      "current_state_en": "RIKEN compression, the SPring-8/GakuNin RDM trial, and an APS AI-imaging demonstration are public, with different data and measurement conditions. DIII-D inter-shot HPC analysis and facility-local FPGA inference have different measurement boundaries and do not establish a common full-control-loop SLA.",
+      "current_state_ja": "理研の圧縮技術、SPring-8とGakuNin RDMの試行、APSのAI画像処理実証が公表されています。対象データと測定条件は異なります。 DIII-Dのショット間HPC解析と施設内FPGA推論は異なる測定境界を持ち、共通の全制御SLAを意味しません。 今回の限定的な追補：DIASのapplication復旧、選択された過去datasetの再公開、上流near-real-time feedの復旧は別事象である。今回の読書から現在のfeed稼働、施設全体の障害、text抽出で失われた実績/計画の表装飾は推測しない。緊急入力のage、履歴完全性、許可、fallbackを既存の評価条件へ追加する。",
+      "current_state_en": "RIKEN compression, the SPring-8/GakuNin RDM trial, and an APS AI-imaging demonstration are public, with different data and measurement conditions. DIII-D inter-shot HPC analysis and facility-local FPGA inference have different measurement boundaries and do not establish a common full-control-loop SLA. Scoped additions in this batch: DIAS application restoration, selected historical dataset republication and upstream near-realtime feed restoration are distinct. Do not infer current feed health, a facility-wide outage or actual/planned table styling lost in text extraction. Add input age, history completeness, authorization and fallback to the existing urgent-readiness assessment.",
       "hpci_implications_ja": "本番化にはデータ率、期限、再送、来歴、認証、障害時の手動経路をユースケース別に固定する必要があります。 科学的品質、入力window、queue待ち、推論、actuator到達、重み更新承認を分けて評価します。",
       "hpci_implications_en": "Production requires use-case-specific data rate, deadline, retry, provenance, identity, and manual fallback contracts. Evaluate scientific quality, input windows, queueing, inference, actuator delivery and weight-update authorization separately.",
       "source_ids": [
@@ -48,7 +48,12 @@
         "SRC-CDS402",
         "SRC-CDS433",
         "SRC-OCT03-APP014-CAKE",
-        "SRC-OCT03-APP014-FPGA"
+        "SRC-OCT03-APP014-FPGA",
+        "SRC-OCT05-APP014-01",
+        "SRC-OCT05-APP014-02",
+        "SRC-OCT05-APP014-03",
+        "SRC-OCT05-APP014-04",
+        "SRC-OCT05-APP014-05"
       ]
     },
     {
@@ -58,8 +63,8 @@
       "name_en": "Quantum-accelerator integration",
       "summary_ja": "オンプレミス量子機、HPC資源、古典基準計算を一体で評価します。",
       "summary_en": "Evaluate on-premises quantum systems, HPC resources, and classical baselines together.",
-      "current_state_ja": "ROQUOとORNL Pathfinderは運用開始が公表され、QuEraは2028年以降の製品目標を示しています。量子優位性やHPCI共通サービスは確立していません。",
-      "current_state_en": "ROQUO and ORNL Pathfinder have announced operation, while QuEra states targets from 2028. Quantum advantage and a common HPCI service are not established.",
+      "current_state_ja": "ROQUOとORNL Pathfinderは運用開始が公表され、QuEraは2028年以降の製品目標を示しています。量子優位性やHPCI共通サービスは確立していません。 今回の限定的な追補：RT-BBO最終論文のSR 26.7ms・MR 38.5ms（37 sub-rewards、CPU無線simulation含む）とv1の17.1/17.5ms・19個を条件別に保持する。QOBLIB例では制約の16.7%を実装し、raw解は実行不能で古典greedy修復が最適解に寄与する。待機を除く時間と並列資源数を保つ。QUBO++の9月版・別GPU pluginのモデル制約を固定して再試験する。計測回数N=L×Sを揃えた量子センシング研究はunitary modelの比較で、雑音・実設備・最良古典法との総費用優位は未確認。 Miyabi/Reimei複合利用は制限された申請経路と別の理研承認を要し、Reimeiの2026年11月提供は予定。EuroQCS-Spain保守はallocationを停止する計画で表示年は暗黙、job自動再開の保証ではない。予期しないQPU障害のrefund、利用者取消、通常失効を分ける。共通サービス、quantum advantage、締切・総費用優位は未確認。",
+      "current_state_en": "ROQUO and ORNL Pathfinder have announced operation, while QuEra states targets from 2028. Quantum advantage and a common HPCI service are not established. Scoped additions in this batch: Keep RT-BBO final SR 26.7ms/MR 38.5ms with 37 sub-rewards and CPU wireless simulation separate from v1 17.1/17.5ms with 19. The QOBLIB illustration implements 16.7% of constraints; raw samples are infeasible and greedy classical repair contributes the optimum. Retain queue-excluding time and parallel resource counts. Retest September QUBO++ versions and separate GPU-plugin model restrictions. Sensing comparison at N=L×S uses unitary models; noise, deployed deadlines and total-cost advantage over the best classical method remain unestablished. Miyabi/Reimei combined access has restricted application routes and separate RIKEN approval; November 2026 Reimei availability is planned. EuroQCS-Spain planned maintenance pauses allocations, with an implicit year and no automatic job-resumption guarantee. Separate unexpected QPU-outage refunds, user cancellation and normal expiry. Common services, quantum advantage, deadlines and total-cost superiority remain unestablished.",
       "hpci_implications_ja": "量子回路だけでなく、前後処理、待ち時間、誤り、古典基準、利用者支援を含めます。 Ising応用は許容gap・成功確率、専用古典機、replica・embeddingを含む全費用で比較する。動的制御は平均rewardと最悪遅延を分離し、資料の版間で異なる時間値を統合しない。",
       "hpci_implications_en": "Include preprocessing, postprocessing, queueing, error, classical baselines, and user support in addition to quantum circuits. Compare Ising applications at fixed gap and success probability, including specialized classical hardware and full replica/embedding costs. Separate average reward from worst-case latency in dynamic control and do not combine timings from differing source versions.",
       "source_ids": [
@@ -70,7 +75,19 @@
         "SRC-OCT03-APP010-PCOMPUTER",
         "SRC-OCT03-APP010-RTBBO-PREPRINT",
         "SRC-OCT03-APP010-RTBBO-RELEASE",
-        "SRC-OCT03-OPS009-DECORATOR"
+        "SRC-OCT03-OPS009-DECORATOR",
+        "SRC-OCT05-APP010-01",
+        "SRC-OCT05-APP010-02",
+        "SRC-OCT05-APP010-03",
+        "SRC-OCT05-APP010-04",
+        "SRC-OCT05-APP010-05",
+        "SRC-OCT05-APP010-06",
+        "SRC-OCT05-APP010-07",
+        "SRC-OCT05-APP010-08",
+        "SRC-OCT05-OPS009-01",
+        "SRC-OCT05-OPS009-02",
+        "SRC-OCT05-OPS009-03",
+        "SRC-OCT05-OPS009-04"
       ]
     }
   ],
@@ -248,15 +265,32 @@
           "comparison_priority": "key",
           "label_ja": "リアルタイム・量子サービス契約の暫定判断点",
           "label_en": "Provisional real-time and quantum service-contract gate",
-          "detail_ja": "期限、データ率、古典基準、正答、失敗、責任分担を定義したユースケースだけを整備案へ接続する暫定計画です。 追加する評価案は、予約満了、checkpointからの再投入、権限失効、校正鮮度、外部QPUへのdata経路を試験する。2027Q2はOpenFS暫定計画であり提供者の約束ではない。",
-          "detail_en": "A provisional plan to connect only use cases with defined deadlines, data rates, classical baselines, correctness, failures, and ownership to deployment options. Proposed tests additionally cover reservation expiry, checkpoint resubmission, revoked authority, calibration freshness and external-QPU data paths. Q2 2027 remains an OpenFS provisional plan, not a provider commitment.",
+          "detail_ja": "期限、データ率、古典基準、正答、失敗、責任分担を定義したユースケースだけを整備案へ接続する暫定計画です。 追加する評価案は、予約満了、checkpointからの再投入、権限失効、校正鮮度、外部QPUへのdata経路を試験する。2027Q2はOpenFS暫定計画であり提供者の約束ではない。 追補条件：量子/古典の論文・solver/plugin版、並列資源、queue除外時間と古典repair寄与を固定する。別機関承認、allocation保守停止とjob再開、障害refundと通常失効を分ける。入力age・履歴完全性・認可・fallbackを確認し、DIAS app/過去dataset復旧を現行feed健全性としない。",
+          "detail_en": "A provisional plan to connect only use cases with defined deadlines, data rates, classical baselines, correctness, failures, and ownership to deployment options. Proposed tests additionally cover reservation expiry, checkpoint resubmission, revoked authority, calibration freshness and external-QPU data paths. Q2 2027 remains an OpenFS provisional plan, not a provider commitment. Additional criteria: pin quantum/classical paper/solver/plugin versions, parallel resources, queue-excluding time and classical-repair contributions. Separate institutional approvals, allocation maintenance pauses/job restart, outage refunds/normal expiry. Check input age/history completeness/authorization/fallback; DIAS application/historical dataset restoration does not establish current feed health.",
           "source_ids": [
             "SRC-OPENFS-REMAINING-PLAN",
             "SRC-CDS397",
             "SRC-CDS455",
             "SRC-OCT03-OPS009-TIERKREIS",
             "SRC-OCT03-OPS009-FAQ",
-            "SRC-OCT03-OPS009-CONCEPTS"
+            "SRC-OCT03-OPS009-CONCEPTS",
+            "SRC-OCT05-APP010-01",
+            "SRC-OCT05-APP010-02",
+            "SRC-OCT05-APP010-03",
+            "SRC-OCT05-APP010-04",
+            "SRC-OCT05-APP010-05",
+            "SRC-OCT05-APP010-06",
+            "SRC-OCT05-APP010-07",
+            "SRC-OCT05-APP010-08",
+            "SRC-OCT05-OPS009-01",
+            "SRC-OCT05-OPS009-02",
+            "SRC-OCT05-OPS009-03",
+            "SRC-OCT05-OPS009-04",
+            "SRC-OCT05-APP014-01",
+            "SRC-OCT05-APP014-02",
+            "SRC-OCT05-APP014-03",
+            "SRC-OCT05-APP014-04",
+            "SRC-OCT05-APP014-05"
           ],
           "dependency_refs": []
         }
@@ -417,6 +451,129 @@
       "publisher": "Amazon Web Services",
       "url": "https://docs.aws.amazon.com/braket/latest/developerguide/braket-jobs-concepts.html",
       "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-OCT05-APP010-01",
+      "title": "Real-time black-box optimization for dynamic discrete environments using quantum computing",
+      "publisher": "Study authors / Nature Communications",
+      "url": "https://www.nature.com/articles/s41467-026-76069-3",
+      "source_class": "academic-primary",
+      "published_at": "2026-09-03"
+    },
+    {
+      "source_id": "SRC-OCT05-APP010-02",
+      "title": "Real-Time Black-Box Optimization for Dynamic Discrete Environments Using Embedded Ising Machines, v1",
+      "publisher": "Kashimata et al. / Toshiba / arXiv",
+      "url": "https://arxiv.org/html/2506.16924v1",
+      "source_class": "academic-primary"
+    },
+    {
+      "source_id": "SRC-OCT05-APP010-03",
+      "title": "The Quantum Optimization Benchmarking Library",
+      "publisher": "Koch et al. / Nature Computational Science",
+      "url": "https://www.nature.com/articles/s43588-026-00991-1",
+      "source_class": "academic-primary",
+      "published_at": "2026-06-23"
+    },
+    {
+      "source_id": "SRC-OCT05-APP010-04",
+      "title": "Quantum Optimization Benchmarking Library repository",
+      "publisher": "ZIB-AOPT contributors",
+      "url": "https://github.com/ZIB-AOPT/QOBLIB",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-APP010-05",
+      "title": "Primary source: github.com/qubo-plus/qbpp/releases",
+      "publisher": "qubo-plus maintainers",
+      "url": "https://github.com/qubo-plus/qbpp/releases",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-APP010-06",
+      "title": "QUBO++ documentation",
+      "publisher": "Koji Nakano / Hiroshima University",
+      "url": "https://qubo-plus.github.io/en/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-APP010-07",
+      "title": "QUBO/HUBO Solvers",
+      "publisher": "Koji Nakano / Hiroshima University",
+      "url": "https://qubo-plus.github.io/en/python/QUBO_HUBO_SOLVERS",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-APP010-08",
+      "title": "Quantum computational sensing using quantum signal processing, quantum neural networks, and Hamiltonian engineering",
+      "publisher": "Khan, Prabhu, Wright and McMahon / npj Quantum Information",
+      "url": "https://www.nature.com/articles/s41534-026-01235-w",
+      "source_class": "academic-primary",
+      "published_at": "2026-05-14"
+    },
+    {
+      "source_id": "SRC-OCT05-OPS009-01",
+      "title": "Miyabi スーパーコンピュータシステム「大規模 HPC チャレンジ」",
+      "publisher": "University of Tokyo Information Technology Center / JCAHPC access guidance",
+      "url": "https://www.cc.u-tokyo.ac.jp/guide/hpc/miyabi/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-OPS009-02",
+      "title": "Miyabi「大規模 HPC チャレンジ」応募詳細",
+      "publisher": "University of Tokyo Information Technology Center / JCAHPC",
+      "url": "https://www.cc.u-tokyo.ac.jp/guide/hpc/miyabi/application.php",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-OPS009-03",
+      "title": "EuroHPC JU Call for proposals for Quantum Access Pilot Mode",
+      "publisher": "EuroHPC Joint Undertaking",
+      "url": "https://www.eurohpc-ju.europa.eu/eurohpc-ju-call-proposals-quantum-access-pilot-mode_en",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-OPS009-04",
+      "title": "Amazon Braket FAQ",
+      "publisher": "Amazon Web Services",
+      "url": "https://aws.amazon.com/braket/faqs/",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-OCT05-APP014-01",
+      "title": "Near-realtime MLIT data distribution suspension notice",
+      "publisher": "DIAS",
+      "url": "https://diasjp.net/information/dataset/20251117-mlit-realtime-datasets-unavailable/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-APP014-02",
+      "title": "Partial resumption notice",
+      "publisher": "DIAS",
+      "url": "https://diasjp.net/information/operation/20260727-resumption/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-APP014-03",
+      "title": "Dataset republication list",
+      "publisher": "DIAS",
+      "url": "https://diasjp.net/dataset-republication-list/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-APP014-04",
+      "title": "Application republication list",
+      "publisher": "DIAS",
+      "url": "https://diasjp.net/application-republication-list/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-APP014-05",
+      "title": "MLIT telemeter dataset availability notice",
+      "publisher": "DIAS",
+      "url": "https://diasjp.net/information/dataset/20260120-telemeter/",
+      "source_class": "project-official",
+      "published_at": "2026-01-20"
     }
   ],
   "coverage_gaps": [
@@ -448,7 +605,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-OCT03-CATALOG41-20261003",
-    "human_approval_directive_id": "DIR-900141"
+    "publication_decision_id": "PUBDEC-OCT05-CATALOG41-20261005",
+    "human_approval_directive_id": "DIR-900144"
   }
 }

@@ -5,7 +5,7 @@
   "status": "published",
   "domain": "hardware",
   "slug": "hardware/interconnect-optics-disaggregation",
-  "as_of": "2026-10-03",
+  "as_of": "2026-10-04",
   "title_ja": "インターコネクト・光・資源分離",
   "title_en": "Interconnect, optics, and disaggregation",
   "summary_ja": "スケールアップ／スケールアウト接続、PCIe・CXL、CPO、IOWNについて、規格、製品、運用実証、HPCIでの導入判断を共通の年表で比較する暫定ロードマップです。",
@@ -54,8 +54,8 @@
       "name_en": "Ethernet and Ultra Ethernet",
       "summary_ja": "AI・HPC向けEthernetのトランスポート、輻輳制御、集合通信、1.6 Tb/s世代を追跡する。",
       "summary_en": "Tracks AI/HPC Ethernet transport, congestion control, collectives, and the 1.6 Tb/s generation.",
-      "current_state_ja": "UEC 1.0.3は2026年Q3に公開された。IEEE P802.3djはDraft 3.2のSA再投票を完了しており、採択済みの工程表では2026年9月の標準化を目標としている。ただし、最終承認は確認できていない。",
-      "current_state_en": "UEC 1.0.3 was published in Q3 2026. IEEE P802.3dj completed the Draft 3.2 SA recirculation ballot, and its adopted timeline targets September 2026 for the standard; final approval is not yet confirmed.",
+      "current_state_ja": "UEC 1.0.3は2026年Q3に公開された。IEEE P802.3djはDraft 3.2のSA再投票を完了しており、採択済みの工程表では2026年9月の標準化を目標としている。ただし、最終承認は確認できていない。 今回の限定的な追補：UEC 1.0.3とIEEE P802.3dj D3.3の9月25日–10月10日AOE再投票を分け、最終承認・適合量産は未確認。CN6000のQ4 CY2026一般提供目標と9月のcustomer samplingを実際のGAから区別する。Active Compute Fabricは9月14日のarchitecture発表で、UALink/ESUN/UEの出荷済み相互運用証明ではない。ベンダー測定のOMB 7.2.0表と7.5.2 recipe不一致、ROCm/MPI/OPX版、affinity・GPU buffer・one-switch条件を再現前提に保持する。",
+      "current_state_en": "UEC 1.0.3 was published in Q3 2026. IEEE P802.3dj completed the Draft 3.2 SA recirculation ballot, and its adopted timeline targets September 2026 for the standard; final approval is not yet confirmed. Scoped additions in this batch: Separate UEC 1.0.3 from ongoing IEEE P802.3dj D3.3 recirculation September 25–October 10 AOE; final approval and compliant volume remain unverified. CN6000 Q4 CY2026 GA targets/September customer sampling do not prove GA. Active Compute Fabric is a September 14 architecture announcement, not shipping UALink/ESUN/UE interoperability. Preserve OMB 7.2.0 table versus 7.5.2 recipe, ROCm/MPI/OPX versions, affinity/GPU-buffer/one-switch conditions as reproduction prerequisites.",
       "hpci_implications_ja": "ピーク帯域だけでなく、MPI/libfabricとの統合、テールレイテンシ、輻輳、公平性、障害発生時の性能を評価する。",
       "hpci_implications_en": "HPCI should evaluate MPI/libfabric integration, tail latency, congestion, fairness, and degraded performance in addition to peak bandwidth.",
       "source_ids": [
@@ -63,7 +63,13 @@
         "SRC-NET002",
         "SRC-NET003",
         "SRC-NET017",
-        "SRC-NET018"
+        "SRC-NET018",
+        "SRC-OCT05-ARCH004-01",
+        "SRC-OCT05-ARCH004-02",
+        "SRC-OCT05-ARCH004-04",
+        "SRC-OCT05-ARCH004-05",
+        "SRC-OCT05-ARCH004-06",
+        "SRC-OCT05-ARCH004-08"
       ]
     },
     {
@@ -151,14 +157,20 @@
       "name_en": "Purpose-built HPC and AI fabrics",
       "summary_ja": "Ethernet系とは別に、Omni-Path等のHPC・AI向け専用ファブリックについて、NIC、スイッチ、ソフトウェア、相互運用、運用性を追跡する。",
       "summary_en": "Tracks purpose-built HPC and AI fabrics such as Omni-Path separately from Ethernet, including NICs, switches, software, interoperability, and operations.",
-      "current_state_ja": "CornelisのCN5000 Omni-Pathは400 Gbit/sのSuperNIC、スイッチ、Director Class Switch、OPXソフトウェアで構成される。CN6000は800 Gbit/sのSuperNICとして、Omni-Path、RoCEv2、Ultra Ethernet、PCIe 6.0への対応が発表されているが、2026年8月時点で一般提供開始を示す一次情報は確認できない。",
-      "current_state_en": "Cornelis CN5000 Omni-Path comprises 400 Gbit/s SuperNICs, switches, director-class switches, and the OPX software stack. CN6000 has been announced as an 800 Gbit/s SuperNIC supporting Omni-Path, RoCEv2, Ultra Ethernet, and PCIe 6.0, but no primary evidence of general availability was confirmed as of August 2026.",
+      "current_state_ja": "CornelisのCN5000 Omni-Pathは400 Gbit/sのSuperNIC、スイッチ、Director Class Switch、OPXソフトウェアで構成される。CN6000は800 Gbit/sのSuperNICとして、Omni-Path、RoCEv2、Ultra Ethernet、PCIe 6.0への対応が発表されているが、2026年8月時点で一般提供開始を示す一次情報は確認できない。 今回の限定的な追補：UEC 1.0.3とIEEE P802.3dj D3.3の9月25日–10月10日AOE再投票を分け、最終承認・適合量産は未確認。CN6000のQ4 CY2026一般提供目標と9月のcustomer samplingを実際のGAから区別する。Active Compute Fabricは9月14日のarchitecture発表で、UALink/ESUN/UEの出荷済み相互運用証明ではない。ベンダー測定のOMB 7.2.0表と7.5.2 recipe不一致、ROCm/MPI/OPX版、affinity・GPU buffer・one-switch条件を再現前提に保持する。",
+      "current_state_en": "Cornelis CN5000 Omni-Path comprises 400 Gbit/s SuperNICs, switches, director-class switches, and the OPX software stack. CN6000 has been announced as an 800 Gbit/s SuperNIC supporting Omni-Path, RoCEv2, Ultra Ethernet, and PCIe 6.0, but no primary evidence of general availability was confirmed as of August 2026. Scoped additions in this batch: Separate UEC 1.0.3 from ongoing IEEE P802.3dj D3.3 recirculation September 25–October 10 AOE; final approval and compliant volume remain unverified. CN6000 Q4 CY2026 GA targets/September customer sampling do not prove GA. Active Compute Fabric is a September 14 architecture announcement, not shipping UALink/ESUN/UE interoperability. Preserve OMB 7.2.0 table versus 7.5.2 recipe, ROCm/MPI/OPX versions, affinity/GPU-buffer/one-switch conditions as reproduction prerequisites.",
       "hpci_implications_ja": "公称帯域だけでなく、MPI・SHMEM・libfabric・GPU集合通信、テールレイテンシ、輻輳、障害回復、管理、消費電力、国内保守を共通条件で比較する。",
       "hpci_implications_en": "Compare MPI, SHMEM, libfabric, GPU collectives, tail latency, congestion, recovery, management, power, and service in Japan under common conditions rather than nominal bandwidth alone.",
       "source_ids": [
         "SRC-NET027",
         "SRC-NET028",
-        "SRC-NET029"
+        "SRC-NET029",
+        "SRC-OCT05-ARCH004-01",
+        "SRC-OCT05-ARCH004-02",
+        "SRC-OCT05-ARCH004-04",
+        "SRC-OCT05-ARCH004-05",
+        "SRC-OCT05-ARCH004-06",
+        "SRC-OCT05-ARCH004-08"
       ]
     },
     {
@@ -289,6 +301,31 @@
             "SRC-NET018"
           ],
           "dependency_refs": []
+        },
+        {
+          "milestone_id": "MS-OCT05-NET-IEEE-D33-BALLOT",
+          "year": 2026,
+          "quarter": "Q3",
+          "timing_precision": "quarter-range",
+          "maturity": "published",
+          "event_type": "standard",
+          "timing_basis": "observed",
+          "comparison_priority": "supporting",
+          "label_ja": "P802.3dj D3.3再投票",
+          "label_en": "P802.3dj D3.3 recirculation",
+          "detail_ja": "9月25日–10月10日AOEの投票が読書時点で進行中。最終標準承認ではない。",
+          "detail_en": "September25–October10 AOE ballot was ongoing at the read cutoff; not final standard approval.",
+          "source_ids": [
+            "SRC-OCT05-ARCH004-01",
+            "SRC-OCT05-ARCH004-02",
+            "SRC-OCT05-ARCH004-04",
+            "SRC-OCT05-ARCH004-05",
+            "SRC-OCT05-ARCH004-06",
+            "SRC-OCT05-ARCH004-08"
+          ],
+          "dependency_refs": [],
+          "end_year": 2026,
+          "end_quarter": "Q4"
         }
       ]
     },
@@ -867,6 +904,29 @@
           "dependency_refs": [
             "DEP-NET-BLUEPRINT-001"
           ]
+        },
+        {
+          "milestone_id": "MS-OCT05-NET-CN6000-GA-TARGET",
+          "year": 2026,
+          "quarter": "Q4",
+          "timing_precision": "quarter",
+          "maturity": "target",
+          "event_type": "product",
+          "timing_basis": "vendor-target",
+          "comparison_priority": "supporting",
+          "label_ja": "CN6000 Q4一般提供目標",
+          "label_en": "CN6000 Q4 GA target",
+          "detail_ja": "7月21日のQ4 CY2026目標と9月14日のcustomer sampling。実際のGA・相互運用受入は未確認。",
+          "detail_en": "July21 Q4 CY2026 target and September14 customer sampling; actual GA/interoperability acceptance remains unverified.",
+          "source_ids": [
+            "SRC-OCT05-ARCH004-01",
+            "SRC-OCT05-ARCH004-02",
+            "SRC-OCT05-ARCH004-04",
+            "SRC-OCT05-ARCH004-05",
+            "SRC-OCT05-ARCH004-06",
+            "SRC-OCT05-ARCH004-08"
+          ],
+          "dependency_refs": []
         }
       ]
     },
@@ -1451,6 +1511,52 @@
       "publisher": "NERSC / Lawrence Berkeley National Laboratory",
       "url": "https://docs.nersc.gov/performance/network/",
       "source_class": "research-organization"
+    },
+    {
+      "source_id": "SRC-OCT05-ARCH004-01",
+      "title": "IEEE 802.3 Ballot and Task Force Review Announcements",
+      "publisher": "IEEE 802.3",
+      "url": "https://www.ieee802.org/3/ballots/announce.html",
+      "source_class": "standards-body",
+      "published_at": "2026-07-31"
+    },
+    {
+      "source_id": "SRC-OCT05-ARCH004-02",
+      "title": "Motions and Straw Polls, September 2026 Session",
+      "publisher": "IEEE P802.3dj",
+      "url": "https://www.ieee802.org/3/dj/public/26_09/motions_3dj_2609.pdf",
+      "source_class": "standards-body"
+    },
+    {
+      "source_id": "SRC-OCT05-ARCH004-04",
+      "title": "Cornelis Announces New Reference Architecture for AI Inference, Training, and HPC Built for AMD 6th Gen EPYC and AMD Instinct MI400 Series",
+      "publisher": "Cornelis Networks",
+      "url": "https://www.cornelis.com/stories/cornelis-announces-new-reference-architecture-for-ai-inference-training-and-hpc-built-for-amd-6th-gen-epycsupsup-and-amd-instinctsupsup-mi400-series",
+      "source_class": "vendor-official",
+      "published_at": "2026-07-21"
+    },
+    {
+      "source_id": "SRC-OCT05-ARCH004-05",
+      "title": "Cornelis Expands into Scale-Up Networking with Active Compute Fabric, $205M in Funding, and Qualcomm Collaboration at AI Infra Summit",
+      "publisher": "Cornelis Networks",
+      "url": "https://www.cornelis.com/stories/cornelis-expands-into-scaleup-networking-with-active-compute-fabric",
+      "source_class": "vendor-official",
+      "published_at": "2026-09-14"
+    },
+    {
+      "source_id": "SRC-OCT05-ARCH004-06",
+      "title": "How to Benchmark GPU-to-GPU Networking with Cornelis CN5000 and AMD Instinct MI300X",
+      "publisher": "Cornelis Networks",
+      "url": "https://www.cornelis.com/blog/how-to-benchmark-gpu-to-gpu-networking-cn5000-amd-instinct-mi300x",
+      "source_class": "vendor-official",
+      "published_at": "2026-09-25"
+    },
+    {
+      "source_id": "SRC-OCT05-ARCH004-08",
+      "title": "Ultra Ethernet Specification History",
+      "publisher": "Ultra Ethernet Consortium",
+      "url": "https://ultraethernet.org/specification-history/",
+      "source_class": "standards-body"
     }
   ],
   "coverage_gaps": [
@@ -1537,7 +1643,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-OCT03-CATALOG41-20261003",
-    "human_approval_directive_id": "DIR-900141"
+    "publication_decision_id": "PUBDEC-OCT05-CATALOG41-20261005",
+    "human_approval_directive_id": "DIR-900144"
   }
 }

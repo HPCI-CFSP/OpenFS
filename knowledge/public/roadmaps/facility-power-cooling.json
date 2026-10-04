@@ -5,7 +5,7 @@
   "status": "published",
   "domain": "hardware",
   "slug": "hardware/facility-power-cooling",
-  "as_of": "2026-10-03",
+  "as_of": "2026-10-04",
   "title_ja": "施設・電力・冷却",
   "title_en": "Facility, power, and cooling",
   "summary_ja": "受電、液冷、熱設計、施設工期をシステム導入判断へ接続する暫定ロードマップです。富岳NEXTの公開施設要件は個別計画の根拠であり、他センターへ一律には適用しません。",
@@ -39,13 +39,19 @@
       "name_en": "Building, power, and cooling design",
       "summary_ja": "計算機側の熱・電力条件と施設工程を同期します。",
       "summary_en": "Synchronize compute thermal and power requirements with facility delivery.",
-      "current_state_ja": "富岳NEXTでは水冷、CDU、温水条件、負荷変動追従が要求されています。",
-      "current_state_en": "FugakuNEXT requirements specify water cooling, CDUs, warm-water conditions, and load following.",
+      "current_state_ja": "富岳NEXTでは水冷、CDU、温水条件、負荷変動追従が要求されています。 今回の限定的な追補：Nidecの現行singular product URLからIn-Row、NIR2.5、Project Deschutes 5のベンダー条件を取得した。旧plural URL失敗は履歴とし、flow/rating不一致とprototype・site受入の未確認を保持する。理研要求のaround FY2028は2028年4月–2029年3月の年度範囲でcalendar2028確約ではない。要求PDFの再取得から消えたDBO工程の復活や遅延量を推測しない。 TEPCOの大口供給potential mapとWelcome Zone mapを区別し、工事計画確定起点、許認可・用地等の除外を記録する。予約済み容量・許可発行ではない。SPring-8の共有storage障害報告と別の全施設停止予定をbuffer・復旧試験の根拠に加え、計画完了・一般故障率・候補地順位は推測しない。",
+      "current_state_en": "FugakuNEXT requirements specify water cooling, CDUs, warm-water conditions, and load following. Scoped additions in this batch: Recover vendor In-Row/NIR2.5/Project Deschutes 5 conditions from current singular-product URLs; retain the failed plural URL, flow/rating inconsistency and prototype/site-acceptance limits. RIKEN around FY2028 means April 2028–March 2029, not guaranteed calendar-2028 delivery. Recovered requirements do not reinstate the removed DBO timetable or quantify delay. Distinguish TEPCO large-supply potential and Welcome Zone maps, including construction-plan-fixed timing origins and omitted permits/site factors; neither reserves capacity nor issues permits. Add reported SPring-8 shared-storage failure and separately planned site-wide shutdown as buffering/recovery test evidence without completed-shutdown, general failure-rate or site-ranking claims.",
       "hpci_implications_ja": "センターごとの受電容量、冷却温度、増設余地を別々に確認します。",
       "hpci_implications_en": "Verify power capacity, cooling temperatures, and expansion headroom per center.",
       "source_ids": [
         "SRC-BLUE009",
-        "SRC-BLUE043"
+        "SRC-BLUE043",
+        "SRC-OCT05-OPS001-03",
+        "SRC-OCT05-OPS001-04",
+        "SRC-OCT05-OPS001-05",
+        "SRC-OCT05-OPS001-06",
+        "SRC-OCT05-OPS013-07",
+        "SRC-OCT05-OPS013-08"
       ]
     },
     {
@@ -102,13 +108,17 @@
           "event_type": "hpci-evaluation",
           "timing_basis": "project-target",
           "comparison_priority": "key",
-          "label_ja": "旧要求の冷却水調整目標（不調後の工程は未確認）",
-          "label_en": "Historical cooling coordination target; post-failure schedule unverified",
-          "detail_ja": "流量・圧力等は2028年頃に計算機側の要求に合わせて決定予定です。四半期は公表されていません。 2026年9月4日に当該DBO公募の不調が公表されたため、これは旧要求の履歴として保持し、不調後の確定した工程とは扱いません。本調査で要求水準書PDFの再取得に失敗したため、当該PDFの確認時点は更新しません。",
-          "detail_en": "Flow, pressure, and related conditions are scheduled for determination around 2028 against compute requirements; no quarter is published. Following the September 4, 2026 unsuccessful DBO solicitation, retain this as historical requirements evidence, not a confirmed post-failure schedule. The requirements PDF could not be retrieved again in this pass, so its verification date is not refreshed.",
+          "label_ja": "FY2028頃の冷却条件（歴史的要求）",
+          "label_en": "Cooling conditions around FY2028 (historical requirements)",
+          "detail_ja": "歴史的要求は流量・圧力等を計算機条件に合わせFY2028頃（2028年4月–2029年3月）に決めるとする。calendar2028や四半期の確約ではない。今回7月31日PDFを取得できたが、9月4日DBO不調後の後継調達工程や適用を確認したものではない。旧取得失敗も履歴として保持する。",
+          "detail_en": "Historical requirements call for flow/pressure decisions against compute needs around FY2028 (April2028–March2029), not guaranteed calendar2028 or a quarter. The July31 PDF was recovered in this pass, without confirming a successor procurement schedule/applicability after the September4 unsuccessful DBO solicitation. Retain the prior failed-read history.",
           "source_ids": [
             "SRC-BLUE043",
-            "SRC-BLUE009"
+            "SRC-BLUE009",
+            "SRC-OCT05-OPS001-03",
+            "SRC-OCT05-OPS001-04",
+            "SRC-OCT05-OPS001-05",
+            "SRC-OCT05-OPS001-06"
           ],
           "dependency_refs": [
             "DEP-FACILITY-BLUEPRINT"
@@ -169,11 +179,13 @@
             "SRC-OCT03-OPS006-FRONTIER",
             "SRC-OCT03-OPS013-TEPCO",
             "SRC-OCT03-OPS013-TOCHIGI",
-            "SRC-OCT03-OPS013-ALCF"
+            "SRC-OCT03-OPS013-ALCF",
+            "SRC-OCT05-OPS013-07",
+            "SRC-OCT05-OPS013-08"
           ],
           "maturity": "decision-gate",
           "timing_basis": "openfs-provisional-plan",
-          "detail_en": "A provisional OpenFS plan to compare only centers with documented power, cooling, expansion headroom, and measurement boundaries. Proposed evaluation separates GPU power/temperature improvements from facility energy, PUE and coolant effects and checks matched-period facility meters and completed useful work. Regional comparisons should include power lead-time start/consultation and experiment transfer, queue, processing and return deadlines. Public maps or trial selection alone cannot rank sites. These are proposed OpenFS criteria, not provider commitments.",
+          "detail_en": "A provisional OpenFS plan to compare only centers with documented power, cooling, expansion headroom, and measurement boundaries. Proposed evaluation separates GPU power/temperature improvements from facility energy, PUE and coolant effects and checks matched-period facility meters and completed useful work. Regional comparisons should include power lead-time start/consultation and experiment transfer, queue, processing and return deadlines. Public maps or trial selection alone cannot rank sites. These are proposed OpenFS criteria, not provider commitments. Additional criteria: pin large-supply-potential versus Welcome Zone map products, construction-plan timing origins and omitted permissions/site factors; test buffering/recovery for shared-storage/planned-shutdown dependencies. Infer neither reserved power, issued permits nor completed shutdown plans.",
           "comparison_priority": "key",
           "event_type": "hpci-evaluation",
           "label_ja": "センター別計測表の暫定判断点",
@@ -182,7 +194,7 @@
           "dependency_refs": [
             "DEP-FACILITY-BLUEPRINT"
           ],
-          "detail_ja": "受電、冷却、増設余地、計測境界が揃ったセンターだけを比較対象とするOpenFS上の暫定計画です。 GPU電力・温度の改善を施設全体の電力量・PUE・冷却水の改善と同一視せず、同期間の施設meterと完了work量で検証する評価案を追加する。 地域配置を比較する場合は、受電工期の起算点・事前協議と、実験の転送・queue・処理・返却期限を含める。公開供給地図や実証採択だけで順位を付けない。これはOpenFSの評価条件案であり、提供者の約束ではない。",
+          "detail_ja": "受電、冷却、増設余地、計測境界が揃ったセンターだけを比較対象とするOpenFS上の暫定計画です。 GPU電力・温度の改善を施設全体の電力量・PUE・冷却水の改善と同一視せず、同期間の施設meterと完了work量で検証する評価案を追加する。 地域配置を比較する場合は、受電工期の起算点・事前協議と、実験の転送・queue・処理・返却期限を含める。公開供給地図や実証採択だけで順位を付けない。これはOpenFSの評価条件案であり、提供者の約束ではない。 追補条件：大口供給potential/Welcome Zoneのmap種別と工事計画起点、除外された許認可/用地を固定し、共有storage・計画停止依存のbuffer/復旧を確認する。予約電力・許可発行・停止計画達成を推測しない。",
           "timing_precision": "quarter"
         },
         {
@@ -368,6 +380,50 @@
       "url": "https://www.alcf.anl.gov/news/data-analysis-speed-light-source-experiments",
       "source_class": "research-organization",
       "published_at": "2026-04-14"
+    },
+    {
+      "source_id": "SRC-OCT05-OPS001-03",
+      "title": "In-Row CDU",
+      "publisher": "Nidec",
+      "url": "https://www.nidec.com/en/product/liquid-cooling-line-up/products/in-row/",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-OCT05-OPS001-04",
+      "title": "NIR2.5 specifications",
+      "publisher": "Nidec",
+      "url": "https://www.nidec.com/en/product/liquid-cooling-line-up/products/in-row/spec-nir/",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-OCT05-OPS001-05",
+      "title": "Project Deschutes 5 specifications",
+      "publisher": "Nidec",
+      "url": "https://www.nidec.com/en/product/liquid-cooling-line-up/products/in-row/spec-pd/",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-OCT05-OPS001-06",
+      "title": "富岳NEXT新建屋DBO要求水準書 共通事項及び施設整備編 2026年7月31日修正版",
+      "publisher": "RIKEN",
+      "url": "https://www.r-ccs.riken.jp/fugaku-next/fugakunext-dbo_2026-0731_2-1.pdf",
+      "source_class": "research-organization",
+      "published_at": "2026-07-31"
+    },
+    {
+      "source_id": "SRC-OCT05-OPS013-07",
+      "title": "大規模供給ポテンシャルマップ公開のお知らせ",
+      "publisher": "TEPCO Power Grid",
+      "url": "https://www.tepco.co.jp/pg/consignment/workshop/procedure/high-pressure/pdf/20251120_notice.pdf",
+      "source_class": "project-official",
+      "published_at": "2025-11-20"
+    },
+    {
+      "source_id": "SRC-OCT05-OPS013-08",
+      "title": "SPring-8 Data Center Portal — News",
+      "publisher": "SPring-8 Data Center",
+      "url": "https://dc-portal.spring8.or.jp/",
+      "source_class": "project-official"
     }
   ],
   "coverage_gaps": [
@@ -399,7 +455,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-OCT03-CATALOG41-20261003",
-    "human_approval_directive_id": "DIR-900141"
+    "publication_decision_id": "PUBDEC-OCT05-CATALOG41-20261005",
+    "human_approval_directive_id": "DIR-900144"
   }
 }

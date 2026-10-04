@@ -5,7 +5,7 @@
   "status": "published",
   "domain": "system-software",
   "slug": "system-software/observability-performance-power",
-  "as_of": "2026-10-03",
+  "as_of": "2026-10-04",
   "title_ja": "可観測性・性能工学・電力適応運用",
   "title_en": "Observability, performance engineering, and power-aware operations",
   "summary_ja": "ジョブ、通信、I/O、電力・冷却の観測を性能モデルと運用制御へ接続する暫定ロードマップです。研究上の電力制御結果と、センター全体で安全に運用できる制御を区別します。",
@@ -39,13 +39,24 @@
       "name_en": "Common telemetry and reproducible measurement",
       "summary_ja": "性能、電力、待ち時間、失敗を同じ実行単位で記録します。",
       "summary_en": "Record performance, power, queueing, and failures for the same execution unit.",
-      "current_state_ja": "既存資料は個別ツールやシステムの計測機能を示しますが、HPCI全体で共通の意味・粒度・保持期間は未確定です。",
-      "current_state_en": "Existing material documents measurement capabilities for individual tools and systems, but common HPCI-wide semantics, granularity, and retention are unresolved.",
+      "current_state_ja": "既存資料は個別ツールやシステムの計測機能を示しますが、HPCI全体で共通の意味・粒度・保持期間は未確定です。 今回の限定的な追補：今回の公式Graph500読書記録で2026年6月BFSの富岳3位、204,068 GTEPS、scale 43、152,064ノードを確認した。10月の新計測ではなく、旧取得失敗は履歴として保持する。Benchpark文書の再実行時の出力上書き注意を踏まえ、各反復の別出力・設定・build identityを保存する評価条件を追加する。適合度は独立holdout誤差ではない。 AIPerfのper-chunk usage補正はoption・endpointの対応と先頭chunkのtoken情報に依存し、版更新だけで補正済みとはしない。moving mainのgoodputは適合requests/s、attainmentはvalidとerroredを含む分母の割合として区別し、guideの混同を残す。GPU-only energyはwarmupを除外し、energy/userのconfigured concurrency分母を、科学課題成功あたりのwhole-SUT energyと混同しない。mainの式をv0.13.0へ自動帰属せず、容量外挿は未検証。 author-hosted filesystem研究は平均予測と変動の差を示すが、placeholder出版識別子、PolarisのLustre/GPFS不一致、script/data未取得を保持し、再現済みとはしない。BP5の選択・切詰めreplayは元step/event identityを保持する必要があり、SST network復旧とは別である。queue step数とbyte high-water markを分け、held-out tail errorを評価する条件を追加する。 DarshanではMPI終了処理を欠くcrashでログが残らないことがあり、sacctの未対応仮想メモリ値の0、中断stepのCPU欠測、明示的truncateを利用実態と区別する。実効取得周期（0は終了時のみ）、collector版、window・timezone・月跨ぎ規則、job/step分母と完了条件別の観測率を保持する。missing・unsupported・suppressedを計測zeroにしない。公開制御を維持し、新たなHPCI利用値や需要傾向は作らない。",
+      "current_state_en": "Existing material documents measurement capabilities for individual tools and systems, but common HPCI-wide semantics, granularity, and retention are unresolved. Scoped additions in this batch: The official Graph500 receipt verifies Fugaku third in June 2026 BFS: 204,068 GTEPS, scale 43, 152,064 nodes. This is not an October measurement; retain the prior failed-read history. Benchpark warns that reruns overwrite outputs, motivating separate result/configuration/build identities for repetitions. Fit quality is not independent holdout accuracy. AIPerf per-chunk usage correction depends on option/endpoint support and first-chunk token information; upgrading alone is insufficient. Moving-main goodput is compliant requests/s whereas attainment is a fraction over valid plus errored requests; preserve conflicting guide terminology. GPU-only energy excludes warmup and configured-concurrency energy/user differs from whole-SUT energy per successful scientific task. Main formulas are not automatically attributed to v0.13.0; capacity extrapolation remains unvalidated. The author-hosted filesystem study distinguishes mean prediction from variability; retain placeholder publication identifiers, Polaris Lustre/GPFS inconsistency and unavailable scripts/data, without reproduction claims. Selected/truncated BP5 replay must preserve original step/event identity, distinct from SST network recovery. Separate queue-step bounds from byte high-water marks and assess held-out tail error. Darshan crashes without MPI finalization can leave no logs; distinguish unsupported sacct virtual-memory zeros, interrupted-step CPU omissions and explicit truncation from usage. Retain effective cadence (zero means termination-only), collector versions, windows/timezones/month-crossing rules, job/step denominators and completion-conditioned coverage. Missing, unsupported and suppressed values are not measured zeros. Preserve disclosure controls; derive no new HPCI usage values or demand trends.",
       "hpci_implications_ja": "候補構成を同じ入力、版、精度、計測境界で比較できる観測契約が必要です。",
       "hpci_implications_en": "Candidate systems need an observability contract with identical inputs, versions, correctness, and measurement boundaries.",
       "source_ids": [
         "SRC-OPENFS-REMAINING-PLAN",
-        "SRC-CDO055"
+        "SRC-CDO055",
+        "SRC-OCT05-APP002-01",
+        "SRC-OCT05-APP002-06",
+        "SRC-OCT05-APP013-01",
+        "SRC-OCT05-APP013-02",
+        "SRC-OCT05-APP013-03",
+        "SRC-OCT05-APP013-04",
+        "SRC-OCT05-APP015-01",
+        "SRC-OCT05-APP015-02",
+        "SRC-OCT05-CROSS005-01",
+        "SRC-OCT05-CROSS005-02",
+        "SRC-OCT05-CROSS005-03"
       ]
     },
     {
@@ -55,13 +66,16 @@
       "name_en": "Per-job power control and facility coordination",
       "summary_ja": "性能・エネルギー・期限の関係を負荷別に扱います。",
       "summary_en": "Treat performance, energy, and deadlines by workload.",
-      "current_state_ja": "ORNLのGH200研究はタスク別の電力上限の有効性を示しますが、全負荷・全候補機・本番運用への一般化はできません。OCPの800 VDC資料は施設側の標準化活動です。",
-      "current_state_en": "ORNL's GH200 study shows task-specific power-cap effects, but cannot be generalized to every workload, platform, or production service. OCP's 800 VDC material concerns facility-side standardization.",
+      "current_state_ja": "ORNLのGH200研究はタスク別の電力上限の有効性を示しますが、全負荷・全候補機・本番運用への一般化はできません。OCPの800 VDC資料は施設側の標準化活動です。 今回の限定的な追補：NVIDIAのGPU board-average powerは前1秒・AmpereのGA100例外、instantaneousは直近、moduleは対応CPU等を含むHopper以降datacenter条件で、poll周期だけから範囲・積分窓を決めない。冷却モデルv2は欠けた係数を手調整し、1秒simulationを15分比較、約520日profileを評価するが独立holdout分割は不明で高変動を過小評価する。公開codeを実行・data変換をauditしておらず、閉ループsimulationを施設省エネ実測としない。",
+      "current_state_en": "ORNL's GH200 study shows task-specific power-cap effects, but cannot be generalized to every workload, platform, or production service. OCP's 800 VDC material concerns facility-side standardization. Scoped additions in this batch: NVIDIA board-average power covers the preceding second with the GA100 exception in Ampere support; instantaneous is latest and module includes supported CPU/components for Hopper-and-newer datacenter products. Poll cadence alone does not fix boundary/integration windows. Cooling-model v2 manually tunes unavailable coefficients, reduces one-second simulation to 15-minute comparison over about 520 daily profiles, lacks a stated independent holdout split and underestimates variability. Available code/data transforms were not reproduced/audited; closed-loop simulation is not measured facility savings.",
       "hpci_implications_ja": "電力上限の安全性、性能劣化、復旧、施設負荷追従をアプリケーション別に検証します。",
       "hpci_implications_en": "Validate power-cap safety, performance impact, recovery, and facility-load following per application.",
       "source_ids": [
         "SRC-CDS376",
-        "SRC-CDS426"
+        "SRC-CDS426",
+        "SRC-OCT05-OPS006-01",
+        "SRC-OCT05-OPS006-02",
+        "SRC-OCT05-OPS006-03"
       ]
     }
   ],
@@ -150,18 +164,32 @@
             "SRC-OCT03-OPS006-MIT",
             "SRC-OCT03-OPS006-SLURM",
             "SRC-OCT03-SSW001-CDMM",
-            "SRC-OCT03-SSW001-NVHPC269"
+            "SRC-OCT03-SSW001-NVHPC269",
+            "SRC-OCT05-APP002-01",
+            "SRC-OCT05-APP002-06",
+            "SRC-OCT05-OPS006-01",
+            "SRC-OCT05-OPS006-02",
+            "SRC-OCT05-OPS006-03",
+            "SRC-OCT05-APP013-01",
+            "SRC-OCT05-APP013-02",
+            "SRC-OCT05-APP013-03",
+            "SRC-OCT05-APP013-04",
+            "SRC-OCT05-APP015-01",
+            "SRC-OCT05-APP015-02",
+            "SRC-OCT05-CROSS005-01",
+            "SRC-OCT05-CROSS005-02",
+            "SRC-OCT05-CROSS005-03"
           ],
           "maturity": "decision-gate",
           "timing_basis": "openfs-provisional-plan",
-          "detail_en": "A provisional plan to review a comparison contract pinning input, version, correctness, timing interval, IT/facility power boundary, and failures. For experimental streams, OpenFS proposes separately reporting scheduled-versus-actual issue, reconciliation of all steps, backpressure versus skipping, premature termination and tail sample size. Joint quality/deadline/loss measurement remains unexecuted. Proposed review criteria include requested/allocated/used distinctions, transformation/exclusion versions, external-trace applicability, and disclosure risk across monthly and revised releases. These are OpenFS proposals, not external delivery commitments. Proposed evaluation additionally distinguishes requested/applied caps, acquisition/preprocessing cadence, sensor boundaries, approximation, overhead/calibration accuracy and nonrandom operational comparisons. An additional OpenFS evaluation proposal records driver, allocator/memory mode, effective MPI placement and patch version to avoid confusing configuration changes with portability differences. Vendor statements are not HPCI measurements; no new acceptance threshold or deployment date is set.",
+          "detail_en": "A provisional plan to review a comparison contract pinning input, version, correctness, timing interval, IT/facility power boundary, and failures. For experimental streams, OpenFS proposes separately reporting scheduled-versus-actual issue, reconciliation of all steps, backpressure versus skipping, premature termination and tail sample size. Joint quality/deadline/loss measurement remains unexecuted. Proposed review criteria include requested/allocated/used distinctions, transformation/exclusion versions, external-trace applicability, and disclosure risk across monthly and revised releases. These are OpenFS proposals, not external delivery commitments. Proposed evaluation additionally distinguishes requested/applied caps, acquisition/preprocessing cadence, sensor boundaries, approximation, overhead/calibration accuracy and nonrandom operational comparisons. An additional OpenFS evaluation proposal records driver, allocator/memory mode, effective MPI placement and patch version to avoid confusing configuration changes with portability differences. Vendor statements are not HPCI measurements; no new acceptance threshold or deployment date is set. Additional criteria: preserve separate repetition results/build identities; pin actual hardware/driver/fields, unsupported values and sensor integration windows, distinguishing calibration from holdouts. Streaming-token corrections depend on options/endpoints; distinguish GPU-only energy/configured concurrency from whole-SUT scientific-success denominators. Retain original replay event IDs, byte high-water marks, held-out tail errors and monthly cohorts/month-crossing rules; missing/unsupported/suppressed values are not measured zeros. These are not new measurements or relaxed disclosure controls.",
           "comparison_priority": "key",
           "event_type": "hpci-evaluation",
           "label_ja": "性能・電力観測契約の暫定判断点",
           "label_en": "Provisional performance and power observability gate",
           "year": 2027,
           "dependency_refs": [],
-          "detail_ja": "入力、版、精度、計測区間、IT/施設電力境界、失敗を固定した比較形式を審査する暫定計画です。 実験streamでは、予定到着と実投入の差、全stepの照合、backpressureと省略、途中終了、tail推定の標本数を別記することを提案します。品質・期限・欠損の同時測定は未実施です。 審査候補として、要求・割当・使用の区別、変換・除外版、外部トレースの適用範囲、月次・訂正版を通じた開示リスク確認を含めます。これはOpenFSの提案であり外部組織の納期ではありません。 追加の評価案では要求capと適用cap、取得周期と前処理周期、センサ範囲、近似、overhead・較正精度、非無作為な実績比較を区別する。 OpenFSの追加評価案として、ドライバ、割当・メモリ方式、実効MPI配置、パッチ版も記録し、設定変更を性能可搬性の差と混同しない。ベンダー記述はHPCI実測ではなく、合否閾値や導入日は新設しない。",
+          "detail_ja": "入力、版、精度、計測区間、IT/施設電力境界、失敗を固定した比較形式を審査する暫定計画です。 実験streamでは、予定到着と実投入の差、全stepの照合、backpressureと省略、途中終了、tail推定の標本数を別記することを提案します。品質・期限・欠損の同時測定は未実施です。 審査候補として、要求・割当・使用の区別、変換・除外版、外部トレースの適用範囲、月次・訂正版を通じた開示リスク確認を含めます。これはOpenFSの提案であり外部組織の納期ではありません。 追加の評価案では要求capと適用cap、取得周期と前処理周期、センサ範囲、近似、overhead・較正精度、非無作為な実績比較を区別する。 OpenFSの追加評価案として、ドライバ、割当・メモリ方式、実効MPI配置、パッチ版も記録し、設定変更を性能可搬性の差と混同しない。ベンダー記述はHPCI実測ではなく、合否閾値や導入日は新設しない。 追補条件：各反復の結果・build identityを独立保存する。実hardware/driver/field、未対応値、sensor積分窓を固定し、較正とholdoutを分ける。stream token補正はoption/endpoint依存、GPU-only energy・configured concurrencyとwhole-SUT科学成功分母を分ける。元replay event ID、byte high-water mark、held-out tail誤差、月次cohort・月跨ぎ規則を記録し、missing/unsupported/suppressedを計測zeroにしない。新しい実測や公開制御の解除ではない。",
           "timing_precision": "quarter"
         },
         {
@@ -324,6 +352,104 @@
       "publisher": "NVIDIA",
       "url": "https://docs.nvidia.com/hpc-sdk/archive/26.9/release-notes/index.html",
       "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-OCT05-APP002-01",
+      "title": "Graph500: June 2026 BFS and SSSP Lists",
+      "publisher": "Graph500",
+      "url": "https://graph500.org/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-APP002-06",
+      "title": "Compare two Experiments",
+      "publisher": "LLNL / Benchpark",
+      "url": "https://software.llnl.gov/benchpark/comparing-experiment-builds.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-APP013-01",
+      "title": "AIPerf v0.13.0 Release",
+      "publisher": "AIPerf maintainers / NVIDIA",
+      "url": "https://github.com/ai-dynamo/aiperf/releases/tag/v0.13.0",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-APP013-02",
+      "title": "feat(metrics): add --per-chunk-usage to fix TPS/user inflation from bundled first streamed chunk",
+      "publisher": "AIPerf maintainers / NVIDIA",
+      "url": "https://github.com/ai-dynamo/aiperf/pull/1279",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-APP013-03",
+      "title": "AIPerf metrics reference",
+      "publisher": "AIPerf maintainers / NVIDIA",
+      "url": "https://github.com/ai-dynamo/aiperf/blob/main/docs/metrics-reference.md",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-APP013-04",
+      "title": "AIPerf comprehensive LLM benchmarking",
+      "publisher": "AIPerf maintainers / NVIDIA",
+      "url": "https://github.com/ai-dynamo/aiperf/blob/main/docs/comprehensive-llm-benchmarking.md",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-APP015-01",
+      "title": "Impacts of Shared Filesystem Performance on Real-Time Data Acquisition and Analysis",
+      "publisher": "Study authors / Argonne author-hosted paper",
+      "url": "https://web.cels.anl.gov/~woz/papers/FS_Impacts_2025.pdf",
+      "source_class": "academic-primary"
+    },
+    {
+      "source_id": "SRC-OCT05-APP015-02",
+      "title": "ADIOS2 2.11.0 Supported Engines: SST",
+      "publisher": "ADIOS2 project",
+      "url": "https://adios2.readthedocs.io/en/v2.11.0/engines/engines.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-CROSS005-01",
+      "title": "Darshan I/O Profiler — NERSC Documentation",
+      "publisher": "NERSC / Lawrence Berkeley National Laboratory",
+      "url": "https://docs.nersc.gov/tools/performance/darshan/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-CROSS005-02",
+      "title": "Slurm Workload Manager — sacct",
+      "publisher": "SchedMD",
+      "url": "https://slurm.schedmd.com/sacct.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-CROSS005-03",
+      "title": "Slurm energy accounting configuration",
+      "publisher": "SchedMD",
+      "url": "https://slurm.schedmd.com/slurm.conf.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-OPS006-01",
+      "title": "NVIDIA System Management Interface documentation",
+      "publisher": "NVIDIA",
+      "url": "https://docs.nvidia.com/deploy/nvidia-smi/index.html",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-OCT05-OPS006-02",
+      "title": "A Closed-Loop Thermal Dynamic Model for AI Data Center Cooling Load Simulation",
+      "publisher": "Ngwerume, Tong, Ten and Hu / arXiv",
+      "url": "https://arxiv.org/html/2607.28962v2",
+      "source_class": "academic-primary"
+    },
+    {
+      "source_id": "SRC-OCT05-OPS006-03",
+      "title": "Thermal Cooling Simulation App",
+      "publisher": "cletuzz00 / study authors",
+      "url": "https://github.com/cletuzz00/dc-cooling-thermal-model",
+      "source_class": "academic-primary"
     }
   ],
   "coverage_gaps": [
@@ -355,7 +481,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-OCT03-CATALOG41-20261003",
-    "human_approval_directive_id": "DIR-900141"
+    "publication_decision_id": "PUBDEC-OCT05-CATALOG41-20261005",
+    "human_approval_directive_id": "DIR-900144"
   }
 }

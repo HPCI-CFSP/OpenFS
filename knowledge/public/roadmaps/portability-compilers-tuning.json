@@ -5,7 +5,7 @@
   "status": "published",
   "domain": "system-software",
   "slug": "system-software/portability-compilers-tuning",
-  "as_of": "2026-10-03",
+  "as_of": "2026-10-04",
   "title_ja": "性能可搬性・コンパイラ・自動最適化",
   "title_en": "Performance portability, compilers, and automated optimization",
   "summary_ja": "並列API、通信ランタイム、コンパイラ基盤、性能可搬性レイヤー、ベンダー提供のソフトウェアスタック、自動移植・最適化を、HPCIの世代移行に向けた評価ゲートとともに比較する暫定ロードマップです。",
@@ -97,8 +97,8 @@
       "name_en": "OpenMP and SYCL",
       "summary_ja": "ベンダー横断で利用できる指示文ベースのAPIと、C++による異種プログラミングAPIについて、各実装の対応状況を追跡する。",
       "summary_en": "Tracks cross-vendor directive-based and C++ heterogeneous-programming APIs together with implementation support.",
-      "current_state_ja": "OpenMP 6.0は公開済みで、6.1は2026年11月に公開される予定である。2026年Q3の公式資料では、GCCとLLVMが機能単位の実装表を公開している。Intel oneAPIは5.2と6.0の一部、NVIDIA HPC SDK 26.5はGPU向け5.0の一部、AMD AOCC 5.2はC/C++で5.0、Fortranで4.5、Fujitsu Technical Computing Suiteは4.5と5.0の一部への対応を掲げる。AOCCとROCmは別のソフトウェアスタックであり、言語、バックエンド、機能を横断して比較するには共通試験が必要である。SYCL 2020 Revision 12は2026年Q3に公開された。Khronosの公式適合製品一覧でSYCL 2020として掲載されているのは、Intel oneAPI DPC++をIntel製CPUまたはGPUで使用する構成に限られる。",
-      "current_state_en": "OpenMP 6.0 is current, and 6.1 is scheduled for November 2026. Official Q3 2026 sources provide feature-level implementation tables for GCC and LLVM. Intel oneAPI declares support for 5.2 and selected 6.0 features; NVIDIA HPC SDK 26.5 documents a GPU-oriented subset of 5.0; AMD AOCC 5.2 declares 5.0 support for C/C++ and 4.5 for Fortran; and the Fujitsu Technical Computing Suite declares support for 4.5 and part of 5.0. AOCC and ROCm are distinct software stacks, so a common test is still required for comparisons across languages, backends, and features. SYCL 2020 Revision 12 was published in Q3 2026. The SYCL 2020 entries in Khronos's official conformant-products list are limited to Intel oneAPI DPC++ configurations on Intel CPUs and GPUs.",
+      "current_state_ja": "OpenMP 6.0は公開済みで、6.1は2026年11月に公開される予定である。2026年Q3の公式資料では、GCCとLLVMが機能単位の実装表を公開している。Intel oneAPIは5.2と6.0の一部、NVIDIA HPC SDK 26.5はGPU向け5.0の一部、AMD AOCC 5.2はC/C++で5.0、Fortranで4.5、Fujitsu Technical Computing Suiteは4.5と5.0の一部への対応を掲げる。AOCCとROCmは別のソフトウェアスタックであり、言語、バックエンド、機能を横断して比較するには共通試験が必要である。SYCL 2020 Revision 12は2026年Q3に公開された。Khronosの公式適合製品一覧でSYCL 2020として掲載されているのは、Intel oneAPI DPC++をIntel製CPUまたはGPUで使用する構成に限られる。 今回の限定的な追補：PETSc moving3.26の機能記述をすべて9月28日release追加とはせず、overview/API版不一致と実operation適合を残す。GEMMul8のnative fallback・workspace・memory-savingとskip-scaling reuseの非両立を評価条件にする。oneMathは今回develop READMEを確認したがbranch変更日は不明。support記載はHPCI速度・精度・energy実測ではない。 zfpの値域・pointwise/block-relative誤差とendpoint設定を分け、FAQとdevelopのsubnormal記述差を1.0.1の確定挙動や修正済み状態へ一般化しない。GEMMul8のmodulus数は調整の出発点で精度保証ではなく、memory-saving構成はskip-scaling reuseを無効化する。mutableで未固定のREADMEによる条件で、科学速度・energyの新実測ではない。",
+      "current_state_en": "OpenMP 6.0 is current, and 6.1 is scheduled for November 2026. Official Q3 2026 sources provide feature-level implementation tables for GCC and LLVM. Intel oneAPI declares support for 5.2 and selected 6.0 features; NVIDIA HPC SDK 26.5 documents a GPU-oriented subset of 5.0; AMD AOCC 5.2 declares 5.0 support for C/C++ and 4.5 for Fortran; and the Fujitsu Technical Computing Suite declares support for 4.5 and part of 5.0. AOCC and ROCm are distinct software stacks, so a common test is still required for comparisons across languages, backends, and features. SYCL 2020 Revision 12 was published in Q3 2026. The SYCL 2020 entries in Khronos's official conformant-products list are limited to Intel oneAPI DPC++ configurations on Intel CPUs and GPUs. Scoped additions in this batch: Do not date every mutable PETSc 3.26 feature bullet to September 28; retain overview/API mismatch and actual-operation qualification. Add GEMMul8 native fallback/workspace/memory-saving versus skip-scaling-reuse conditions. This read observes oneMath develop README with unknown branch-change date. Support listings are not HPCI performance, accuracy or energy measurements. Separate zfp value domains, pointwise/block-relative errors and endpoint configuration; FAQ/develop subnormal differences do not establish release 1.0.1 behavior or a fix. GEMMul8 modulus counts are tuning starting points, not accuracy guarantees; memory-saving disables skip-scaling reuse. These are mutable unpinned README conditions, not new scientific speed or energy measurements.",
       "hpci_implications_ja": "仕様公開とCPU/GPU実装範囲を分け、Fortran、デバイス機能、デバッグ、性能差をコンパイラ別に検証する。",
       "hpci_implications_en": "Separate specification publication from CPU/GPU implementation coverage and test Fortran, device features, debugging, and performance per compiler.",
       "source_ids": [
@@ -113,7 +113,16 @@
         "SRC-PORT022",
         "SRC-PORT023",
         "SRC-PORT024",
-        "SRC-PORT025"
+        "SRC-PORT025",
+        "SRC-OCT05-SSW004-01",
+        "SRC-OCT05-SSW004-02",
+        "SRC-OCT05-SSW004-03",
+        "SRC-OCT05-APP016-03",
+        "SRC-OCT05-SSW004-06",
+        "SRC-OCT05-SSW004-07",
+        "SRC-OCT05-APP016-01",
+        "SRC-OCT05-APP016-02",
+        "SRC-OCT05-APP016-05"
       ]
     },
     {
@@ -123,8 +132,8 @@
       "name_en": "MPI, PGAS and communication infrastructure",
       "summary_ja": "MPI ABI、MPI実装、通信ファブリックのプロバイダー、異種メモリ間転送に加え、GPU向けPGASの仕様提案を追跡します。提案の公開と規格採択は区別します。",
       "summary_en": "Tracks the MPI ABI, implementations, fabric providers, heterogeneous-memory transport and GPU-aware PGAS proposals. Publication of a proposal is distinct from ratification.",
-      "current_state_ja": "MPI 5.0は標準ABIを導入済み。MPICH 5.0.0はMPI-5と新ABIの完全対応を公称する一方、MPI Forumの2026年Q3実装状況はMPICHを部分対応（FortranはMPICH ABIのみ）、Open MPIを未記載とし、MPICH側も2026年4月にmpifort_abi未提供を確認した。したがって、実装のリリース番号や包括的な対応表明だけでは、言語別の実装間互換性を判断できない。",
-      "current_state_en": "MPI 5.0 introduced a standard ABI. MPICH 5.0.0 declares full MPI-5 and new-ABI support, while the MPI Forum's Q3 2026 implementation table marks MPICH as partial because Fortran still uses the MPICH ABI, leaves Open MPI unmarked, and an April 2026 MPICH project response confirms that mpifort_abi is not provided. Release numbers and broad conformance statements therefore do not establish language-specific interoperability across implementations.",
+      "current_state_ja": "MPI 5.0は標準ABIを導入済み。MPICH 5.0.0はMPI-5と新ABIの完全対応を公称する一方、MPI Forumの2026年Q3実装状況はMPICHを部分対応（FortranはMPICH ABIのみ）、Open MPIを未記載とし、MPICH側も2026年4月にmpifort_abi未提供を確認した。したがって、実装のリリース番号や包括的な対応表明だけでは、言語別の実装間互換性を判断できない。 今回の限定的な追補：NCCLのB100 PCIe MLoPartのCUDA error 101条件の既知問題とvendor workaround NCCL_CUMEM_ENABLE=0を限定して追記する。nccl4py実験bindingとlib/device IR整合、barrier終了・event全rank一致・CUDA条件を分ける。upstream issue closedはAuroraのwrong-result適合確認ではない。Open MPI5.0.11 download rowの9月16日と8月changelogを区別し、2月source日付を現行release日へ誤用しない。NCCL表示release stampの年・timezone不明を保持。",
+      "current_state_en": "MPI 5.0 introduced a standard ABI. MPICH 5.0.0 declares full MPI-5 and new-ABI support, while the MPI Forum's Q3 2026 implementation table marks MPICH as partial because Fortran still uses the MPICH ABI, leaves Open MPI unmarked, and an April 2026 MPICH project response confirms that mpifort_abi is not provided. Release numbers and broad conformance statements therefore do not establish language-specific interoperability across implementations. Scoped additions in this batch: Add the configuration-scoped B100 PCIe MLoPart NCCL allocation issue with CUDA error 101 and vendor NCCL_CUMEM_ENABLE=0 workaround. Separate experimental nccl4py binding/lib/device-IR matching, barrier teardown, all-rank events and CUDA requirements. A closed upstream issue does not qualify Aurora wrong-result recovery. Distinguish Open MPI 5.0.11 download-row September 16 from August changelog and avoid using the old February source date for the current release. Retain unknown NCCL release-label year/timezone.",
       "hpci_implications_ja": "実装の交換可能性だけでなく、GPUDirect経路、通信の進捗保証、集合通信、障害時の挙動、HPCIアプリケーションの性能を通信ファブリック別に継続測定する。",
       "hpci_implications_en": "For each communication fabric, continuously measure implementation interchangeability, GPUDirect paths, progress guarantees, collective operations, failure behavior, and HPCI application performance.",
       "source_ids": [
@@ -134,7 +143,14 @@
         "SRC-PORT017",
         "SRC-PORT026",
         "SRC-PORT027",
-        "SRC-PORT056"
+        "SRC-PORT056",
+        "SRC-OCT05-SSW003-03",
+        "SRC-OCT05-SSW003-04",
+        "SRC-OCT05-SSW003-09",
+        "SRC-OCT05-SSW003-10",
+        "SRC-OCT05-SSW003-11",
+        "SRC-OCT05-SSW003-14",
+        "SRC-OCT05-SSW003-15"
       ]
     },
     {
@@ -144,15 +160,20 @@
       "name_en": "LLVM/Clang and MLIR",
       "summary_ja": "複数アーキテクチャと高水準最適化を支える共通コンパイラ基盤の更新を追跡する。",
       "summary_en": "Tracks the common compiler infrastructure supporting multiple architectures and high-level optimization.",
-      "current_state_ja": "LLVM 22.1は2026年Q1に公開され、LLVM 23.1.0の最終版はQ3に公開された。 9月7日付リンクの富岳手引書はLLVM 23.1.0を掲載し、特定のmpi_f08モジュールのリンク条件とクロスFlangのREAL/COMPLEX(KIND=16)制約を示す。リンクの日付は配備日ではない。",
-      "current_state_en": "LLVM 22.1 was released in Q1 2026, followed by the final LLVM 23.1.0 release in Q3. The Fugaku guide linked with a September 7 date lists LLVM 23.1.0 and documents specific mpi_f08 module-link conditions and cross-Flang REAL/COMPLEX(KIND=16) restrictions. The link date is not a deployment date.",
+      "current_state_ja": "LLVM 22.1は2026年Q1に公開され、LLVM 23.1.0の最終版はQ3に公開された。 9月7日付リンクの富岳手引書はLLVM 23.1.0を掲載し、特定のmpi_f08モジュールのリンク条件とクロスFlangのREAL/COMPLEX(KIND=16)制約を示す。リンクの日付は配備日ではない。 今回の限定的な追補：上流LLVM23.1.2は9月22日公開、23.1.3の10月6日は予定。富岳site文書の23.1.0は上書きしない。不老・弐は10月1日9時の利用開始を大学が報告したが、旧9月software matrixの全版・機能・実稼働・科学数値適合は未確認。無償・保守・有償段階を区別し、Kokkos日付差と既存Gapを保持する。",
+      "current_state_en": "LLVM 22.1 was released in Q1 2026, followed by the final LLVM 23.1.0 release in Q3. The Fugaku guide linked with a September 7 date lists LLVM 23.1.0 and documents specific mpi_f08 module-link conditions and cross-Flang REAL/COMPLEX(KIND=16) restrictions. The link date is not a deployment date. Scoped additions in this batch: Upstream LLVM 23.1.2 was released September 22; October 6 for 23.1.3 is scheduled. Do not overwrite Fugaku site-documented 23.1.0. The university reports Flow II October 1 09:00 start without validating every version/feature/operation/scientific result in the earlier September software matrix. Separate free/maintenance/charged phases and retain Kokkos date dissent/open gaps.",
       "hpci_implications_ja": "最新リリースへの追随だけでなく、AArch64、x86、GPUの各バックエンド、OpenMPオフロード、数値再現性、長期サポート版を評価する。 クロス・ネイティブ、Fortran機能、MPIの組合せ別に結果を検証する。",
       "hpci_implications_en": "Assess AArch64, x86, and GPU backends, OpenMP offload, numerical reproducibility, and long-term-support releases rather than merely following the latest releases. Validate results separately by cross/native compilation, Fortran feature and MPI combination.",
       "source_ids": [
         "SRC-PORT004",
         "SRC-PORT005",
         "SRC-OCT03-SSW001-FUGAKU-LLVM23",
-        "SRC-OCT03-SSW001-FUGAKU-INDEX"
+        "SRC-OCT03-SSW001-FUGAKU-INDEX",
+        "SRC-OCT05-SSW001-01",
+        "SRC-OCT05-CROSS002-04",
+        "SRC-OCT05-SSW001-09",
+        "SRC-OCT05-SSW001-10",
+        "SRC-OCT05-CROSS002-01"
       ]
     },
     {
@@ -194,7 +215,7 @@
     },
     {
       "name_en": "AI-assisted migration and automated optimization",
-      "current_state_ja": "富岳NEXTはBenchpark/BenchKit、オンプレミスAI、商用AI、テストベッドを組み合わせた試作を2026年度中頃に公開予定としている。 ParEval-Repoの2025年研究は、生成sourceだけでなくbuildを含むrepository移植評価の必要性を示す。",
+      "current_state_ja": "富岳NEXTはBenchpark/BenchKit、オンプレミスAI、商用AI、テストベッドを組み合わせた試作を2026年度中頃に公開予定としている。 ParEval-Repoの2025年研究は、生成sourceだけでなくbuildを含むrepository移植評価の必要性を示す。 今回の限定的な追補：CReSSの著者preprintは387領域中162 active kernels、単一ノードGH200/H100、単精度、360-step台風条件を報告する。72-thread Graceに対する5.1倍はアプリ速度で工数削減ではない。5件の数値差異に人の調査を要し、snapshotで見逃した分岐もあった。HPCAgent-Benchでは成功課題だけの速度幾何平均と全課題の成功率、feedback mode・再提出採用規則を分ける。複数ノード・因果的工数削減は未確認。 Julia kernel研究のscopeとchangelog/release UI日付差を保持する。IR-ranking研究のlatest全文が未取得のためv1/mainの限定を残す。評価回数だけを全時間・energy節約とせず、training data取得・model training・cold開始・再利用率を既存総費用gateへ加える。HPCI数値適合・新10月eventは未確認。",
       "source_ids": [
         "SRC-PORT010",
         "SRC-PORT011",
@@ -203,11 +224,17 @@
         "SRC-OCT03-SSW010-LLVM23",
         "SRC-OCT03-SSW010-KT-API",
         "SRC-OCT03-SSW010-KT-STRATEGIES",
-        "SRC-OCT03-SSW010-HALIDE21"
+        "SRC-OCT03-SSW010-HALIDE21",
+        "SRC-OCT05-APP005-01",
+        "SRC-OCT05-APP005-02",
+        "SRC-OCT05-SSW010-07",
+        "SRC-OCT05-SSW010-08",
+        "SRC-OCT05-SSW010-09",
+        "SRC-OCT05-SSW010-10"
       ],
       "group": "automation",
       "summary_ja": "AIによるコード移植、性能予測、ボトルネック分析、最適化、回帰評価を自動的に反復する仕組みを追跡する。",
-      "current_state_en": "FugakuNEXT plans a prototype around mid-FY2026 combining Benchpark/BenchKit, on-premises AI, commercial AI, and testbeds. The 2025 ParEval-Repo study adds evidence for repository translation evaluation including generated builds, beyond source-only evaluation.",
+      "current_state_en": "FugakuNEXT plans a prototype around mid-FY2026 combining Benchpark/BenchKit, on-premises AI, commercial AI, and testbeds. The 2025 ParEval-Repo study adds evidence for repository translation evaluation including generated builds, beyond source-only evaluation. Scoped additions in this batch: The CReSS author preprint reports 162 active kernels among 387 regions, single-node GH200/H100, single precision and a 360-step typhoon case. Its 5.1x versus 72-thread Grace is application speed, not labor savings. Five numerical discrepancies required human investigation and snapshots missed a branch. HPCAgent-Bench separates solved-task speedup geometric mean, overall success rate, feedback modes and resubmission selection. Multinode validity and causal effort savings remain unestablished. Retain Julia-kernel research scope and changelog/release-UI date dissent. Latest IR-ranking full text is unavailable; preserve v1/main limitations. Evaluation counts are not total time/energy savings: include training-data acquisition, model training, cold starts and reuse rates in the existing total-cost gate. HPCI numerical qualification and a new October event remain unestablished.",
       "hpci_implications_en": "Do not automatically accept generated code; mechanically verify tests, performance, numerical differences, licenses, and provenance before review by the accountable decision maker. Track build failures, execution on the specified GPU, public-port contamination and actual review effort separately. For autotuning, propose retaining effective compiler targets and decision records, distinguishing cached, newly measured and failed trials, accounting for search/compile/revalidation costs, and retesting held-out inputs after version changes.",
       "track_id": "PORT-AUTO",
       "hpci_implications_ja": "生成コードを自動採用せず、テスト、性能、数値差、ライセンス、来歴を機械的に検証したうえで、判断責任者による確認へ渡す。 build失敗、指定GPUでの実行、公開portによる評価汚染と実際のreview工数を別々に管理する。 自動チューニングでは、実効コンパイラtargetと判断記録、cache由来・新規実測・失敗の区別、探索・コンパイル・再検証費用を保存し、版変更後の独立入力で再評価することを提案する。",
@@ -1287,11 +1314,23 @@
           "comparison_priority": "key",
           "label_ja": "移植性台帳v1",
           "label_en": "Portability inventory v1",
-          "detail_ja": "OpenFSは、代表アプリケーションごとに、言語、API、バックエンド、ビルド可否、計算結果の妥当性、性能、移植工数を記録することを提案する。",
-          "detail_en": "OpenFS proposes recording the language, API, backend, build support, numerical correctness, performance, and porting effort for each representative application.",
+          "detail_ja": "OpenFSは、代表アプリケーションごとに、言語、API、バックエンド、ビルド可否、計算結果の妥当性、性能、移植工数を記録することを提案する。 追補条件：移植scenario・精度・成功課題だけの速度分母と全課題成功率、人の数値差異判定を分ける。数値経路・device memory・計測設定を固定し、data取得・training・cold開始・再利用履歴を総費用へ含める。評価回数減少を工数・energy節約としない。",
+          "detail_en": "OpenFS proposes recording the language, API, backend, build support, numerical correctness, performance, and porting effort for each representative application. Additional criteria: distinguish porting scenarios/precision, solved-task speed denominators, all-task success rates and human numerical adjudication. Pin numerical paths/device memory/measurement settings; include data acquisition, training, cold starts and reused histories in total cost. Fewer evaluations are not demonstrated labor or energy savings.",
           "source_ids": [
             "SRC-PORT011",
-            "SRC-PORT012"
+            "SRC-PORT012",
+            "SRC-OCT05-APP005-01",
+            "SRC-OCT05-APP005-02",
+            "SRC-OCT05-SSW004-01",
+            "SRC-OCT05-SSW004-02",
+            "SRC-OCT05-SSW004-03",
+            "SRC-OCT05-APP016-03",
+            "SRC-OCT05-SSW004-06",
+            "SRC-OCT05-SSW004-07",
+            "SRC-OCT05-SSW010-07",
+            "SRC-OCT05-SSW010-08",
+            "SRC-OCT05-SSW010-09",
+            "SRC-OCT05-SSW010-10"
           ],
           "dependency_refs": [
             "DEP-PORT-WORKLOAD-001"
@@ -1308,12 +1347,21 @@
           "comparison_priority": "key",
           "label_ja": "複数バックエンドでの再現性評価",
           "label_en": "Multi-backend reproducibility",
-          "detail_ja": "OpenFSは、少なくとも2系統のCPU/GPUバックエンドで、計算結果の妥当性、性能、再現性を継続的に測定することを提案する。 混合精度の最小二乗では、正方系の残差基準を転用せず、解の誤差・非零最小残差・条件数・停止とfallbackを個別に記録することを提案する。型対応と科学的受入を区別する。",
-          "detail_en": "OpenFS proposes continuous measurement of numerical correctness, performance, and reproducibility on at least two CPU/GPU backend families. For mixed-precision least squares, OpenFS proposes separately recording solution error, nonzero optimal residual, conditioning, stopping and fallback instead of transferring square-system residual criteria. Format support and scientific acceptance remain distinct.",
+          "detail_ja": "OpenFSは、少なくとも2系統のCPU/GPUバックエンドで、計算結果の妥当性、性能、再現性を継続的に測定することを提案する。 混合精度の最小二乗では、正方系の残差基準を転用せず、解の誤差・非零最小残差・条件数・停止とfallbackを個別に記録することを提案する。型対応と科学的受入を区別する。 追補条件：native fallback・memory pressure、実装/endpoint・特殊値を別に検証する。GEMMul8のmemory-savingはskip-scaling reuseを無効化する一つの共通条件として扱い、modulus案を精度保証としない。READMEはmutableで未固定、zfp FAQ/developのsubnormal差はrelease1.0.1の確定挙動ではない。",
+          "detail_en": "OpenFS proposes continuous measurement of numerical correctness, performance, and reproducibility on at least two CPU/GPU backend families. For mixed-precision least squares, OpenFS proposes separately recording solution error, nonzero optimal residual, conditioning, stopping and fallback instead of transferring square-system residual criteria. Format support and scientific acceptance remain distinct. Additional criteria: qualify native fallback/memory pressure, implementations/endpoints and exceptional values separately. GEMMul8 memory saving disables skip-scaling reuse as one shared condition; modulus suggestions are not accuracy guarantees. The README is mutable/unpinned; zfp FAQ/develop subnormal dissent does not establish release 1.0.1 behavior.",
           "source_ids": [
             "SRC-PORT011",
             "SRC-PORT012",
-            "SRC-OCT03-APP016-LSIR-ROADMAP"
+            "SRC-OCT03-APP016-LSIR-ROADMAP",
+            "SRC-OCT05-SSW004-01",
+            "SRC-OCT05-SSW004-02",
+            "SRC-OCT05-SSW004-03",
+            "SRC-OCT05-APP016-03",
+            "SRC-OCT05-SSW004-06",
+            "SRC-OCT05-SSW004-07",
+            "SRC-OCT05-APP016-01",
+            "SRC-OCT05-APP016-02",
+            "SRC-OCT05-APP016-05"
           ],
           "dependency_refs": [
             "DEP-PORT-COMPUTE-001"
@@ -1869,10 +1917,10 @@
     },
     {
       "source_id": "SRC-PORT015",
-      "title": "Open MPI Version 5.0 Releases",
+      "title": "Open MPI5.0.11 download row (September16); changelog separately says August2026",
       "publisher": "Open MPI Project",
       "url": "https://www.open-mpi.org/software/ompi/v5.0/",
-      "published_at": "2026-02-23",
+      "published_at": "2026-09-16",
       "source_class": "project-official"
     },
     {
@@ -2324,6 +2372,199 @@
       "publisher": "Halide project",
       "url": "https://github.com/halide/Halide/releases/tag/v21.0.0",
       "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW001-01",
+      "title": "The LLVM Compiler Infrastructure Project",
+      "publisher": "LLVM Project",
+      "url": "https://www.llvm.org/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-CROSS002-04",
+      "title": "9月24日から「不老・弐」の一般利用申込受付を開始します",
+      "publisher": "Nagoya University",
+      "url": "https://www.cc.nagoya-u.ac.jp/ja/news/2026/09/application-start/",
+      "source_class": "project-official",
+      "published_at": "2026-09-14"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW001-09",
+      "title": "Supercomputer System Furo-II",
+      "publisher": "Nagoya University Information Technology Center",
+      "url": "https://icts.nagoya-u.ac.jp/ja/sc/",
+      "source_class": "research-organization"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW001-10",
+      "title": "詳細仕様",
+      "publisher": "Nagoya University",
+      "url": "https://www.cc.nagoya-u.ac.jp/ja/system/specs/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-CROSS002-01",
+      "title": "スーパーコンピュータ「不老・弐」利用開始のお知らせ",
+      "publisher": "Nagoya University",
+      "url": "https://icts.nagoya-u.ac.jp/ja/information/sc/2026-10-01-start.html",
+      "source_class": "project-official",
+      "published_at": "2026-10-01"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW003-03",
+      "title": "Open MPI5.0.11 download row (September16); changelog separately says August2026",
+      "publisher": "Open MPI Project",
+      "url": "https://www.open-mpi.org/software/ompi/v5.0/",
+      "source_class": "project-official",
+      "published_at": "2026-09-16"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW003-04",
+      "title": "Open MPI 5.0.x changelog",
+      "publisher": "Open MPI project",
+      "url": "https://docs.open-mpi.org/en/v5.0.x/release-notes/changelog/v5.0.x.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW003-09",
+      "title": "NCCL 2.32.3 release notes",
+      "publisher": "NVIDIA",
+      "url": "https://docs.nvidia.com/deeplearning/nccl/release-notes/rel_2-32-3.html",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW003-10",
+      "title": "NCCL v2.32.3-1 Release",
+      "publisher": "NVIDIA",
+      "url": "https://github.com/NVIDIA/nccl/releases/tag/v2.32.3-1",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW003-11",
+      "title": "NCCL4Py v0.6.0 Release",
+      "publisher": "NVIDIA",
+      "url": "https://github.com/NVIDIA/nccl/releases/tag/nccl4py-v0.6.0",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW003-14",
+      "title": "AuroraBugTracking bugs.md",
+      "publisher": "Argonne Leadership Computing Facility",
+      "url": "https://raw.githubusercontent.com/argonne-lcf/AuroraBugTracking/main/bugs.md",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW003-15",
+      "title": "Fortran: MPI_Reduce produces wrong answer using MPI_REAL #7911",
+      "publisher": "MPICH project tracker; report linked to ALCF",
+      "url": "https://github.com/pmodels/mpich/issues/7911",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW004-01",
+      "title": "PETSc GPU Support Roadmap",
+      "publisher": "PETSc Development Team",
+      "url": "https://petsc.org/release/overview/gpu_roadmap/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW004-02",
+      "title": "PETSc MATAIJHIPSPARSE API",
+      "publisher": "PETSc Development Team",
+      "url": "https://petsc.org/release/manualpages/Mat/MATAIJHIPSPARSE/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW004-03",
+      "title": "oneMath support, requirements and governance",
+      "publisher": "UXL Foundation",
+      "url": "https://github.com/uxlfoundation/oneMath",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-APP016-03",
+      "title": "GEMMul8 accuracy guidelines and prerequisites",
+      "publisher": "RIKEN R-CCS",
+      "url": "https://github.com/RIKEN-RCCS/GEMMul8",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW004-06",
+      "title": "Changes: 3.26",
+      "publisher": "PETSc Development Team",
+      "url": "https://petsc.org/release/changes/326/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW004-07",
+      "title": "Changes for each release",
+      "publisher": "PETSc Development Team",
+      "url": "https://petsc.org/release/changes/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-APP016-01",
+      "title": "FAQ — zfp 1.0.1 documentation",
+      "publisher": "zfp project / LLNL; official project documentation",
+      "url": "https://zfp.readthedocs.io/en/release1.0.1/faq.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-APP016-02",
+      "title": "Configuration — zfp 1.0.1 documentation",
+      "publisher": "zfp project / LLNL; official development documentation, despite page title",
+      "url": "https://zfp.readthedocs.io/en/develop/configuration.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-APP016-05",
+      "title": "Compression Modes — zfp 1.0.1 documentation",
+      "publisher": "zfp project / LLNL",
+      "url": "https://zfp.readthedocs.io/en/release1.0.1/modes.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-APP005-01",
+      "title": "Validation-Centric AI-Assisted GPU Porting of a 250,000+ Line Legacy Weather Simulation Code",
+      "publisher": "Tetsuya Hoshino et al., Nagoya University / University of Tokyo; author preprint on arXiv",
+      "url": "https://arxiv.org/html/2608.13122v1",
+      "source_class": "academic-primary",
+      "published_at": "2026-08-13"
+    },
+    {
+      "source_id": "SRC-OCT05-APP005-02",
+      "title": "HPCAgent-Bench README, Scoring",
+      "publisher": "Scalable Parallel Computing Laboratory / project maintainers",
+      "url": "https://github.com/spcl/HPCAgent-Bench",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW010-07",
+      "title": "Kernel Tuner CHANGELOG",
+      "publisher": "Kernel Tuner project",
+      "url": "https://github.com/KernelTuner/kernel_tuner/blob/master/CHANGELOG.md",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW010-08",
+      "title": "Kernel Tuner releases",
+      "publisher": "Kernel Tuner project",
+      "url": "https://github.com/KernelTuner/kernel_tuner/releases",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW010-09",
+      "title": "IR-ranking autotuning study v1",
+      "publisher": "Hossain et al. / arXiv",
+      "url": "https://arxiv.org/html/2609.15807v1",
+      "source_class": "academic-primary"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW010-10",
+      "title": "IR-ranking autotuning study abstract/version history",
+      "publisher": "Hossain et al. / arXiv",
+      "url": "https://arxiv.org/abs/2609.15807",
+      "source_class": "academic-primary"
     }
   ],
   "coverage_gaps": [
@@ -2443,7 +2684,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-OCT03-CATALOG41-20261003",
-    "human_approval_directive_id": "DIR-900141"
+    "publication_decision_id": "PUBDEC-OCT05-CATALOG41-20261005",
+    "human_approval_directive_id": "DIR-900144"
   }
 }
