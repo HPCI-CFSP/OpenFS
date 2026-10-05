@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "publication_approval_id": "DIR-900143",
+  "publication_approval_id": "DIR-900145",
   "summary": {
     "ja": "公開許可された16件の異なる指標を掲載します。IO500-inspired IOR・mdtestは容量を限定した実験で、IO500® Foundationによる未検証（unverified）の結果です。MLPerf Storageは限定pilotで正式準拠は未確認。いずれも公式・合成スコアではありません。",
     "en": "16 disclosure-approved observations of different metrics. Bounded IO500-inspired IOR/mdtest experiments are unverified by IO500® Foundation. MLPerf Storage results are limited pilots with compliance unestablished. No official or composite score is reported."
@@ -74,7 +74,33 @@
           "ja": "共有環境の観測です。global cache flushは行っておらず、専有ストレージの最大性能を示しません。",
           "en": "Shared-environment observation without global cache flush; does not establish dedicated storage peak performance."
         }
-      ]
+      ],
+      "nodes": 1,
+      "chart_metrics": [
+        "Samples",
+        "Logical I/O"
+      ],
+      "reproduction": {
+        "commands": "export S3DLIO_MULTIPART_THRESHOLD_MB=999999\nmkdir -p \"$OUT/datagen\" \"$OUT/run\"\n\"$BIN/dlio_benchmark\" --config-dir=\"$STORAGE/configs/dlio\" workload=unet3d_datagen ++hydra.run.dir=\"$OUT/datagen\" ++hydra.output_subdir=.hydra ++workload.dataset.data_folder=unet3d ++workload.dataset.num_files_train=256 ++workload.dataset.num_subfolders_train=8 ++workload.storage.storage_type=direct_fs ++workload.storage.storage_root=\"$DATA/training\" ++workload.storage.storage_options.storage_library=s3dlio ++workload.storage.storage_options.uri_scheme=direct\n\nmpirun -n 1 -host 127.0.0.1:1 --bind-to none --map-by socket -x S3DLIO_MULTIPART_THRESHOLD_MB \"$BIN/dlio_benchmark\" workload=unet3d_b200 ++hydra.run.dir=\"$OUT/run\" ++hydra.output_subdir=dlio_config ++workload.dataset.num_files_train=256 ++workload.dataset.num_subfolders_train=8 ++workload.reader.read_threads=4 ++workload.train.epochs=5 ++workload.storage.storage_type=direct_fs ++workload.storage.storage_options.storage_library=s3dlio ++workload.storage.storage_options.uri_scheme=direct ++workload.storage.storage_root=\"$DATA/training\" ++workload.dataset.skip_listing=True ++workload.dataset.listing_validation_interval=1 ++workload.dataset.data_folder=unet3d --config-dir=\"$STORAGE/configs/dlio\"",
+        "notes": [
+          {
+            "ja": "内部の実行パスのみ変数に置換しています。空の専用ディレクトリを用意し、DATAを測定対象ファイルシステム、OUTをログ保存先、BINを実行バイナリのディレクトリに設定してください。計測値は共有環境・未制御キャッシュの観測で、同じ値の再現を保証しません。",
+            "en": "Only private execution paths are replaced by variables. Use empty dedicated directories; set DATA to the measured filesystem, OUT to log storage, BIN to the binary directory. Shared-system and uncontrolled-cache observations do not guarantee identical performance."
+          },
+          {
+            "ja": "MLPerf Storageの記載commitとuv.lockを使用。元環境はPython 3.12、nvhpc-hpcx/26.5。lockはDLIO 3.0.4（edaf4bb3d6343ef2fb6b9f6dbafa6102032ae8bf）、s3dlio 0.9.112を指定。GPU計算は行いません。",
+            "en": "Use the recorded MLPerf Storage commit and uv.lock. Original environment: Python 3.12, nvhpc-hpcx/26.5. The lock specifies DLIO 3.0.4 (edaf4bb3d6343ef2fb6b9f6dbafa6102032ae8bf), s3dlio 0.9.112. No GPU computation is measured."
+          },
+          {
+            "ja": "測定コマンドは保存済みexecuted_commandから取得。STORAGEは記載commit、BINは専用venvのbin。専用venv内のDLIO local_fs_iterable_mixin.pyの_direct_uri_for_pathに下記2条件を追加し、既存direct://を二重変換しない修正を使用（上流そのままではありません）。\nif path.startswith(\"direct://\"): return path\nif \"://\" in path: raise ValueError(\"Unexpected non-direct URI in local direct reader\")\nその後の既存return（direct:// + os.path.abspath(path)）は保持。O_DIRECTを要求していますが物理device byteや冷cacheは未検証。",
+            "en": "Measurement command comes from saved executed_command. STORAGE is the pinned checkout; BIN is the dedicated venv bin. In the venv DLIO local_fs_iterable_mixin.py, add these guards to _direct_uri_for_path to avoid double-wrapping direct:// (modified upstream code):\nif path.startswith(\"direct://\"): return path\nif \"://\" in path: raise ValueError(\"Unexpected non-direct URI in local direct reader\")\nKeep the existing return (direct:// + os.path.abspath(path)). Direct I/O was requested; physical device bytes and cold-cache behavior remain unverified."
+          },
+          {
+            "ja": "データ生成コマンドは保存済みpilot scriptから再構成。測定では生成済み256ファイルを再利用し、1実行内5epochs。データ生成の乱数状態と完全な実行時依存package一覧が本公開記録にはなく、byte単位で同一データの再現は未確立。",
+            "en": "Data-generation command reconstructed from the saved pilot script. Measurement reused 256 generated files for five epochs in one run. Generation RNG state and a complete runtime package inventory are absent from this public record; byte-identical data reproduction is not established."
+          }
+        ]
+      }
     },
     {
       "id": "Checkpointing / Llama3-8B",
@@ -129,7 +155,29 @@
           "ja": "共有環境の観測です。global cache flushは行っておらず、専有ストレージの最大性能を示しません。",
           "en": "Shared-environment observation without global cache flush; does not establish dedicated storage peak performance."
         }
-      ]
+      ],
+      "nodes": 1,
+      "chart_metrics": [
+        "Save throughput",
+        "Load throughput"
+      ],
+      "reproduction": {
+        "commands": "export S3DLIO_MULTIPART_THRESHOLD_MB=999999\nmkdir -p \"$OUT/run\"\nmpirun -n 8 -host 127.0.0.1:8 --bind-to none --map-by socket -x S3DLIO_MULTIPART_THRESHOLD_MB \"$BIN/dlio_benchmark\" workload=llama3_8b ++hydra.run.dir=\"$OUT/run\" ++hydra.output_subdir=dlio_config ++workload.storage.storage_type=direct_fs ++workload.storage.storage_options.storage_library=s3dlio ++workload.storage.storage_options.uri_scheme=direct ++workload.storage.storage_root=\"$DATA/checkpoint\" ++workload.checkpoint.num_checkpoints_read=10 ++workload.checkpoint.num_checkpoints_write=10 ++workload.checkpoint.checkpoint_folder=\"$DATA/checkpoint/llama3-8b\" --config-dir=\"$STORAGE/configs/dlio\"",
+        "notes": [
+          {
+            "ja": "内部の実行パスのみ変数に置換しています。空の専用ディレクトリを用意し、DATAを測定対象ファイルシステム、OUTをログ保存先、BINを実行バイナリのディレクトリに設定してください。計測値は共有環境・未制御キャッシュの観測で、同じ値の再現を保証しません。",
+            "en": "Only private execution paths are replaced by variables. Use empty dedicated directories; set DATA to the measured filesystem, OUT to log storage, BIN to the binary directory. Shared-system and uncontrolled-cache observations do not guarantee identical performance."
+          },
+          {
+            "ja": "MLPerf Storageの記載commitとuv.lockを使用。元環境はPython 3.12、nvhpc-hpcx/26.5。lockはDLIO 3.0.4（edaf4bb3d6343ef2fb6b9f6dbafa6102032ae8bf）、s3dlio 0.9.112を指定。GPU計算は行いません。",
+            "en": "Use the recorded MLPerf Storage commit and uv.lock. Original environment: Python 3.12, nvhpc-hpcx/26.5. The lock specifies DLIO 3.0.4 (edaf4bb3d6343ef2fb6b9f6dbafa6102032ae8bf), s3dlio 0.9.112. No GPU computation is measured."
+          },
+          {
+            "ja": "測定コマンドは保存済みexecuted_commandから取得。STORAGEは記載commit、BINは専用venvのbin。専用venv内のDLIO local_fs_iterable_mixin.pyの_direct_uri_for_pathに下記2条件を追加し、既存direct://を二重変換しない修正を使用（上流そのままではありません）。\nif path.startswith(\"direct://\"): return path\nif \"://\" in path: raise ValueError(\"Unexpected non-direct URI in local direct reader\")\nその後の既存return（direct:// + os.path.abspath(path)）は保持。O_DIRECTを要求していますが物理device byteや冷cacheは未検証。",
+            "en": "Measurement command comes from saved executed_command. STORAGE is the pinned checkout; BIN is the dedicated venv bin. In the venv DLIO local_fs_iterable_mixin.py, add these guards to _direct_uri_for_path to avoid double-wrapping direct:// (modified upstream code):\nif path.startswith(\"direct://\"): return path\nif \"://\" in path: raise ValueError(\"Unexpected non-direct URI in local direct reader\")\nKeep the existing return (direct:// + os.path.abspath(path)). Direct I/O was requested; physical device bytes and cold-cache behavior remain unverified."
+          }
+        ]
+      }
     },
     {
       "id": "KV cache / storage-8b",
@@ -169,7 +217,28 @@
           "ja": "共有環境の観測です。global cache flushは行っておらず、専有ストレージの最大性能を示しません。",
           "en": "Shared-environment observation without global cache flush; does not establish dedicated storage peak performance."
         }
-      ]
+      ],
+      "nodes": 1,
+      "chart_metrics": [
+        "Throughput mean"
+      ],
+      "reproduction": {
+        "commands": "mkdir -p \"$DATA/storage-8b\" \"$OUT\"\nfor trial in 1 2 3; do\n  timeout --kill-after=20 900 \"$PYTHON\" \"$STORAGE/kv_cache_benchmark/kv-cache.py\" --model llama3.1-8b --num-users 200 --cpu-mem-gb 0 --gpu-mem-gb 0 --duration 300 --max-concurrent-allocs 16 --seed 42 --generation-mode none --storage-capacity-gb 128 --cache-dir \"$DATA/storage-8b\" --output \"$OUT/storage-8b-$trial.json\" > \"$OUT/storage-8b-$trial.log\" 2>&1\ndone",
+        "notes": [
+          {
+            "ja": "内部の実行パスのみ変数に置換しています。空の専用ディレクトリを用意し、DATAを測定対象ファイルシステム、OUTをログ保存先、BINを実行バイナリのディレクトリに設定してください。計測値は共有環境・未制御キャッシュの観測で、同じ値の再現を保証しません。",
+            "en": "Only private execution paths are replaced by variables. Use empty dedicated directories; set DATA to the measured filesystem, OUT to log storage, BIN to the binary directory. Shared-system and uncontrolled-cache observations do not guarantee identical performance."
+          },
+          {
+            "ja": "MLPerf Storageの記載commitとuv.lockを使用。元環境はPython 3.12、nvhpc-hpcx/26.5。lockはDLIO 3.0.4（edaf4bb3d6343ef2fb6b9f6dbafa6102032ae8bf）、s3dlio 0.9.112を指定。GPU計算は行いません。",
+            "en": "Use the recorded MLPerf Storage commit and uv.lock. Original environment: Python 3.12, nvhpc-hpcx/26.5. The lock specifies DLIO 3.0.4 (edaf4bb3d6343ef2fb6b9f6dbafa6102032ae8bf), s3dlio 0.9.112. No GPU computation is measured."
+          },
+          {
+            "ja": "保存済み投入scriptの引数から展開。PYTHONは専用venv、STORAGEは記載commitのソース。各ケースの間は90秒待機し、同一ケース内は同じcache領域を再利用。preconditioningとcache flushなし。全3反復はhealth/QoS不合格。",
+            "en": "Expanded from the saved submitted script. PYTHON is the dedicated venv; STORAGE is the pinned source checkout. Cases were separated by 90 seconds; trials reuse the same case cache directory. No preconditioning or cache flush. All three trials failed health/QoS."
+          }
+        ]
+      }
     },
     {
       "id": "KV cache / dram-storage-8b",
@@ -209,7 +278,28 @@
           "ja": "共有環境の観測です。global cache flushは行っておらず、専有ストレージの最大性能を示しません。",
           "en": "Shared-environment observation without global cache flush; does not establish dedicated storage peak performance."
         }
-      ]
+      ],
+      "nodes": 1,
+      "chart_metrics": [
+        "Throughput mean"
+      ],
+      "reproduction": {
+        "commands": "mkdir -p \"$DATA/dram-storage-8b\" \"$OUT\"\nfor trial in 1 2 3; do\n  timeout --kill-after=20 900 \"$PYTHON\" \"$STORAGE/kv_cache_benchmark/kv-cache.py\" --model llama3.1-8b --num-users 100 --cpu-mem-gb 4 --gpu-mem-gb 0 --duration 300 --max-concurrent-allocs 16 --seed 42 --generation-mode none --storage-capacity-gb 128 --cache-dir \"$DATA/dram-storage-8b\" --output \"$OUT/dram-storage-8b-$trial.json\" > \"$OUT/dram-storage-8b-$trial.log\" 2>&1\ndone",
+        "notes": [
+          {
+            "ja": "内部の実行パスのみ変数に置換しています。空の専用ディレクトリを用意し、DATAを測定対象ファイルシステム、OUTをログ保存先、BINを実行バイナリのディレクトリに設定してください。計測値は共有環境・未制御キャッシュの観測で、同じ値の再現を保証しません。",
+            "en": "Only private execution paths are replaced by variables. Use empty dedicated directories; set DATA to the measured filesystem, OUT to log storage, BIN to the binary directory. Shared-system and uncontrolled-cache observations do not guarantee identical performance."
+          },
+          {
+            "ja": "MLPerf Storageの記載commitとuv.lockを使用。元環境はPython 3.12、nvhpc-hpcx/26.5。lockはDLIO 3.0.4（edaf4bb3d6343ef2fb6b9f6dbafa6102032ae8bf）、s3dlio 0.9.112を指定。GPU計算は行いません。",
+            "en": "Use the recorded MLPerf Storage commit and uv.lock. Original environment: Python 3.12, nvhpc-hpcx/26.5. The lock specifies DLIO 3.0.4 (edaf4bb3d6343ef2fb6b9f6dbafa6102032ae8bf), s3dlio 0.9.112. No GPU computation is measured."
+          },
+          {
+            "ja": "保存済み投入scriptの引数から展開。PYTHONは専用venv、STORAGEは記載commitのソース。各ケースの間は90秒待機し、同一ケース内は同じcache領域を再利用。preconditioningとcache flushなし。全3反復はhealth/QoS不合格。",
+            "en": "Expanded from the saved submitted script. PYTHON is the dedicated venv; STORAGE is the pinned source checkout. Cases were separated by 90 seconds; trials reuse the same case cache directory. No preconditioning or cache flush. All three trials failed health/QoS."
+          }
+        ]
+      }
     },
     {
       "id": "KV cache / storage-70b",
@@ -249,7 +339,28 @@
           "ja": "共有環境の観測です。global cache flushは行っておらず、専有ストレージの最大性能を示しません。",
           "en": "Shared-environment observation without global cache flush; does not establish dedicated storage peak performance."
         }
-      ]
+      ],
+      "nodes": 1,
+      "chart_metrics": [
+        "Throughput mean"
+      ],
+      "reproduction": {
+        "commands": "mkdir -p \"$DATA/storage-70b\" \"$OUT\"\nfor trial in 1 2 3; do\n  timeout --kill-after=20 900 \"$PYTHON\" \"$STORAGE/kv_cache_benchmark/kv-cache.py\" --model llama3.1-70b-instruct --num-users 70 --cpu-mem-gb 0 --gpu-mem-gb 0 --duration 300 --max-concurrent-allocs 4 --seed 42 --generation-mode none --storage-capacity-gb 128 --cache-dir \"$DATA/storage-70b\" --output \"$OUT/storage-70b-$trial.json\" > \"$OUT/storage-70b-$trial.log\" 2>&1\ndone",
+        "notes": [
+          {
+            "ja": "内部の実行パスのみ変数に置換しています。空の専用ディレクトリを用意し、DATAを測定対象ファイルシステム、OUTをログ保存先、BINを実行バイナリのディレクトリに設定してください。計測値は共有環境・未制御キャッシュの観測で、同じ値の再現を保証しません。",
+            "en": "Only private execution paths are replaced by variables. Use empty dedicated directories; set DATA to the measured filesystem, OUT to log storage, BIN to the binary directory. Shared-system and uncontrolled-cache observations do not guarantee identical performance."
+          },
+          {
+            "ja": "MLPerf Storageの記載commitとuv.lockを使用。元環境はPython 3.12、nvhpc-hpcx/26.5。lockはDLIO 3.0.4（edaf4bb3d6343ef2fb6b9f6dbafa6102032ae8bf）、s3dlio 0.9.112を指定。GPU計算は行いません。",
+            "en": "Use the recorded MLPerf Storage commit and uv.lock. Original environment: Python 3.12, nvhpc-hpcx/26.5. The lock specifies DLIO 3.0.4 (edaf4bb3d6343ef2fb6b9f6dbafa6102032ae8bf), s3dlio 0.9.112. No GPU computation is measured."
+          },
+          {
+            "ja": "保存済み投入scriptの引数から展開。PYTHONは専用venv、STORAGEは記載commitのソース。各ケースの間は90秒待機し、同一ケース内は同じcache領域を再利用。preconditioningとcache flushなし。全3反復はhealth/QoS不合格。",
+            "en": "Expanded from the saved submitted script. PYTHON is the dedicated venv; STORAGE is the pinned source checkout. Cases were separated by 90 seconds; trials reuse the same case cache directory. No preconditioning or cache flush. All three trials failed health/QoS."
+          }
+        ]
+      }
     },
     {
       "id": "IOR-easy-write-20261004",
@@ -333,7 +444,24 @@
           "ja": "2026-10-04に取得したSC26 v1参照条件を使用。SC26の安定化期間（10月2–16日）中のため最終確定仕様とは扱いません。",
           "en": "Uses SC26 v1 reference conditions captured on 2026-10-04 during the October 2–16 stabilization period; not treated as finalized specifications."
         }
-      ]
+      ],
+      "nodes": 1,
+      "chart_metrics": [
+        "Pooled throughput (total bytes / total time)"
+      ],
+      "reproduction": {
+        "commands": "# 1 node, 4 MPI ranks. Run phases in this order for each independent trial.\nfor trial in 1 2 3; do\n  mkdir -p \"$DATA/easy-$trial\" \"$OUT\"\n  mpirun -np 4 \"$BIN/ior\" -a POSIX -g -G 27 -k -e -C -Q 1 -i 1 -o \"$DATA/easy-$trial/data\" --dataPacketType=timestamp -F -t 2m -b 16g -s 1 -w > \"$OUT/easy-$trial-write.log\" 2>&1\n  mpirun -np 4 \"$BIN/ior\" -a POSIX -g -G 27 -k -e -C -Q 1 -i 1 -o \"$DATA/easy-$trial/data\" --dataPacketType=timestamp -F -t 2m -b 16g -s 1 -r -R > \"$OUT/easy-$trial-read.log\" 2>&1\ndone",
+        "notes": [
+          {
+            "ja": "内部の実行パスのみ変数に置換しています。空の専用ディレクトリを用意し、DATAを測定対象ファイルシステム、OUTをログ保存先、BINを実行バイナリのディレクトリに設定してください。計測値は共有環境・未制御キャッシュの観測で、同じ値の再現を保証しません。",
+            "en": "Only private execution paths are replaced by variables. Use empty dedicated directories; set DATA to the measured filesystem, OUT to log storage, BIN to the binary directory. Shared-system and uncontrolled-cache observations do not guarantee identical performance."
+          },
+          {
+            "ja": "IOR 4.0.0の記載commitでビルドしたIOR/mdtestと互換MPIを使用します。各反復は新しいデータ領域で実行し、write→readまたはcreate→stat→read（hardのみ）→removeの順を保持。グローバルcache flushは実施していません。",
+            "en": "Use IOR/mdtest built from the recorded IOR 4.0.0 commit with compatible MPI. Use a fresh dataset per repetition and preserve write→read or create→stat→read (hard only)→remove order. No global cache flush was performed."
+          }
+        ]
+      }
     },
     {
       "id": "IOR-easy-read-20261004",
@@ -417,7 +545,24 @@
           "ja": "2026-10-04に取得したSC26 v1参照条件を使用。SC26の安定化期間（10月2–16日）中のため最終確定仕様とは扱いません。",
           "en": "Uses SC26 v1 reference conditions captured on 2026-10-04 during the October 2–16 stabilization period; not treated as finalized specifications."
         }
-      ]
+      ],
+      "nodes": 1,
+      "chart_metrics": [
+        "Pooled throughput (total bytes / total time)"
+      ],
+      "reproduction": {
+        "commands": "# 1 node, 4 MPI ranks. Run phases in this order for each independent trial.\nfor trial in 1 2 3; do\n  mkdir -p \"$DATA/easy-$trial\" \"$OUT\"\n  mpirun -np 4 \"$BIN/ior\" -a POSIX -g -G 27 -k -e -C -Q 1 -i 1 -o \"$DATA/easy-$trial/data\" --dataPacketType=timestamp -F -t 2m -b 16g -s 1 -w > \"$OUT/easy-$trial-write.log\" 2>&1\n  mpirun -np 4 \"$BIN/ior\" -a POSIX -g -G 27 -k -e -C -Q 1 -i 1 -o \"$DATA/easy-$trial/data\" --dataPacketType=timestamp -F -t 2m -b 16g -s 1 -r -R > \"$OUT/easy-$trial-read.log\" 2>&1\ndone",
+        "notes": [
+          {
+            "ja": "内部の実行パスのみ変数に置換しています。空の専用ディレクトリを用意し、DATAを測定対象ファイルシステム、OUTをログ保存先、BINを実行バイナリのディレクトリに設定してください。計測値は共有環境・未制御キャッシュの観測で、同じ値の再現を保証しません。",
+            "en": "Only private execution paths are replaced by variables. Use empty dedicated directories; set DATA to the measured filesystem, OUT to log storage, BIN to the binary directory. Shared-system and uncontrolled-cache observations do not guarantee identical performance."
+          },
+          {
+            "ja": "IOR 4.0.0の記載commitでビルドしたIOR/mdtestと互換MPIを使用します。各反復は新しいデータ領域で実行し、write→readまたはcreate→stat→read（hardのみ）→removeの順を保持。グローバルcache flushは実施していません。",
+            "en": "Use IOR/mdtest built from the recorded IOR 4.0.0 commit with compatible MPI. Use a fresh dataset per repetition and preserve write→read or create→stat→read (hard only)→remove order. No global cache flush was performed."
+          }
+        ]
+      }
     },
     {
       "id": "IOR-hard-write-20261004",
@@ -501,7 +646,24 @@
           "ja": "2026-10-04に取得したSC26 v1参照条件を使用。SC26の安定化期間（10月2–16日）中のため最終確定仕様とは扱いません。",
           "en": "Uses SC26 v1 reference conditions captured on 2026-10-04 during the October 2–16 stabilization period; not treated as finalized specifications."
         }
-      ]
+      ],
+      "nodes": 1,
+      "chart_metrics": [
+        "Pooled throughput (total bytes / total time)"
+      ],
+      "reproduction": {
+        "commands": "# 1 node, 4 MPI ranks. Run phases in this order for each independent trial.\nfor trial in 1 2 3; do\n  mkdir -p \"$DATA/hard-$trial\" \"$OUT\"\n  mpirun -np 4 \"$BIN/ior\" -a POSIX -g -G 27 -k -e -C -Q 1 -i 1 -o \"$DATA/hard-$trial/data\" --dataPacketType=timestamp -t 47008 -b 47008 -s 10000 -w > \"$OUT/hard-$trial-write.log\" 2>&1\n  mpirun -np 4 \"$BIN/ior\" -a POSIX -g -G 27 -k -e -C -Q 1 -i 1 -o \"$DATA/hard-$trial/data\" --dataPacketType=timestamp -t 47008 -b 47008 -s 10000 -r -R > \"$OUT/hard-$trial-read.log\" 2>&1\ndone",
+        "notes": [
+          {
+            "ja": "内部の実行パスのみ変数に置換しています。空の専用ディレクトリを用意し、DATAを測定対象ファイルシステム、OUTをログ保存先、BINを実行バイナリのディレクトリに設定してください。計測値は共有環境・未制御キャッシュの観測で、同じ値の再現を保証しません。",
+            "en": "Only private execution paths are replaced by variables. Use empty dedicated directories; set DATA to the measured filesystem, OUT to log storage, BIN to the binary directory. Shared-system and uncontrolled-cache observations do not guarantee identical performance."
+          },
+          {
+            "ja": "IOR 4.0.0の記載commitでビルドしたIOR/mdtestと互換MPIを使用します。各反復は新しいデータ領域で実行し、write→readまたはcreate→stat→read（hardのみ）→removeの順を保持。グローバルcache flushは実施していません。",
+            "en": "Use IOR/mdtest built from the recorded IOR 4.0.0 commit with compatible MPI. Use a fresh dataset per repetition and preserve write→read or create→stat→read (hard only)→remove order. No global cache flush was performed."
+          }
+        ]
+      }
     },
     {
       "id": "IOR-hard-read-20261004",
@@ -585,7 +747,24 @@
           "ja": "2026-10-04に取得したSC26 v1参照条件を使用。SC26の安定化期間（10月2–16日）中のため最終確定仕様とは扱いません。",
           "en": "Uses SC26 v1 reference conditions captured on 2026-10-04 during the October 2–16 stabilization period; not treated as finalized specifications."
         }
-      ]
+      ],
+      "nodes": 1,
+      "chart_metrics": [
+        "Pooled throughput (total bytes / total time)"
+      ],
+      "reproduction": {
+        "commands": "# 1 node, 4 MPI ranks. Run phases in this order for each independent trial.\nfor trial in 1 2 3; do\n  mkdir -p \"$DATA/hard-$trial\" \"$OUT\"\n  mpirun -np 4 \"$BIN/ior\" -a POSIX -g -G 27 -k -e -C -Q 1 -i 1 -o \"$DATA/hard-$trial/data\" --dataPacketType=timestamp -t 47008 -b 47008 -s 10000 -w > \"$OUT/hard-$trial-write.log\" 2>&1\n  mpirun -np 4 \"$BIN/ior\" -a POSIX -g -G 27 -k -e -C -Q 1 -i 1 -o \"$DATA/hard-$trial/data\" --dataPacketType=timestamp -t 47008 -b 47008 -s 10000 -r -R > \"$OUT/hard-$trial-read.log\" 2>&1\ndone",
+        "notes": [
+          {
+            "ja": "内部の実行パスのみ変数に置換しています。空の専用ディレクトリを用意し、DATAを測定対象ファイルシステム、OUTをログ保存先、BINを実行バイナリのディレクトリに設定してください。計測値は共有環境・未制御キャッシュの観測で、同じ値の再現を保証しません。",
+            "en": "Only private execution paths are replaced by variables. Use empty dedicated directories; set DATA to the measured filesystem, OUT to log storage, BIN to the binary directory. Shared-system and uncontrolled-cache observations do not guarantee identical performance."
+          },
+          {
+            "ja": "IOR 4.0.0の記載commitでビルドしたIOR/mdtestと互換MPIを使用します。各反復は新しいデータ領域で実行し、write→readまたはcreate→stat→read（hardのみ）→removeの順を保持。グローバルcache flushは実施していません。",
+            "en": "Use IOR/mdtest built from the recorded IOR 4.0.0 commit with compatible MPI. Use a fresh dataset per repetition and preserve write→read or create→stat→read (hard only)→remove order. No global cache flush was performed."
+          }
+        ]
+      }
     },
     {
       "id": "MDTEST-easy-create-20261004",
@@ -673,7 +852,24 @@
           "ja": "省略したmdtest -Yはノード全体のsyncです。IOR -Y（各write後fsync）とは異なります。",
           "en": "Omitted mdtest -Y is node-wide sync; distinct from IOR -Y (fsync after each write)."
         }
-      ]
+      ],
+      "nodes": 1,
+      "chart_metrics": [
+        "Pooled rate (total file operations / total time)"
+      ],
+      "reproduction": {
+        "commands": "# 1 node, 4 MPI ranks. Run phases in this order for each independent trial.\nfor trial in 1 2 3; do\n  mkdir -p \"$DATA/easy-$trial\" \"$OUT\"\n  mpirun -np 4 \"$BIN/mdtest\" -a POSIX -n 2000 -F -P -G 27 -N 1 -i 1 -z 0 -b 1 -d \"$DATA/easy-$trial\" --dataPacketType=timestamp -u -L -w 0 -e 0 -C > \"$OUT/easy-$trial-create.log\" 2>&1\n  mpirun -np 4 \"$BIN/mdtest\" -a POSIX -n 2000 -F -P -G 27 -N 1 -i 1 -z 0 -b 1 -d \"$DATA/easy-$trial\" --dataPacketType=timestamp -u -L -w 0 -e 0 -T > \"$OUT/easy-$trial-stat.log\" 2>&1\n  mpirun -np 4 \"$BIN/mdtest\" -a POSIX -n 2000 -F -P -G 27 -N 1 -i 1 -z 0 -b 1 -d \"$DATA/easy-$trial\" --dataPacketType=timestamp -u -L -w 0 -e 0 -r > \"$OUT/easy-$trial-remove.log\" 2>&1\ndone",
+        "notes": [
+          {
+            "ja": "内部の実行パスのみ変数に置換しています。空の専用ディレクトリを用意し、DATAを測定対象ファイルシステム、OUTをログ保存先、BINを実行バイナリのディレクトリに設定してください。計測値は共有環境・未制御キャッシュの観測で、同じ値の再現を保証しません。",
+            "en": "Only private execution paths are replaced by variables. Use empty dedicated directories; set DATA to the measured filesystem, OUT to log storage, BIN to the binary directory. Shared-system and uncontrolled-cache observations do not guarantee identical performance."
+          },
+          {
+            "ja": "IOR 4.0.0の記載commitでビルドしたIOR/mdtestと互換MPIを使用します。各反復は新しいデータ領域で実行し、write→readまたはcreate→stat→read（hardのみ）→removeの順を保持。グローバルcache flushは実施していません。",
+            "en": "Use IOR/mdtest built from the recorded IOR 4.0.0 commit with compatible MPI. Use a fresh dataset per repetition and preserve write→read or create→stat→read (hard only)→remove order. No global cache flush was performed."
+          }
+        ]
+      }
     },
     {
       "id": "MDTEST-easy-stat-20261004",
@@ -761,7 +957,24 @@
           "ja": "省略したmdtest -Yはノード全体のsyncです。IOR -Y（各write後fsync）とは異なります。",
           "en": "Omitted mdtest -Y is node-wide sync; distinct from IOR -Y (fsync after each write)."
         }
-      ]
+      ],
+      "nodes": 1,
+      "chart_metrics": [
+        "Pooled rate (total file operations / total time)"
+      ],
+      "reproduction": {
+        "commands": "# 1 node, 4 MPI ranks. Run phases in this order for each independent trial.\nfor trial in 1 2 3; do\n  mkdir -p \"$DATA/easy-$trial\" \"$OUT\"\n  mpirun -np 4 \"$BIN/mdtest\" -a POSIX -n 2000 -F -P -G 27 -N 1 -i 1 -z 0 -b 1 -d \"$DATA/easy-$trial\" --dataPacketType=timestamp -u -L -w 0 -e 0 -C > \"$OUT/easy-$trial-create.log\" 2>&1\n  mpirun -np 4 \"$BIN/mdtest\" -a POSIX -n 2000 -F -P -G 27 -N 1 -i 1 -z 0 -b 1 -d \"$DATA/easy-$trial\" --dataPacketType=timestamp -u -L -w 0 -e 0 -T > \"$OUT/easy-$trial-stat.log\" 2>&1\n  mpirun -np 4 \"$BIN/mdtest\" -a POSIX -n 2000 -F -P -G 27 -N 1 -i 1 -z 0 -b 1 -d \"$DATA/easy-$trial\" --dataPacketType=timestamp -u -L -w 0 -e 0 -r > \"$OUT/easy-$trial-remove.log\" 2>&1\ndone",
+        "notes": [
+          {
+            "ja": "内部の実行パスのみ変数に置換しています。空の専用ディレクトリを用意し、DATAを測定対象ファイルシステム、OUTをログ保存先、BINを実行バイナリのディレクトリに設定してください。計測値は共有環境・未制御キャッシュの観測で、同じ値の再現を保証しません。",
+            "en": "Only private execution paths are replaced by variables. Use empty dedicated directories; set DATA to the measured filesystem, OUT to log storage, BIN to the binary directory. Shared-system and uncontrolled-cache observations do not guarantee identical performance."
+          },
+          {
+            "ja": "IOR 4.0.0の記載commitでビルドしたIOR/mdtestと互換MPIを使用します。各反復は新しいデータ領域で実行し、write→readまたはcreate→stat→read（hardのみ）→removeの順を保持。グローバルcache flushは実施していません。",
+            "en": "Use IOR/mdtest built from the recorded IOR 4.0.0 commit with compatible MPI. Use a fresh dataset per repetition and preserve write→read or create→stat→read (hard only)→remove order. No global cache flush was performed."
+          }
+        ]
+      }
     },
     {
       "id": "MDTEST-easy-remove-20261004",
@@ -849,7 +1062,24 @@
           "ja": "省略したmdtest -Yはノード全体のsyncです。IOR -Y（各write後fsync）とは異なります。",
           "en": "Omitted mdtest -Y is node-wide sync; distinct from IOR -Y (fsync after each write)."
         }
-      ]
+      ],
+      "nodes": 1,
+      "chart_metrics": [
+        "Pooled rate (total file operations / total time)"
+      ],
+      "reproduction": {
+        "commands": "# 1 node, 4 MPI ranks. Run phases in this order for each independent trial.\nfor trial in 1 2 3; do\n  mkdir -p \"$DATA/easy-$trial\" \"$OUT\"\n  mpirun -np 4 \"$BIN/mdtest\" -a POSIX -n 2000 -F -P -G 27 -N 1 -i 1 -z 0 -b 1 -d \"$DATA/easy-$trial\" --dataPacketType=timestamp -u -L -w 0 -e 0 -C > \"$OUT/easy-$trial-create.log\" 2>&1\n  mpirun -np 4 \"$BIN/mdtest\" -a POSIX -n 2000 -F -P -G 27 -N 1 -i 1 -z 0 -b 1 -d \"$DATA/easy-$trial\" --dataPacketType=timestamp -u -L -w 0 -e 0 -T > \"$OUT/easy-$trial-stat.log\" 2>&1\n  mpirun -np 4 \"$BIN/mdtest\" -a POSIX -n 2000 -F -P -G 27 -N 1 -i 1 -z 0 -b 1 -d \"$DATA/easy-$trial\" --dataPacketType=timestamp -u -L -w 0 -e 0 -r > \"$OUT/easy-$trial-remove.log\" 2>&1\ndone",
+        "notes": [
+          {
+            "ja": "内部の実行パスのみ変数に置換しています。空の専用ディレクトリを用意し、DATAを測定対象ファイルシステム、OUTをログ保存先、BINを実行バイナリのディレクトリに設定してください。計測値は共有環境・未制御キャッシュの観測で、同じ値の再現を保証しません。",
+            "en": "Only private execution paths are replaced by variables. Use empty dedicated directories; set DATA to the measured filesystem, OUT to log storage, BIN to the binary directory. Shared-system and uncontrolled-cache observations do not guarantee identical performance."
+          },
+          {
+            "ja": "IOR 4.0.0の記載commitでビルドしたIOR/mdtestと互換MPIを使用します。各反復は新しいデータ領域で実行し、write→readまたはcreate→stat→read（hardのみ）→removeの順を保持。グローバルcache flushは実施していません。",
+            "en": "Use IOR/mdtest built from the recorded IOR 4.0.0 commit with compatible MPI. Use a fresh dataset per repetition and preserve write→read or create→stat→read (hard only)→remove order. No global cache flush was performed."
+          }
+        ]
+      }
     },
     {
       "id": "MDTEST-hard-create-20261004",
@@ -937,7 +1167,24 @@
           "ja": "省略したmdtest -Yはノード全体のsyncです。IOR -Y（各write後fsync）とは異なります。",
           "en": "Omitted mdtest -Y is node-wide sync; distinct from IOR -Y (fsync after each write)."
         }
-      ]
+      ],
+      "nodes": 1,
+      "chart_metrics": [
+        "Pooled rate (total file operations / total time)"
+      ],
+      "reproduction": {
+        "commands": "# 1 node, 4 MPI ranks. Run phases in this order for each independent trial.\nfor trial in 1 2 3; do\n  mkdir -p \"$DATA/hard-$trial\" \"$OUT\"\n  mpirun -np 4 \"$BIN/mdtest\" -a POSIX -n 2000 -F -P -G 27 -N 1 -i 1 -z 0 -b 1 -d \"$DATA/hard-$trial\" --dataPacketType=timestamp -t -w 3901 -e 3901 -C > \"$OUT/hard-$trial-create.log\" 2>&1\n  mpirun -np 4 \"$BIN/mdtest\" -a POSIX -n 2000 -F -P -G 27 -N 1 -i 1 -z 0 -b 1 -d \"$DATA/hard-$trial\" --dataPacketType=timestamp -t -w 3901 -e 3901 -T > \"$OUT/hard-$trial-stat.log\" 2>&1\n  mpirun -np 4 \"$BIN/mdtest\" -a POSIX -n 2000 -F -P -G 27 -N 1 -i 1 -z 0 -b 1 -d \"$DATA/hard-$trial\" --dataPacketType=timestamp -t -w 3901 -e 3901 -E -X > \"$OUT/hard-$trial-read.log\" 2>&1\n  mpirun -np 4 \"$BIN/mdtest\" -a POSIX -n 2000 -F -P -G 27 -N 1 -i 1 -z 0 -b 1 -d \"$DATA/hard-$trial\" --dataPacketType=timestamp -t -w 3901 -e 3901 -r > \"$OUT/hard-$trial-remove.log\" 2>&1\ndone",
+        "notes": [
+          {
+            "ja": "内部の実行パスのみ変数に置換しています。空の専用ディレクトリを用意し、DATAを測定対象ファイルシステム、OUTをログ保存先、BINを実行バイナリのディレクトリに設定してください。計測値は共有環境・未制御キャッシュの観測で、同じ値の再現を保証しません。",
+            "en": "Only private execution paths are replaced by variables. Use empty dedicated directories; set DATA to the measured filesystem, OUT to log storage, BIN to the binary directory. Shared-system and uncontrolled-cache observations do not guarantee identical performance."
+          },
+          {
+            "ja": "IOR 4.0.0の記載commitでビルドしたIOR/mdtestと互換MPIを使用します。各反復は新しいデータ領域で実行し、write→readまたはcreate→stat→read（hardのみ）→removeの順を保持。グローバルcache flushは実施していません。",
+            "en": "Use IOR/mdtest built from the recorded IOR 4.0.0 commit with compatible MPI. Use a fresh dataset per repetition and preserve write→read or create→stat→read (hard only)→remove order. No global cache flush was performed."
+          }
+        ]
+      }
     },
     {
       "id": "MDTEST-hard-stat-20261004",
@@ -1025,7 +1272,24 @@
           "ja": "省略したmdtest -Yはノード全体のsyncです。IOR -Y（各write後fsync）とは異なります。",
           "en": "Omitted mdtest -Y is node-wide sync; distinct from IOR -Y (fsync after each write)."
         }
-      ]
+      ],
+      "nodes": 1,
+      "chart_metrics": [
+        "Pooled rate (total file operations / total time)"
+      ],
+      "reproduction": {
+        "commands": "# 1 node, 4 MPI ranks. Run phases in this order for each independent trial.\nfor trial in 1 2 3; do\n  mkdir -p \"$DATA/hard-$trial\" \"$OUT\"\n  mpirun -np 4 \"$BIN/mdtest\" -a POSIX -n 2000 -F -P -G 27 -N 1 -i 1 -z 0 -b 1 -d \"$DATA/hard-$trial\" --dataPacketType=timestamp -t -w 3901 -e 3901 -C > \"$OUT/hard-$trial-create.log\" 2>&1\n  mpirun -np 4 \"$BIN/mdtest\" -a POSIX -n 2000 -F -P -G 27 -N 1 -i 1 -z 0 -b 1 -d \"$DATA/hard-$trial\" --dataPacketType=timestamp -t -w 3901 -e 3901 -T > \"$OUT/hard-$trial-stat.log\" 2>&1\n  mpirun -np 4 \"$BIN/mdtest\" -a POSIX -n 2000 -F -P -G 27 -N 1 -i 1 -z 0 -b 1 -d \"$DATA/hard-$trial\" --dataPacketType=timestamp -t -w 3901 -e 3901 -E -X > \"$OUT/hard-$trial-read.log\" 2>&1\n  mpirun -np 4 \"$BIN/mdtest\" -a POSIX -n 2000 -F -P -G 27 -N 1 -i 1 -z 0 -b 1 -d \"$DATA/hard-$trial\" --dataPacketType=timestamp -t -w 3901 -e 3901 -r > \"$OUT/hard-$trial-remove.log\" 2>&1\ndone",
+        "notes": [
+          {
+            "ja": "内部の実行パスのみ変数に置換しています。空の専用ディレクトリを用意し、DATAを測定対象ファイルシステム、OUTをログ保存先、BINを実行バイナリのディレクトリに設定してください。計測値は共有環境・未制御キャッシュの観測で、同じ値の再現を保証しません。",
+            "en": "Only private execution paths are replaced by variables. Use empty dedicated directories; set DATA to the measured filesystem, OUT to log storage, BIN to the binary directory. Shared-system and uncontrolled-cache observations do not guarantee identical performance."
+          },
+          {
+            "ja": "IOR 4.0.0の記載commitでビルドしたIOR/mdtestと互換MPIを使用します。各反復は新しいデータ領域で実行し、write→readまたはcreate→stat→read（hardのみ）→removeの順を保持。グローバルcache flushは実施していません。",
+            "en": "Use IOR/mdtest built from the recorded IOR 4.0.0 commit with compatible MPI. Use a fresh dataset per repetition and preserve write→read or create→stat→read (hard only)→remove order. No global cache flush was performed."
+          }
+        ]
+      }
     },
     {
       "id": "MDTEST-hard-read-20261004",
@@ -1113,7 +1377,24 @@
           "ja": "省略したmdtest -Yはノード全体のsyncです。IOR -Y（各write後fsync）とは異なります。",
           "en": "Omitted mdtest -Y is node-wide sync; distinct from IOR -Y (fsync after each write)."
         }
-      ]
+      ],
+      "nodes": 1,
+      "chart_metrics": [
+        "Pooled rate (total file operations / total time)"
+      ],
+      "reproduction": {
+        "commands": "# 1 node, 4 MPI ranks. Run phases in this order for each independent trial.\nfor trial in 1 2 3; do\n  mkdir -p \"$DATA/hard-$trial\" \"$OUT\"\n  mpirun -np 4 \"$BIN/mdtest\" -a POSIX -n 2000 -F -P -G 27 -N 1 -i 1 -z 0 -b 1 -d \"$DATA/hard-$trial\" --dataPacketType=timestamp -t -w 3901 -e 3901 -C > \"$OUT/hard-$trial-create.log\" 2>&1\n  mpirun -np 4 \"$BIN/mdtest\" -a POSIX -n 2000 -F -P -G 27 -N 1 -i 1 -z 0 -b 1 -d \"$DATA/hard-$trial\" --dataPacketType=timestamp -t -w 3901 -e 3901 -T > \"$OUT/hard-$trial-stat.log\" 2>&1\n  mpirun -np 4 \"$BIN/mdtest\" -a POSIX -n 2000 -F -P -G 27 -N 1 -i 1 -z 0 -b 1 -d \"$DATA/hard-$trial\" --dataPacketType=timestamp -t -w 3901 -e 3901 -E -X > \"$OUT/hard-$trial-read.log\" 2>&1\n  mpirun -np 4 \"$BIN/mdtest\" -a POSIX -n 2000 -F -P -G 27 -N 1 -i 1 -z 0 -b 1 -d \"$DATA/hard-$trial\" --dataPacketType=timestamp -t -w 3901 -e 3901 -r > \"$OUT/hard-$trial-remove.log\" 2>&1\ndone",
+        "notes": [
+          {
+            "ja": "内部の実行パスのみ変数に置換しています。空の専用ディレクトリを用意し、DATAを測定対象ファイルシステム、OUTをログ保存先、BINを実行バイナリのディレクトリに設定してください。計測値は共有環境・未制御キャッシュの観測で、同じ値の再現を保証しません。",
+            "en": "Only private execution paths are replaced by variables. Use empty dedicated directories; set DATA to the measured filesystem, OUT to log storage, BIN to the binary directory. Shared-system and uncontrolled-cache observations do not guarantee identical performance."
+          },
+          {
+            "ja": "IOR 4.0.0の記載commitでビルドしたIOR/mdtestと互換MPIを使用します。各反復は新しいデータ領域で実行し、write→readまたはcreate→stat→read（hardのみ）→removeの順を保持。グローバルcache flushは実施していません。",
+            "en": "Use IOR/mdtest built from the recorded IOR 4.0.0 commit with compatible MPI. Use a fresh dataset per repetition and preserve write→read or create→stat→read (hard only)→remove order. No global cache flush was performed."
+          }
+        ]
+      }
     },
     {
       "id": "MDTEST-hard-remove-20261004",
@@ -1201,7 +1482,24 @@
           "ja": "省略したmdtest -Yはノード全体のsyncです。IOR -Y（各write後fsync）とは異なります。",
           "en": "Omitted mdtest -Y is node-wide sync; distinct from IOR -Y (fsync after each write)."
         }
-      ]
+      ],
+      "nodes": 1,
+      "chart_metrics": [
+        "Pooled rate (total file operations / total time)"
+      ],
+      "reproduction": {
+        "commands": "# 1 node, 4 MPI ranks. Run phases in this order for each independent trial.\nfor trial in 1 2 3; do\n  mkdir -p \"$DATA/hard-$trial\" \"$OUT\"\n  mpirun -np 4 \"$BIN/mdtest\" -a POSIX -n 2000 -F -P -G 27 -N 1 -i 1 -z 0 -b 1 -d \"$DATA/hard-$trial\" --dataPacketType=timestamp -t -w 3901 -e 3901 -C > \"$OUT/hard-$trial-create.log\" 2>&1\n  mpirun -np 4 \"$BIN/mdtest\" -a POSIX -n 2000 -F -P -G 27 -N 1 -i 1 -z 0 -b 1 -d \"$DATA/hard-$trial\" --dataPacketType=timestamp -t -w 3901 -e 3901 -T > \"$OUT/hard-$trial-stat.log\" 2>&1\n  mpirun -np 4 \"$BIN/mdtest\" -a POSIX -n 2000 -F -P -G 27 -N 1 -i 1 -z 0 -b 1 -d \"$DATA/hard-$trial\" --dataPacketType=timestamp -t -w 3901 -e 3901 -E -X > \"$OUT/hard-$trial-read.log\" 2>&1\n  mpirun -np 4 \"$BIN/mdtest\" -a POSIX -n 2000 -F -P -G 27 -N 1 -i 1 -z 0 -b 1 -d \"$DATA/hard-$trial\" --dataPacketType=timestamp -t -w 3901 -e 3901 -r > \"$OUT/hard-$trial-remove.log\" 2>&1\ndone",
+        "notes": [
+          {
+            "ja": "内部の実行パスのみ変数に置換しています。空の専用ディレクトリを用意し、DATAを測定対象ファイルシステム、OUTをログ保存先、BINを実行バイナリのディレクトリに設定してください。計測値は共有環境・未制御キャッシュの観測で、同じ値の再現を保証しません。",
+            "en": "Only private execution paths are replaced by variables. Use empty dedicated directories; set DATA to the measured filesystem, OUT to log storage, BIN to the binary directory. Shared-system and uncontrolled-cache observations do not guarantee identical performance."
+          },
+          {
+            "ja": "IOR 4.0.0の記載commitでビルドしたIOR/mdtestと互換MPIを使用します。各反復は新しいデータ領域で実行し、write→readまたはcreate→stat→read（hardのみ）→removeの順を保持。グローバルcache flushは実施していません。",
+            "en": "Use IOR/mdtest built from the recorded IOR 4.0.0 commit with compatible MPI. Use a fresh dataset per repetition and preserve write→read or create→stat→read (hard only)→remove order. No global cache flush was performed."
+          }
+        ]
+      }
     }
   ],
   "comparison_rule": {
@@ -1211,8 +1509,8 @@
   "artifact_id": "SYSTEM-BENCHMARKS-001",
   "publication": {
     "classification": "public",
-    "human_approval_directive_id": "DIR-900143",
-    "publication_decision_id": "PUBDEC-SYSTEM-BENCHMARKS-20261004"
+    "human_approval_directive_id": "DIR-900145",
+    "publication_decision_id": "PUBDEC-SYSTEM-BENCHMARK-CHARTS-20261005"
   },
   "sources": [
     {
