@@ -12,34 +12,41 @@
   function charts(results, parent) {
     const groups = new Map();
     results.forEach(r => r.metrics.filter(m => r.chart_metrics.includes(m.label) && Number.isFinite(m.value)).forEach(m => {
-      if (!groups.has(m.unit)) groups.set(m.unit, []);
-      groups.get(m.unit).push({r, m});
+      const key=m.unit+'|'+m.label;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push({r, m});
     }));
     if (!groups.size) return;
     const section=node('section',undefined,parent); section.className='benchmark-charts';
     node('h3',{ja:'ノード数と性能',en:'Performance versus node count'},section);
-    node('p',{ja:'測定点のみを表示します。現在は1ノードの実測のみで、スケーリングは未評価です。色と番号は各シナリオ・指標に対応します。点を選ぶと値と測定条件を確認できます。',en:'Measured points only. Current results cover one node; scaling has not been evaluated. Colors and numbers identify scenarios and metrics. Select a point for its value and measurement conditions.'},section);
+    node('p',{ja:'実測点を表示します。色は同一系列・指標に対応し、条件の異なる系列は分けて解釈してください。ノード数の範囲が広い場合は横軸を対数表示します。点を選ぶと値と測定条件を確認できます。',en:'Measured points are shown. Colors identify series and metrics; interpret different conditions separately. Wide node ranges use a logarithmic horizontal axis. Select a point for its value and conditions.'},section);
     const colors=['#185f9c','#af3f22','#237948','#7c42a4','#8f670d','#087d83','#b32e71'];
-    groups.forEach((points,unit)=>{
+    groups.forEach(points=>{
+      const unit=points[0].m.unit, metric=points[0].m.label;
       const figure=node('figure',undefined,section); figure.className='benchmark-chart';
-      node('figcaption',`${language==='ja'?'性能':'Performance'} (${unit})`,figure);
+      node('figcaption',`${metric} (${unit})`,figure);
       const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
       svg.setAttribute('viewBox','0 0 680 360'); svg.setAttribute('role','group'); svg.setAttribute('aria-label',`${language==='ja'?'ノード数と性能':'Performance versus nodes'} (${unit})`); figure.append(svg);
       const draw=(tag,attrs,value)=>{const e=document.createElementNS(svg.namespaceURI,tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,String(v)));if(value!==undefined)e.textContent=value;svg.append(e);return e;};
       const maxY=Math.max(...points.map(p=>p.m.value),1)*1.15;
       const counts=[...new Set(points.map(p=>p.r.nodes))].sort((a,b)=>a-b);
-      const minX=Math.max(0,counts[0]-0.5), maxX=counts[counts.length-1]+0.5;
-      const x=n=>90+(n-minX)/(maxX-minX)*550, y=v=>300-v/maxY*245;
+      const logarithmic=counts[counts.length-1]/counts[0]>=16;
+      const transform=n=>logarithmic?Math.log2(n):n;
+      const minX=logarithmic?transform(counts[0])-0.25:Math.max(0,counts[0]-0.5), maxX=transform(counts[counts.length-1])+(logarithmic?0.25:0.5);
+      const x=n=>90+(transform(n)-minX)/(maxX-minX)*550, y=v=>300-v/maxY*245;
       for(let i=0;i<=4;i++) {const value=maxY*i/4; draw('line',{x1:90,x2:640,y1:y(value),y2:y(value),stroke:'#d5dce6'});draw('text',{x:80,y:y(value)+4,'text-anchor':'end'},value.toLocaleString(language,{maximumSignificantDigits:4}));}
       draw('line',{x1:90,x2:640,y1:300,y2:300,stroke:'#566476'});
       counts.forEach(n=>{draw('line',{x1:x(n),x2:x(n),y1:300,y2:306,stroke:'#566476'});draw('text',{x:x(n),y:323,'text-anchor':'middle'},n);});
-      draw('text',{x:365,y:349,'text-anchor':'middle'},language==='ja'?'ノード数':'Nodes');
+      draw('text',{x:365,y:349,'text-anchor':'middle'},language==='ja'?(logarithmic?'ノード数（対数軸）':'ノード数'):(logarithmic?'Nodes (logarithmic axis)':'Nodes'));
       draw('text',{x:20,y:177,transform:'rotate(-90 20 177)','text-anchor':'middle'},`${language==='ja'?'性能':'Performance'} (${unit})`);
       const selected=node('p',{ja:'測定点をクリック、またはTabで選択してください。',en:'Click a point or select it with Tab.'},figure); selected.className='benchmark-point-details';selected.setAttribute('aria-live','polite');
       const legend=node('ol',undefined,figure);legend.className='benchmark-legend';
+      const seriesColors=new Map();
       points.forEach(({r,m},i)=>{
         const label=`${i+1}. ${text(r.title)} · ${m.label}: ${m.value} ${unit} · ${r.nodes} ${language==='ja'?'ノード':'node(s)'}`;
-        const color=colors[i%colors.length];
+        const seriesKey=r.title.en+'|'+m.label;
+        if(!seriesColors.has(seriesKey))seriesColors.set(seriesKey,colors[seriesColors.size%colors.length]);
+        const color=seriesColors.get(seriesKey);
         const circle=draw('circle',{cx:x(r.nodes),cy:y(m.value),r:7,fill:color,stroke:'#fff','stroke-width':2,tabindex:0,role:'button','aria-label':label});
         const title=document.createElementNS(svg.namespaceURI,'title');title.textContent=label;circle.append(title);
         const select=()=>{selected.textContent=`${label}\n${text(r.conditions)}\n${text(r.status)}`;};
