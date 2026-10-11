@@ -2,7 +2,7 @@
   "schema_version": "0.2.0",
   "export_id": "TOPIC-DECISION-SUPPORT-001",
   "status": "published",
-  "as_of": "2026-10-04",
+  "as_of": "2026-10-11",
   "research_status": "provisional",
   "consensus_status": "incomplete",
   "regions": [
@@ -528,8 +528,8 @@
   "topic_profiles": [
     {
       "topic_id": "ARCH-01",
-      "summary_ja": "MONAKA日程を訂正：2026年11月販売、FY2026 Q4のCPU供給、2027年4月からのサーバー順次出荷を分離し、旧来の2027年・四半期未公表という説明に代える。Rubin顧客本番利用、Helios受注、Venice生産状態を追加。単独モデルの暫定調査で、性能・供給条件の独立検証は未完了。",
-      "summary_en": "MONAKA timing correction: distinguish November 2026 sales, FY2026 Q4 CPU supply and sequential server shipments from April 2027, replacing the old generic 2027/quarter-undisclosed description. Add Rubin customer production use, Helios orders and Venice production status. This single-model provisional update leaves independent performance and supply validation incomplete.",
+      "summary_ja": "MONAKA日程を訂正：2026年11月販売、FY2026 Q4のCPU供給、2027年4月からのサーバー順次出荷を分離し、旧来の2027年・四半期未公表という説明に代える。Rubin顧客本番利用、Helios受注、Venice生産状態を追加。単独モデルの暫定調査で、性能・供給条件の独立検証は未完了。 NEC Vector Engineの限定的な一次資料追補。実機適合性と独立Consensusは未完了。",
+      "summary_en": "MONAKA timing correction: distinguish November 2026 sales, FY2026 Q4 CPU supply and sequential server shipments from April 2027, replacing the old generic 2027/quarter-undisclosed description. Add Rubin customer production use, Helios orders and Venice production status. This single-model provisional update leaves independent performance and supply validation incomplete. Scoped NEC Vector Engine primary-source supplement; hardware compatibility and independent Consensus remain incomplete.",
       "sections": [
         {
           "section_id": "TDS-ARCH01-CURRENT",
@@ -2309,6 +2309,44 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-NEC26-PRODUCT",
+          "title_ja": "NEC Vector Engine：世代と仕様",
+          "title_en": "NEC Vector Engine: generations and specifications",
+          "summary_ja": "一次情報による暫定追記。既存記述を保存し、独立プロバイダ検証や実機試験の完了を主張しない。",
+          "summary_en": "Provisional primary-source addition preserving existing evidence, without claiming independent-provider validation or completed hardware testing.",
+          "items": [
+            {
+              "item_id": "TDI-NEC26-PRODUCT",
+              "name_ja": "NEC Vector Engine：世代と仕様",
+              "name_en": "NEC Vector Engine: generations and specifications",
+              "stage": "current",
+              "maturity": "commercial",
+              "timing_ja": "2026-10-10の調査を2026-10-11 UTCに一次資料で再確認。公表日・文書改訂日と実機適合性を区別。",
+              "timing_en": "Research from 2026-10-10 rechecked against primary sources on 2026-10-11 UTC. Publication/document revision dates remain distinct from hardware compatibility.",
+              "statement_ja": "NECの型式別表ではVE30 Type30Aは16コア、FP64 4.915 TFLOPS、FP32 9.83 TFLOPS、HBM 96 GB、帯域2.45 TB/s、キャッシュ64 MB。VE20 Type20Aは10コア・48 GB・1.53 TB/s、Type20Bは8コア。VE10AEは48 GB・1.35 TB/s、VE10CEは24 GB・1.00 TB/s。ピーク値でありアプリケーション実測ではない。ページの一般説明の最大12コアと型式表の16コアは一致せず、ここでは型式表を採用する。現行掲載は注文可能性や継続供給の保証ではない。 NECの2022-10-07発表はC401-8の出荷予定を2023-03-31とした過去の計画。東北大学のAOBA-Sは2023年8月運用開始、504 VH×8 VE30 Type30A、NDR200・Lustre構成を公表。Lustre採用はOpenFS互換性の証明ではない。",
+              "statement_en": "The NEC type-specific table lists VE30 Type30A with 16 cores, 4.915 TFLOPS FP64, 9.83 TFLOPS FP32, 96 GB HBM, 2.45 TB/s bandwidth and 64 MB cache. VE20 Type20A has 10 cores, 48 GB and 1.53 TB/s; Type20B has 8 cores. VE10AE lists 48 GB and 1.35 TB/s; VE10CE lists 24 GB and 1.00 TB/s. These are peak specifications, not measured application performance. The generic introduction says up to 12 cores, conflicting with the type table; this entry uses the type table. A current listing does not guarantee orderability or continued supply. The NEC announcement dated 2022-10-07 targeted C401-8 shipment for 2023-03-31, a historical plan. Tohoku University documents AOBA-S operation beginning in August 2023 with 504 VHs each containing eight VE30 Type30A devices, NDR200 and Lustre. Lustre deployment does not prove OpenFS compatibility.",
+              "hpci_relevance_ja": "世代・VEOS・compiler・MPI・OS・scheduler・ライセンス/入手性を固定し、まずVH側OpenFSサービス/クライアントとVEアプリ経路を確認。mmap同期、8/64 MB超同時I/O、append/rename/fsync、障害復旧、C/Rを試験。ストレージ→VH→VE転送をHBM帯域から分離し、MPI-IO・メタデータ・大容量転送・PCIe overhead・ノード電力・正確性を評価。実機検証前は調査済み・適合性検証待ち。",
+              "hpci_relevance_en": "Pin generation, VEOS, compiler, MPI, OS, scheduler, licensing and availability. First establish the VH-side OpenFS service/client and VE application path. Test mmap synchronization, concurrent I/O beyond 8/64 MB, append/rename/fsync, failure recovery and checkpoint/restart. Separate storage-to-VH-to-VE transfer from HBM bandwidth and measure MPI-IO, metadata, large transfers, PCIe overhead, node power and correctness. Until hardware testing, label this researched with compatibility validation pending.",
+              "adoption_conditions_ja": [
+                "版・構成を固定した実機適合性試験",
+                "供給・保守・ライセンス確認"
+              ],
+              "adoption_conditions_en": [
+                "Hardware compatibility testing with pinned versions and configuration",
+                "Supply, support and licensing confirmation"
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-NEC26-TYPES",
+                "SRC-NEC26-ANNOUNCE",
+                "SRC-NEC26-AOBA"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -2445,6 +2483,16 @@
           ],
           "created_at": "2026-10-03T15:10:35.072086+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000552",
+          "bundle_sha256": "b5703c5abacae98e965a2e1b213f6fdee3b1ab8ae1a6170edb254a096827415b",
+          "base_commit": "c203724f0f7c02c3837c3683cc2d134ccf3b0021",
+          "unit_ids": [
+            "ARCH-01-U01"
+          ],
+          "created_at": "2026-10-11T00:05:33.717229+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -2469,7 +2517,8 @@
               "TDS-OCT03-ARCH001-U01",
               "TDS-OCT03-ARCH001-REPLACEMENT-1",
               "TDS-OCT03-ARCH001-REPLACEMENT-2",
-              "TDS-OCT03-ARCH001-REPLACEMENT-3"
+              "TDS-OCT03-ARCH001-REPLACEMENT-3",
+              "TDS-NEC26-PRODUCT"
             ],
             "comparison_refs": [
               {
@@ -12371,8 +12420,8 @@
     },
     {
       "topic_id": "SSW-01",
-      "summary_ja": "9月のSDK・富岳LLVM文書とKokkos配布を確認し、言語・メモリ方式・パッチ版別の受入条件を補完。",
-      "summary_en": "Check September SDK, Fugaku LLVM documentation and Kokkos distribution; extend qualification by language, memory mode and patch version.",
+      "summary_ja": "9月のSDK・富岳LLVM文書とKokkos配布を確認し、言語・メモリ方式・パッチ版別の受入条件を補完。 NEC Vector Engineの限定的な一次資料追補。実機適合性と独立Consensusは未完了。",
+      "summary_en": "Check September SDK, Fugaku LLVM documentation and Kokkos distribution; extend qualification by language, memory mode and patch version. Scoped NEC Vector Engine primary-source supplement; hardware compatibility and independent Consensus remain incomplete.",
       "sections": [
         {
           "section_id": "TDS-SSW01-PORTABILITY",
@@ -14661,6 +14710,43 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-NEC26-SOFTWARE",
+          "title_ja": "NEC SDKと可搬性の境界",
+          "title_en": "NEC SDK and portability boundaries",
+          "summary_ja": "一次情報による暫定追記。既存記述を保存し、独立プロバイダ検証や実機試験の完了を主張しない。",
+          "summary_en": "Provisional primary-source addition preserving existing evidence, without claiming independent-provider validation or completed hardware testing.",
+          "items": [
+            {
+              "item_id": "TDI-NEC26-SOFTWARE",
+              "name_ja": "NEC SDKと可搬性の境界",
+              "name_en": "NEC SDK and portability boundaries",
+              "stage": "current",
+              "maturity": "commercial",
+              "timing_ja": "2026-10-10の調査を2026-10-11 UTCに一次資料で再確認。公表日・文書改訂日と実機適合性を区別。",
+              "timing_en": "Research from 2026-10-10 rechecked against primary sources on 2026-10-11 UTC. Publication/document revision dates remain distinct from hardware compatibility.",
+              "statement_ja": "文書索引ではC/C++・Fortran compiler 5.4.1のガイド改訂は2026-02-26、MPI 3.10.0以降のガイドは2026-03-19、NQSV文書は2026-07-02更新。文書更新日を製品リリース日や導入済み版と同一視しない。C/C++ガイドrev38 pp32,72–73はC++20と自動ベクトル化を説明する一方、OpenMP device codeを生成せずtarget/distribute/teams等に制約がある。汎用OpenMP target可搬性や任意Python互換を主張しない。",
+              "statement_en": "The documentation index dates compiler 5.4.1 C/C++ and Fortran guide revisions to 2026-02-26, the MPI 3.10.0-or-later guide to 2026-03-19, and NQSV documents to 2026-07-02. Document revisions do not establish product release dates or installed versions. C/C++ guide rev38 pp32,72–73 describes C++20 and automatic vectorization but does not generate OpenMP device code and constrains target/distribute/teams constructs. General OpenMP target portability or arbitrary Python compatibility is not established.",
+              "hpci_relevance_ja": "世代・VEOS・compiler・MPI・OS・scheduler・ライセンス/入手性を固定し、まずVH側OpenFSサービス/クライアントとVEアプリ経路を確認。mmap同期、8/64 MB超同時I/O、append/rename/fsync、障害復旧、C/Rを試験。ストレージ→VH→VE転送をHBM帯域から分離し、MPI-IO・メタデータ・大容量転送・PCIe overhead・ノード電力・正確性を評価。実機検証前は調査済み・適合性検証待ち。",
+              "hpci_relevance_en": "Pin generation, VEOS, compiler, MPI, OS, scheduler, licensing and availability. First establish the VH-side OpenFS service/client and VE application path. Test mmap synchronization, concurrent I/O beyond 8/64 MB, append/rename/fsync, failure recovery and checkpoint/restart. Separate storage-to-VH-to-VE transfer from HBM bandwidth and measure MPI-IO, metadata, large transfers, PCIe overhead, node power and correctness. Until hardware testing, label this researched with compatibility validation pending.",
+              "adoption_conditions_ja": [
+                "版・構成を固定した実機適合性試験",
+                "供給・保守・ライセンス確認"
+              ],
+              "adoption_conditions_en": [
+                "Hardware compatibility testing with pinned versions and configuration",
+                "Supply, support and licensing confirmation"
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-NEC26-DOCS",
+                "SRC-NEC26-CPP"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -14958,6 +15044,16 @@
           ],
           "created_at": "2026-10-04T17:52:27.680443+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000553",
+          "bundle_sha256": "525e6bcba8365618c0d0c92b7345da0e694522e3360fff576282589761e02e82",
+          "base_commit": "c203724f0f7c02c3837c3683cc2d134ccf3b0021",
+          "unit_ids": [
+            "SSW-01-U02"
+          ],
+          "created_at": "2026-10-11T00:05:33.717229+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -15038,7 +15134,8 @@
               "TDS-EP-418",
               "TDS-OCT03-SSW001-U02",
               "TDS-OCT05-SSW001-INTEGRATED-READABLE",
-              "TDS-OCT05-SSW001-INTEGRATED-RETAINED"
+              "TDS-OCT05-SSW001-INTEGRATED-RETAINED",
+              "TDS-NEC26-SOFTWARE"
             ],
             "comparison_refs": [
               {
@@ -18060,8 +18157,8 @@
     },
     {
       "topic_id": "SSW-05",
-      "summary_ja": "媒体・規格・製品・転送を同じ階層で比較し、EXAScaler 6.3.9の追加根拠と規模主張の差、保守・鍵復旧の条件を追記。",
-      "summary_en": "Append matched-layer media, protocol, product and transfer evidence, including EXAScaler 6.3.9, divergent scale claims, maintenance and key-recovery conditions.",
+      "summary_ja": "媒体・規格・製品・転送を同じ階層で比較し、EXAScaler 6.3.9の追加根拠と規模主張の差、保守・鍵復旧の条件を追記。 NEC Vector Engineの限定的な一次資料追補。実機適合性と独立Consensusは未完了。",
+      "summary_en": "Append matched-layer media, protocol, product and transfer evidence, including EXAScaler 6.3.9, divergent scale claims, maintenance and key-recovery conditions. Scoped NEC Vector Engine primary-source supplement; hardware compatibility and independent Consensus remain incomplete.",
       "sections": [
         {
           "section_id": "TDS-SSW05-CURRENT",
@@ -20836,6 +20933,42 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-NEC26-IO",
+          "title_ja": "VEOSとOpenFS適合性の確認事項",
+          "title_en": "VEOS and OpenFS compatibility checks",
+          "summary_ja": "一次情報による暫定追記。既存記述を保存し、独立プロバイダ検証や実機試験の完了を主張しない。",
+          "summary_en": "Provisional primary-source addition preserving existing evidence, without claiming independent-provider validation or completed hardware testing.",
+          "items": [
+            {
+              "item_id": "TDI-NEC26-IO",
+              "name_ja": "VEOSとOpenFS適合性の確認事項",
+              "name_en": "VEOS and OpenFS compatibility checks",
+              "stage": "current",
+              "maturity": "uncertain",
+              "timing_ja": "2026-10-10の調査を2026-10-11 UTCに一次資料で再確認。公表日・文書改訂日と実機適合性を区別。",
+              "timing_en": "Research from 2026-10-10 rechecked against primary sources on 2026-10-11 UTC. Publication/document revision dates remain distinct from hardware compatibility.",
+              "statement_ja": "VEOS syscall差分rev3.6 pp10–11,27ではfile-backed MAP_SHARED変更はmsync/munmap/exitまで別VE/VHへ可視化されず、他プロセスの基礎ファイル変更も既存VEマッピングへ自動反映されない。既定I/Oは64 MB超、VE_ACC_IO=1では8 MB超のatomicity制限がありVE_ATOMIC_IO=1の対応が記載される。forkのCOW、mmapページサイズ・フラグも差分確認対象。これは文書上の制約でありOpenFS実障害の実測ではない。io_uring対応は未確認。",
+              "statement_en": "VEOS syscall differences rev3.6 pp10–11,27 state that file-backed MAP_SHARED changes become visible to another VE/VH only at msync/munmap/exit, and changes to the underlying file by another process are not automatically reflected in an existing VE mapping. Atomicity limits apply beyond 64 MB by default and beyond 8 MB with VE_ACC_IO=1; VE_ATOMIC_IO=1 is documented as mitigation. Fork copy-on-write and mmap page sizes/flags also need examination. These are documented constraints, not measured OpenFS failures. io_uring support remains unverified.",
+              "hpci_relevance_ja": "世代・VEOS・compiler・MPI・OS・scheduler・ライセンス/入手性を固定し、まずVH側OpenFSサービス/クライアントとVEアプリ経路を確認。mmap同期、8/64 MB超同時I/O、append/rename/fsync、障害復旧、C/Rを試験。ストレージ→VH→VE転送をHBM帯域から分離し、MPI-IO・メタデータ・大容量転送・PCIe overhead・ノード電力・正確性を評価。実機検証前は調査済み・適合性検証待ち。",
+              "hpci_relevance_en": "Pin generation, VEOS, compiler, MPI, OS, scheduler, licensing and availability. First establish the VH-side OpenFS service/client and VE application path. Test mmap synchronization, concurrent I/O beyond 8/64 MB, append/rename/fsync, failure recovery and checkpoint/restart. Separate storage-to-VH-to-VE transfer from HBM bandwidth and measure MPI-IO, metadata, large transfers, PCIe overhead, node power and correctness. Until hardware testing, label this researched with compatibility validation pending.",
+              "adoption_conditions_ja": [
+                "版・構成を固定した実機適合性試験",
+                "供給・保守・ライセンス確認"
+              ],
+              "adoption_conditions_en": [
+                "Hardware compatibility testing with pinned versions and configuration",
+                "Supply, support and licensing confirmation"
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-NEC26-SYSCALL"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -21146,6 +21279,16 @@
           ],
           "created_at": "2026-10-04T17:52:27.680443+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000554",
+          "bundle_sha256": "5f662f9c7ce5291c1d512b5471d46840f660b3a0e4e99a67c5357ff6631850f8",
+          "base_commit": "c203724f0f7c02c3837c3683cc2d134ccf3b0021",
+          "unit_ids": [
+            "SSW-05-U01"
+          ],
+          "created_at": "2026-10-11T00:05:33.717229+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -21167,7 +21310,8 @@
               "TDS-HW1-SSW-05-U01",
               "TDS-CD35-SSW-05-KIOXIA-GP1-GPU-FLASH-TIER",
               "TDS-CD40-SSW-05-PCIE6-SSD-ZNANDO",
-              "TDS-OCT03-ARCH012-U01"
+              "TDS-OCT03-ARCH012-U01",
+              "TDS-NEC26-IO"
             ],
             "comparison_refs": [
               {
@@ -24000,8 +24144,8 @@
     },
     {
       "topic_id": "APP-02",
-      "summary_ja": "CEEDの問題・カーネル境界とExtra-Pのスケーリング・反復・適合度を評価契約へ追加する暫定調査。性能予測は生成しない。 旧混在節を履歴保存し、再読したベンチマーク・測定基盤と参考試算の明示的訂正で置き換える。 OpenFSの分類訂正は受入済みローカル公開アーティファクトに基づき、ネットワーク取得成功とは扱わない。",
-      "summary_en": "Provisional addition of CEED problem/kernel boundaries and Extra-P scaling, repetition and fit semantics to the evaluation contract. No performance forecasts are generated. Archive the old mixed section and replace it with reread benchmark/infrastructure evidence and an explicit legacy-illustration correction. The OpenFS status correction is grounded in the accepted local public artifact, not a successful network retrieval.",
+      "summary_ja": "CEEDの問題・カーネル境界とExtra-Pのスケーリング・反復・適合度を評価契約へ追加する暫定調査。性能予測は生成しない。 旧混在節を履歴保存し、再読したベンチマーク・測定基盤と参考試算の明示的訂正で置き換える。 OpenFSの分類訂正は受入済みローカル公開アーティファクトに基づき、ネットワーク取得成功とは扱わない。 NEC Vector Engineの限定的な一次資料追補。実機適合性と独立Consensusは未完了。",
+      "summary_en": "Provisional addition of CEED problem/kernel boundaries and Extra-P scaling, repetition and fit semantics to the evaluation contract. No performance forecasts are generated. Archive the old mixed section and replace it with reread benchmark/infrastructure evidence and an explicit legacy-illustration correction. The OpenFS status correction is grounded in the accepted local public artifact, not a successful network retrieval. Scoped NEC Vector Engine primary-source supplement; hardware compatibility and independent Consensus remain incomplete.",
       "sections": [
         {
           "section_id": "TDS-SSW07-CURRENT",
@@ -26529,6 +26673,42 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-NEC26-PERFORMANCE",
+          "title_ja": "VE30実測の条件と限界",
+          "title_en": "VE30 measured evidence and limits",
+          "summary_ja": "一次情報による暫定追記。既存記述を保存し、独立プロバイダ検証や実機試験の完了を主張しない。",
+          "summary_en": "Provisional primary-source addition preserving existing evidence, without claiming independent-provider validation or completed hardware testing.",
+          "items": [
+            {
+              "item_id": "TDI-NEC26-PERFORMANCE",
+              "name_ja": "VE30実測の条件と限界",
+              "name_en": "VE30 measured evidence and limits",
+              "stage": "current",
+              "maturity": "uncertain",
+              "timing_ja": "2026-10-10の調査を2026-10-11 UTCに一次資料で再確認。公表日・文書改訂日と実機適合性を区別。",
+              "timing_en": "Research from 2026-10-10 rechecked against primary sources on 2026-10-11 UTC. Publication/document revision dates remain distinct from hardware compatibility.",
+              "statement_ja": "ISC2023一次論文のprototype VE30でSTREAM >1.79 TB/s、HPL 4.43 TFLOPS、HPCG 258 GFLOPS、Himeno XL 837 GFLOPSを報告。洪水モデルのVE20比は全体1.32倍・並列部1.60倍。当時の比較条件であり2026年競合製品比較やOpenFS性能を示さない。VE40/VE50の旧展示ロードマップを現在の出荷計画へ昇格しない。",
+              "statement_en": "The ISC2023 primary paper reports STREAM >1.79 TB/s, HPL 4.43 TFLOPS, HPCG 258 GFLOPS and Himeno XL 837 GFLOPS on a prototype VE30. The flood model improved 1.32x overall and 1.60x in its parallel part over VE20. These historical conditions do not establish a 2026 competitive comparison or OpenFS performance. Historical VE40/VE50 presentation roadmaps are not promoted to current shipping commitments.",
+              "hpci_relevance_ja": "世代・VEOS・compiler・MPI・OS・scheduler・ライセンス/入手性を固定し、まずVH側OpenFSサービス/クライアントとVEアプリ経路を確認。mmap同期、8/64 MB超同時I/O、append/rename/fsync、障害復旧、C/Rを試験。ストレージ→VH→VE転送をHBM帯域から分離し、MPI-IO・メタデータ・大容量転送・PCIe overhead・ノード電力・正確性を評価。実機検証前は調査済み・適合性検証待ち。",
+              "hpci_relevance_en": "Pin generation, VEOS, compiler, MPI, OS, scheduler, licensing and availability. First establish the VH-side OpenFS service/client and VE application path. Test mmap synchronization, concurrent I/O beyond 8/64 MB, append/rename/fsync, failure recovery and checkpoint/restart. Separate storage-to-VH-to-VE transfer from HBM bandwidth and measure MPI-IO, metadata, large transfers, PCIe overhead, node power and correctness. Until hardware testing, label this researched with compatibility validation pending.",
+              "adoption_conditions_ja": [
+                "版・構成を固定した実機適合性試験",
+                "供給・保守・ライセンス確認"
+              ],
+              "adoption_conditions_en": [
+                "Hardware compatibility testing with pinned versions and configuration",
+                "Supply, support and licensing confirmation"
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-NEC26-PERF"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -26807,6 +26987,16 @@
           ],
           "created_at": "2026-10-04T17:52:27.680443+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000555",
+          "bundle_sha256": "00389246cd31abb4b881d00b793cb73ba6c2becbfcd883a0f4a3c9b403b93b09",
+          "base_commit": "c203724f0f7c02c3837c3683cc2d134ccf3b0021",
+          "unit_ids": [
+            "APP-02-U01"
+          ],
+          "created_at": "2026-10-11T00:05:33.717229+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -26835,7 +27025,8 @@
               "TDS-P30-423-APP-02-U01",
               "TDS-OCT03-APP002-CURRENT-CORRECTED",
               "TDS-OCT03-APP002-PROXY",
-              "TDS-OCT05-APP002-INTEGRATED-READABLE"
+              "TDS-OCT05-APP002-INTEGRATED-READABLE",
+              "TDS-NEC26-PERFORMANCE"
             ],
             "comparison_refs": [
               {
@@ -80657,6 +80848,62 @@
       "url": "https://www.researchobject.org/workflow-run-crate/profiles/process_run_crate/",
       "source_class": "official-project",
       "published_or_updated": "2026-09-07 (version per changelog; page update date unknown)"
+    },
+    {
+      "source_id": "SRC-NEC26-TYPES",
+      "title": "Vector Engine types",
+      "publisher": "NEC",
+      "url": "https://www.nec.com/en/global/solutions/hpc/sx/Vector-Engine-Types.html",
+      "published_or_updated": "unknown",
+      "source_class": "official-vendor"
+    },
+    {
+      "source_id": "SRC-NEC26-ANNOUNCE",
+      "title": "SX-Aurora TSUBASA new generation announcement",
+      "publisher": "NEC",
+      "url": "https://jpn.nec.com/press/202210/20221007_01.html",
+      "published_or_updated": "2022-10-07",
+      "source_class": "official-vendor"
+    },
+    {
+      "source_id": "SRC-NEC26-AOBA",
+      "title": "AOBA-S system configuration",
+      "publisher": "Tohoku University",
+      "url": "https://www.ss.cc.tohoku.ac.jp/sscc/tuning-08/5_chapter4.html",
+      "published_or_updated": "unknown",
+      "source_class": "official-project"
+    },
+    {
+      "source_id": "SRC-NEC26-DOCS",
+      "title": "SX-Aurora documentation index",
+      "publisher": "NEC",
+      "url": "https://sxauroratsubasa.sakura.ne.jp/Documentation",
+      "published_or_updated": "2026-07-02",
+      "source_class": "official-vendor"
+    },
+    {
+      "source_id": "SRC-NEC26-CPP",
+      "title": "C/C++ compiler guide rev38",
+      "publisher": "NEC",
+      "url": "https://sxauroratsubasa.sakura.ne.jp/documents/sdk/pdfs/g2af01e-C%2B%2BUsersGuide-038.pdf",
+      "published_or_updated": "2026-02-26",
+      "source_class": "official-vendor"
+    },
+    {
+      "source_id": "SRC-NEC26-SYSCALL",
+      "title": "VEOS syscall differences rev3.6",
+      "publisher": "NEC",
+      "url": "https://sxauroratsubasa.sakura.ne.jp/documents/veos/en/Difference_Point_System_Calls.pdf",
+      "published_or_updated": "2023-06-29",
+      "source_class": "official-vendor"
+    },
+    {
+      "source_id": "SRC-NEC26-PERF",
+      "title": "VE30 prototype performance evaluation",
+      "publisher": "VE30 research authors",
+      "url": "https://arxiv.org/html/2304.11921v1",
+      "published_or_updated": "2023-04-24",
+      "source_class": "research-artifact"
     }
   ],
   "coverage_gaps": [
@@ -81841,7 +82088,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-OCT05-CATALOG41-20261005",
-    "human_approval_directive_id": "DIR-900144"
+    "publication_decision_id": "PUBDEC-NEC-VECTOR-20261011",
+    "human_approval_directive_id": "DIR-900148"
   }
 }

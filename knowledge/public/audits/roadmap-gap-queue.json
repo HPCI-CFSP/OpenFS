@@ -2,31 +2,31 @@
   "schema_version": "0.2.0",
   "export_id": "ROADMAP-GAP-QUEUE-001",
   "status": "published",
-  "queue_id": "RGQ-20261004-001",
-  "as_of": "2026-10-04",
-  "generated_at": "2026-10-04T18:10:24Z",
+  "queue_id": "RGQ-20261011-001",
+  "as_of": "2026-10-11",
+  "generated_at": "2026-10-11T00:18:01Z",
   "method_ja": "公開ロードマップにある未確認事項を優先度順に収集し、既存の調査モニターまたは独立レビュー用パッケージへ明示的に割り当てます。原則としてP0は毎週、P1は毎月、P2は四半期ごとに再調査します。P0の情報源探索には、検索条件に加えて、必要な独立情報源の数と具体的な解消条件を明記します。",
   "method_en": "This queue collects every unresolved item from the published roadmaps, orders the items by priority, and assigns each one to an existing research monitor or an independent-review package. P0 items are normally rechecked weekly, P1 items monthly, and P2 items quarterly. Each P0 source-discovery item includes explicit search plans, a minimum number of independent origins, and concrete closure criteria.",
   "caveat_ja": "このキューは調査の割り当てを示すものであり、未確認事項が解消したことを示すものではありません。すべての解消条件を検証し、必要な独立情報源の数と合意判定の条件を満たすまで、状態は未解決のままです。自動生成した検索案は探索の出発点にすぎません。無効になっている調査モニターは、本番運用の準備条件を満たすまで自動実行されません。",
   "caveat_en": "This queue assigns research; it does not establish that an unresolved item has been closed. Each item remains open until every closure criterion, the required number of independent origins, and the Consensus Gate requirements have been satisfied. An automatically generated query is only a starting point for discovery, and disabled research monitors do not run until the production-readiness gates pass.",
   "summary": {
     "roadmap_count": 19,
-    "gap_count": 76,
-    "p0": 21,
-    "p1": 40,
+    "gap_count": 78,
+    "p0": 22,
+    "p1": 41,
     "p2": 15,
-    "source_discovery": 75,
+    "source_discovery": 77,
     "consensus_review": 1,
     "ready_for_scheduled_discovery": 0,
-    "staged_monitor_disabled": 75,
+    "staged_monitor_disabled": 77,
     "awaiting_independent_review": 1,
-    "explicit_query_overrides": 23,
-    "generated_query_fallbacks": 52,
-    "p0_explicit_query_overrides": 20,
+    "explicit_query_overrides": 24,
+    "generated_query_fallbacks": 53,
+    "p0_explicit_query_overrides": 21,
     "p0_generated_query_fallbacks": 0,
-    "p0_evidence_review_required": 12,
-    "p0_reproducible_measurement_required": 13,
-    "p0_conformance_test_required": 4,
+    "p0_evidence_review_required": 13,
+    "p0_reproducible_measurement_required": 14,
+    "p0_conformance_test_required": 5,
     "p0_authority_confirmation_required": 6,
     "p0_consensus_quorum_required": 1
   },
@@ -651,6 +651,67 @@
       "queue_item_id": "RGQ-0011"
     },
     {
+      "gap_id": "GAP-NEC26-COMPATIBILITY",
+      "roadmap_id": "RM-SSW-PORTABILITY",
+      "priority": "P0",
+      "workstream": "source-discovery",
+      "cadence": "weekly",
+      "assignment_ref": "MON-GLOBAL-TECH-001",
+      "task_id": "OFS-005",
+      "monitor_enabled": false,
+      "execution_state": "staged-monitor-disabled",
+      "scope_ja": "現行VEOSのOpenFS適合性・io_uring対応",
+      "scope_en": "OpenFS compatibility and io_uring support on current VEOS",
+      "impact_ja": "互換性試験なしにOpenFS対応を保証できない。",
+      "impact_en": "OpenFS support cannot be guaranteed without compatibility tests.",
+      "next_action_ja": "世代・VEOS・compiler・MPI・OS・scheduler・ライセンス/入手性を固定し、まずVH側OpenFSサービス/クライアントとVEアプリ経路を確認。mmap同期、8/64 MB超同時I/O、append/rename/fsync、障害復旧、C/Rを試験。ストレージ→VH→VE転送をHBM帯域から分離し、MPI-IO・メタデータ・大容量転送・PCIe overhead・ノード電力・正確性を評価。実機検証前は調査済み・適合性検証待ち。",
+      "next_action_en": "Pin generation, VEOS, compiler, MPI, OS, scheduler, licensing and availability. First establish the VH-side OpenFS service/client and VE application path. Test mmap synchronization, concurrent I/O beyond 8/64 MB, append/rename/fsync, failure recovery and checkpoint/restart. Separate storage-to-VH-to-VE transfer from HBM bandwidth and measure MPI-IO, metadata, large transfers, PCIe overhead, node power and correctness. Until hardware testing, label this researched with compatibility validation pending.",
+      "query_seeds": [
+        {
+          "language": "en",
+          "query": "NEC SX-Aurora VEOS file backed MAP_SHARED msync atomic read write VE_ATOMIC_IO OpenFS compatibility"
+        },
+        {
+          "language": "ja",
+          "query": "NEC Vector Engine VEOS ファイルI/O mmap 適合性 MPI-IO 再現性"
+        }
+      ],
+      "required_source_classes": [
+        "official-primary",
+        "research-primary",
+        "peer-reviewed-research"
+      ],
+      "query_plan_origin": "explicit-override",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 2,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-NEC26-COMPATIBILITY-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "世代・VEOS・compiler・MPI・OS・scheduler・ライセンスと対象I/O仕様を版固定の一次資料で確認する。",
+            "requirement_en": "Verify generation, VEOS, compiler, MPI, OS, scheduler, licensing and I/O semantics using version-pinned primary evidence."
+          },
+          {
+            "criterion_id": "GAP-NEC26-COMPATIBILITY-C2",
+            "verification_method": "conformance-test",
+            "requirement_ja": "明示許可された実機でVH/VE経路、mmap同期、8/64 MB超同時I/O、append/rename/fsyncと障害復旧を適合試験する。",
+            "requirement_en": "On explicitly authorized hardware, test the VH/VE path, mmap synchronization, concurrent I/O beyond 8/64 MB, append/rename/fsync and failure recovery."
+          },
+          {
+            "criterion_id": "GAP-NEC26-COMPATIBILITY-C3",
+            "verification_method": "reproducible-measurement",
+            "requirement_ja": "ストレージ→VH→VE転送、MPI-IO、メタデータ、PCIe overhead、電力・正確性を構成固定して再現測定する。",
+            "requirement_en": "Reproduce storage-to-VH-to-VE transfers, MPI-IO, metadata, PCIe overhead, power and correctness under a fixed configuration."
+          }
+        ]
+      },
+      "closure_plan_origin": "explicit-override",
+      "closure_state": "criteria-unverified",
+      "status": "open",
+      "queue_item_id": "RGQ-0012"
+    },
+    {
       "gap_id": "GAP-PORT-001",
       "roadmap_id": "RM-SSW-PORTABILITY",
       "priority": "P0",
@@ -704,7 +765,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0012"
+      "queue_item_id": "RGQ-0013"
     },
     {
       "gap_id": "GAP-PORT-004",
@@ -759,7 +820,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0013"
+      "queue_item_id": "RGQ-0014"
     },
     {
       "gap_id": "GAP-PORT-006",
@@ -819,7 +880,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0014"
+      "queue_item_id": "RGQ-0015"
     },
     {
       "gap_id": "GAP-PORT-007",
@@ -878,7 +939,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0015"
+      "queue_item_id": "RGQ-0016"
     },
     {
       "gap_id": "GAP-BLUE-001",
@@ -933,7 +994,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0016"
+      "queue_item_id": "RGQ-0017"
     },
     {
       "gap_id": "GAP-BLUE-002",
@@ -988,7 +1049,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0017"
+      "queue_item_id": "RGQ-0018"
     },
     {
       "gap_id": "GAP-BLUE-003",
@@ -1043,7 +1104,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0018"
+      "queue_item_id": "RGQ-0019"
     },
     {
       "gap_id": "GAP-BLUE-006",
@@ -1079,7 +1140,7 @@
       "closure_plan_origin": "consensus-policy",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0019"
+      "queue_item_id": "RGQ-0020"
     },
     {
       "gap_id": "GAP-BLUE-007",
@@ -1140,7 +1201,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0020"
+      "queue_item_id": "RGQ-0021"
     },
     {
       "gap_id": "GAP-BLUE-009",
@@ -1195,7 +1256,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0021"
+      "queue_item_id": "RGQ-0022"
     },
     {
       "gap_id": "GAP-ADOPTION-001",
@@ -1247,7 +1308,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0022"
+      "queue_item_id": "RGQ-0023"
     },
     {
       "gap_id": "GAP-ADOPTION-002",
@@ -1299,7 +1360,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0023"
+      "queue_item_id": "RGQ-0024"
     },
     {
       "gap_id": "GAP-AI-001",
@@ -1351,7 +1412,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0024"
+      "queue_item_id": "RGQ-0025"
     },
     {
       "gap_id": "GAP-REALTIME-001",
@@ -1403,7 +1464,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0025"
+      "queue_item_id": "RGQ-0026"
     },
     {
       "gap_id": "GAP-REALTIME-002",
@@ -1455,7 +1516,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0026"
+      "queue_item_id": "RGQ-0027"
     },
     {
       "gap_id": "GAP-WORK-002",
@@ -1507,7 +1568,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0027"
+      "queue_item_id": "RGQ-0028"
     },
     {
       "gap_id": "GAP-WORK-007",
@@ -1559,7 +1620,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0028"
+      "queue_item_id": "RGQ-0029"
     },
     {
       "gap_id": "GAP-WORK-008",
@@ -1611,7 +1672,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0029"
+      "queue_item_id": "RGQ-0030"
     },
     {
       "gap_id": "GAP-WORK-016",
@@ -1663,7 +1724,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0030"
+      "queue_item_id": "RGQ-0031"
     },
     {
       "gap_id": "GAP-COMP-001",
@@ -1715,7 +1776,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0031"
+      "queue_item_id": "RGQ-0032"
     },
     {
       "gap_id": "GAP-COMP-002",
@@ -1767,7 +1828,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0032"
+      "queue_item_id": "RGQ-0033"
     },
     {
       "gap_id": "GAP-COMP-006",
@@ -1819,7 +1880,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0033"
+      "queue_item_id": "RGQ-0034"
     },
     {
       "gap_id": "GAP-COMP-008",
@@ -1871,7 +1932,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0034"
+      "queue_item_id": "RGQ-0035"
     },
     {
       "gap_id": "GAP-COMP-009",
@@ -1930,7 +1991,59 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0035"
+      "queue_item_id": "RGQ-0036"
+    },
+    {
+      "gap_id": "GAP-NEC26-SUPPLY",
+      "roadmap_id": "RM-HW-COMPUTE",
+      "priority": "P1",
+      "workstream": "source-discovery",
+      "cadence": "monthly",
+      "assignment_ref": "MON-GLOBAL-TECH-001",
+      "task_id": "OFS-005",
+      "monitor_enabled": false,
+      "execution_state": "staged-monitor-disabled",
+      "scope_ja": "現行注文可能性・保守期限・VE40/50の現在計画",
+      "scope_en": "Current orderability, support lifetime and current VE40/50 plans",
+      "impact_ja": "公開掲載や過去展示から将来導入時期を確定できない。",
+      "impact_en": "Product listings and historical presentations cannot establish future adoption timing.",
+      "next_action_ja": "NECの最新供給・保守・世代別計画を確認する。",
+      "next_action_en": "Verify current NEC supply, support and generation plans.",
+      "query_seeds": [
+        {
+          "language": "ja",
+          "query": "現行注文可能性・保守期限・VE40/50の現在計画 NECの最新供給・保守・世代別計画を確認する。 公式 一次情報"
+        },
+        {
+          "language": "en",
+          "query": "Current orderability, support lifetime and current VE40/50 plans Verify current NEC supply, support and generation plans. official primary source"
+        }
+      ],
+      "required_source_classes": [
+        "official-primary",
+        "research-primary",
+        "standards-body",
+        "peer-reviewed-research",
+        "vendor-primary",
+        "procurement-primary"
+      ],
+      "query_plan_origin": "generated-fallback",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 1,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-NEC26-SUPPLY-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "未確認事項を直接扱う一次情報を確認し、その制約と反証になり得る情報を含めて独立レビューする。",
+            "requirement_en": "Confirm primary evidence directly covering the Gap and independently review its limitations and possible counterevidence."
+          }
+        ]
+      },
+      "closure_plan_origin": "generated-default",
+      "closure_state": "criteria-unverified",
+      "status": "open",
+      "queue_item_id": "RGQ-0037"
     },
     {
       "gap_id": "GAP-FACILITY-001",
@@ -1982,7 +2095,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0036"
+      "queue_item_id": "RGQ-0038"
     },
     {
       "gap_id": "GAP-NET-001",
@@ -2034,7 +2147,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0037"
+      "queue_item_id": "RGQ-0039"
     },
     {
       "gap_id": "GAP-NET-002",
@@ -2086,7 +2199,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0038"
+      "queue_item_id": "RGQ-0040"
     },
     {
       "gap_id": "GAP-NET-006",
@@ -2142,7 +2255,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0039"
+      "queue_item_id": "RGQ-0041"
     },
     {
       "gap_id": "GAP-NET-ESUN-001",
@@ -2194,7 +2307,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0040"
+      "queue_item_id": "RGQ-0042"
     },
     {
       "gap_id": "GAP-MEM002",
@@ -2248,7 +2361,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0041"
+      "queue_item_id": "RGQ-0043"
     },
     {
       "gap_id": "GAP-MEM004",
@@ -2302,7 +2415,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0042"
+      "queue_item_id": "RGQ-0044"
     },
     {
       "gap_id": "GAP-MEM006",
@@ -2356,7 +2469,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0043"
+      "queue_item_id": "RGQ-0045"
     },
     {
       "gap_id": "GAP-SOVEREIGNTY-001",
@@ -2408,7 +2521,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0044"
+      "queue_item_id": "RGQ-0046"
     },
     {
       "gap_id": "GAP-SOVEREIGNTY-002",
@@ -2460,7 +2573,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0045"
+      "queue_item_id": "RGQ-0047"
     },
     {
       "gap_id": "GAP-STOR-002",
@@ -2512,7 +2625,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0046"
+      "queue_item_id": "RGQ-0048"
     },
     {
       "gap_id": "GAP-PERFORMANCE-001",
@@ -2564,7 +2677,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0047"
+      "queue_item_id": "RGQ-0049"
     },
     {
       "gap_id": "GAP-PERFORMANCE-002",
@@ -2616,7 +2729,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0048"
+      "queue_item_id": "RGQ-0050"
     },
     {
       "gap_id": "GAP-PORT-002",
@@ -2668,7 +2781,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0049"
+      "queue_item_id": "RGQ-0051"
     },
     {
       "gap_id": "GAP-PORT-003",
@@ -2720,7 +2833,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0050"
+      "queue_item_id": "RGQ-0052"
     },
     {
       "gap_id": "GAP-PORT-008",
@@ -2775,7 +2888,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0051"
+      "queue_item_id": "RGQ-0053"
     },
     {
       "gap_id": "GAP-PORT-009",
@@ -2827,7 +2940,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0052"
+      "queue_item_id": "RGQ-0054"
     },
     {
       "gap_id": "GAP-PORT-010",
@@ -2879,7 +2992,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0053"
+      "queue_item_id": "RGQ-0055"
     },
     {
       "gap_id": "GAP-RUNTIME-001",
@@ -2931,7 +3044,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0054"
+      "queue_item_id": "RGQ-0056"
     },
     {
       "gap_id": "GAP-SECURITY-001",
@@ -2983,7 +3096,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0055"
+      "queue_item_id": "RGQ-0057"
     },
     {
       "gap_id": "GAP-WORKFLOW-001",
@@ -3035,7 +3148,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0056"
+      "queue_item_id": "RGQ-0058"
     },
     {
       "gap_id": "GAP-BLUE-004",
@@ -3085,7 +3198,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0057"
+      "queue_item_id": "RGQ-0059"
     },
     {
       "gap_id": "GAP-BLUE-005",
@@ -3135,7 +3248,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0058"
+      "queue_item_id": "RGQ-0060"
     },
     {
       "gap_id": "GAP-HORIZON-001",
@@ -3187,7 +3300,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0059"
+      "queue_item_id": "RGQ-0061"
     },
     {
       "gap_id": "GAP-OPERATIONS-001",
@@ -3239,7 +3352,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0060"
+      "queue_item_id": "RGQ-0062"
     },
     {
       "gap_id": "GAP-PROCUREMENT-001",
@@ -3291,7 +3404,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0061"
+      "queue_item_id": "RGQ-0063"
     },
     {
       "gap_id": "GAP-AI-002",
@@ -3343,7 +3456,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0062"
+      "queue_item_id": "RGQ-0064"
     },
     {
       "gap_id": "GAP-WORK-005",
@@ -3395,7 +3508,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0063"
+      "queue_item_id": "RGQ-0065"
     },
     {
       "gap_id": "GAP-COMP-003",
@@ -3447,7 +3560,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0064"
+      "queue_item_id": "RGQ-0066"
     },
     {
       "gap_id": "GAP-FACILITY-002",
@@ -3499,7 +3612,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0065"
+      "queue_item_id": "RGQ-0067"
     },
     {
       "gap_id": "GAP-NET-005",
@@ -3551,7 +3664,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0066"
+      "queue_item_id": "RGQ-0068"
     },
     {
       "gap_id": "GAP-MEM001",
@@ -3605,7 +3718,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0067"
+      "queue_item_id": "RGQ-0069"
     },
     {
       "gap_id": "GAP-MEM005",
@@ -3659,7 +3772,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0068"
+      "queue_item_id": "RGQ-0070"
     },
     {
       "gap_id": "GAP-STOR-003",
@@ -3711,7 +3824,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0069"
+      "queue_item_id": "RGQ-0071"
     },
     {
       "gap_id": "GAP-PORT-005",
@@ -3763,7 +3876,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0070"
+      "queue_item_id": "RGQ-0072"
     },
     {
       "gap_id": "GAP-RUNTIME-002",
@@ -3815,7 +3928,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0071"
+      "queue_item_id": "RGQ-0073"
     },
     {
       "gap_id": "GAP-SECURITY-002",
@@ -3867,7 +3980,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0072"
+      "queue_item_id": "RGQ-0074"
     },
     {
       "gap_id": "GAP-WORKFLOW-002",
@@ -3919,7 +4032,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0073"
+      "queue_item_id": "RGQ-0075"
     },
     {
       "gap_id": "GAP-HORIZON-002",
@@ -3971,7 +4084,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0074"
+      "queue_item_id": "RGQ-0076"
     },
     {
       "gap_id": "GAP-OPERATIONS-002",
@@ -4023,7 +4136,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0075"
+      "queue_item_id": "RGQ-0077"
     },
     {
       "gap_id": "GAP-PROCUREMENT-002",
@@ -4075,7 +4188,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0076"
+      "queue_item_id": "RGQ-0078"
     }
   ],
   "publication": {

@@ -5,7 +5,7 @@
   "status": "published",
   "domain": "hardware",
   "slug": "hardware/compute-nodes-accelerators",
-  "as_of": "2026-10-04",
+  "as_of": "2026-10-11",
   "title_ja": "計算ノード・プロセッサ・アクセラレータ",
   "title_en": "Compute nodes, processors, and accelerators",
   "summary_ja": "2026年以降のCPU、GPU、ウェハスケール・データフロー型アクセラレータ、ラックスケール構成、日本・欧州のプロセッサ、富岳NEXTを対象に、製品の提供時期とHPCIでの評価時期を比較する暫定ロードマップです。",
@@ -280,6 +280,21 @@
       "source_ids": [
         "SRC-UPD-LOIHI",
         "SRC-UPD-LAVA"
+      ]
+    },
+    {
+      "track_id": "COMPUTE-VECTOR",
+      "group": "accelerators",
+      "name_ja": "NEC Vector Engine",
+      "name_en": "NEC Vector Engine",
+      "summary_ja": "VE10/20/30と将来世代の公開根拠を分離。",
+      "summary_en": "Separate published VE10/20/30 evidence from future-generation uncertainty.",
+      "current_state_ja": "NECの型式別表ではVE30 Type30Aは16コア、FP64 4.915 TFLOPS、FP32 9.83 TFLOPS、HBM 96 GB、帯域2.45 TB/s、キャッシュ64 MB。VE20 Type20Aは10コア・48 GB・1.53 TB/s、Type20Bは8コア。VE10AEは48 GB・1.35 TB/s、VE10CEは24 GB・1.00 TB/s。ピーク値でありアプリケーション実測ではない。ページの一般説明の最大12コアと型式表の16コアは一致せず、ここでは型式表を採用する。現行掲載は注文可能性や継続供給の保証ではない。",
+      "current_state_en": "The NEC type-specific table lists VE30 Type30A with 16 cores, 4.915 TFLOPS FP64, 9.83 TFLOPS FP32, 96 GB HBM, 2.45 TB/s bandwidth and 64 MB cache. VE20 Type20A has 10 cores, 48 GB and 1.53 TB/s; Type20B has 8 cores. VE10AE lists 48 GB and 1.35 TB/s; VE10CE lists 24 GB and 1.00 TB/s. These are peak specifications, not measured application performance. The generic introduction says up to 12 cores, conflicting with the type table; this entry uses the type table. A current listing does not guarantee orderability or continued supply.",
+      "hpci_implications_ja": "世代・VEOS・compiler・MPI・OS・scheduler・ライセンス/入手性を固定し、まずVH側OpenFSサービス/クライアントとVEアプリ経路を確認。mmap同期、8/64 MB超同時I/O、append/rename/fsync、障害復旧、C/Rを試験。ストレージ→VH→VE転送をHBM帯域から分離し、MPI-IO・メタデータ・大容量転送・PCIe overhead・ノード電力・正確性を評価。実機検証前は調査済み・適合性検証待ち。",
+      "hpci_implications_en": "Pin generation, VEOS, compiler, MPI, OS, scheduler, licensing and availability. First establish the VH-side OpenFS service/client and VE application path. Test mmap synchronization, concurrent I/O beyond 8/64 MB, append/rename/fsync, failure recovery and checkpoint/restart. Separate storage-to-VH-to-VE transfer from HBM bandwidth and measure MPI-IO, metadata, large transfers, PCIe overhead, node power and correctness. Until hardware testing, label this researched with compatibility validation pending.",
+      "source_ids": [
+        "SRC-NEC26-TYPES"
       ]
     }
   ],
@@ -1865,6 +1880,34 @@
           "dependency_refs": []
         }
       ]
+    },
+    {
+      "lane_id": "LANE-NEC26-VECTOR",
+      "track_id": "COMPUTE-VECTOR",
+      "owner": "NEC / HPCI evaluation",
+      "scope_ja": "製品根拠と適合性確認を分離",
+      "scope_en": "Separate product evidence from compatibility qualification",
+      "milestones": [
+        {
+          "milestone_id": "MS-NEC26-VE30-BASELINE",
+          "year": 2026,
+          "quarter": null,
+          "half": null,
+          "timing_precision": "year",
+          "maturity": "commercial",
+          "event_type": "product",
+          "timing_basis": "as-of-baseline",
+          "comparison_priority": "key",
+          "label_ja": "VE30型式別仕様の公開ベースライン",
+          "label_en": "Published VE30 type-specific baseline",
+          "detail_ja": "2026年10月11日確認の掲載ベースラインであり、2026年の発売開始を意味しない。NECの型式別表ではVE30 Type30Aは16コア、FP64 4.915 TFLOPS、FP32 9.83 TFLOPS、HBM 96 GB、帯域2.45 TB/s、キャッシュ64 MB。VE20 Type20Aは10コア・48 GB・1.53 TB/s、Type20Bは8コア。VE10AEは48 GB・1.35 TB/s、VE10CEは24 GB・1.00 TB/s。ピーク値でありアプリケーション実測ではない。ページの一般説明の最大12コアと型式表の16コアは一致せず、ここでは型式表を採用する。現行掲載は注文可能性や継続供給の保証ではない。",
+          "detail_en": "Listing baseline checked on 2026-10-11, not an assertion of a 2026 launch. The NEC type-specific table lists VE30 Type30A with 16 cores, 4.915 TFLOPS FP64, 9.83 TFLOPS FP32, 96 GB HBM, 2.45 TB/s bandwidth and 64 MB cache. VE20 Type20A has 10 cores, 48 GB and 1.53 TB/s; Type20B has 8 cores. VE10AE lists 48 GB and 1.35 TB/s; VE10CE lists 24 GB and 1.00 TB/s. These are peak specifications, not measured application performance. The generic introduction says up to 12 cores, conflicting with the type table; this entry uses the type table. A current listing does not guarantee orderability or continued supply.",
+          "source_ids": [
+            "SRC-NEC26-TYPES"
+          ],
+          "dependency_refs": []
+        }
+      ]
     }
   ],
   "dependencies": [
@@ -2381,6 +2424,13 @@
       "url": "https://sambanova.ai/blog/sn50-premium-inference-a-faster-roi-for-neoclouds",
       "source_class": "vendor-official",
       "published_at": "2026-09-17"
+    },
+    {
+      "source_id": "SRC-NEC26-TYPES",
+      "title": "Vector Engine types",
+      "publisher": "NEC",
+      "url": "https://www.nec.com/en/global/solutions/hpc/sx/Vector-Engine-Types.html",
+      "source_class": "vendor-official"
     }
   ],
   "coverage_gaps": [
@@ -2482,6 +2532,17 @@
       "next_action_ja": "直列処理、推論、検索、ツール実行、通信待ちを記録する公開可能なワークロードを固定し、同一タスクで完了時間、p95・p99遅延、1ジュール当たりの処理件数、1タスク当たりの費用、1ノード当たりのエージェント数を測定する。",
       "next_action_en": "Pin a publishable workload that records serial orchestration, inference, retrieval, tool execution, and communication waits, then measure completion time, p95 and p99 latency, tasks per joule, cost per task, and agents per node on identical tasks.",
       "status": "open"
+    },
+    {
+      "gap_id": "GAP-NEC26-SUPPLY",
+      "priority": "P1",
+      "scope_ja": "現行注文可能性・保守期限・VE40/50の現在計画",
+      "scope_en": "Current orderability, support lifetime and current VE40/50 plans",
+      "impact_ja": "公開掲載や過去展示から将来導入時期を確定できない。",
+      "impact_en": "Product listings and historical presentations cannot establish future adoption timing.",
+      "next_action_ja": "NECの最新供給・保守・世代別計画を確認する。",
+      "next_action_en": "Verify current NEC supply, support and generation plans.",
+      "status": "open"
     }
   ],
   "caveat_ja": "本ロードマップは、公開一次情報とOpenFSの暫定評価ゲートを区別して整理した、単一のAIモデルによる作業版です。独立したAIモデルによる合意判定は完了していません。将来の時期は各発表時点の目標であり、調達可能性を保証するものではありません。",
@@ -2489,7 +2550,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-OCT05-CATALOG41-20261005",
-    "human_approval_directive_id": "DIR-900144"
+    "publication_decision_id": "PUBDEC-NEC-VECTOR-20261011",
+    "human_approval_directive_id": "DIR-900148"
   }
 }
