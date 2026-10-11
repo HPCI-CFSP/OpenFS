@@ -5,7 +5,7 @@
   "status": "published",
   "domain": "system-software",
   "slug": "system-software/portability-compilers-tuning",
-  "as_of": "2026-10-04",
+  "as_of": "2026-10-11",
   "title_ja": "性能可搬性・コンパイラ・自動最適化",
   "title_en": "Performance portability, compilers, and automated optimization",
   "summary_ja": "並列API、通信ランタイム、コンパイラ基盤、性能可搬性レイヤー、ベンダー提供のソフトウェアスタック、自動移植・最適化を、HPCIの世代移行に向けた評価ゲートとともに比較する暫定ロードマップです。",
@@ -1734,6 +1734,36 @@
           "dependency_refs": []
         }
       ]
+    },
+    {
+      "lane_id": "LANE-NEC26-COMPATIBILITY",
+      "track_id": "PORT-VENDOR",
+      "owner": "NEC / HPCI evaluation",
+      "scope_ja": "製品根拠と適合性確認を分離",
+      "scope_en": "Separate product evidence from compatibility qualification",
+      "milestones": [
+        {
+          "milestone_id": "MS-NEC26-OPENFS-GATE",
+          "year": null,
+          "quarter": null,
+          "half": null,
+          "timing_precision": "undated",
+          "maturity": "decision-gate",
+          "event_type": "hpci-evaluation",
+          "timing_basis": "no-public-date",
+          "comparison_priority": "key",
+          "label_ja": "VH/VE経路・ソフトウェア・I/O適合性ゲート",
+          "label_en": "VH/VE path, software and I/O compatibility gate",
+          "detail_ja": "実施時期未確定のOpenFS暫定評価ゲート。世代・VEOS・compiler・MPI・OS・scheduler・ライセンス/入手性を固定し、まずVH側OpenFSサービス/クライアントとVEアプリ経路を確認。mmap同期、8/64 MB超同時I/O、append/rename/fsync、障害復旧、C/Rを試験。ストレージ→VH→VE転送をHBM帯域から分離し、MPI-IO・メタデータ・大容量転送・PCIe overhead・ノード電力・正確性を評価。実機検証前は調査済み・適合性検証待ち。 VEOS syscall差分rev3.6 pp10–11,27ではfile-backed MAP_SHARED変更はmsync/munmap/exitまで別VE/VHへ可視化されず、他プロセスの基礎ファイル変更も既存VEマッピングへ自動反映されない。既定I/Oは64 MB超、VE_ACC_IO=1では8 MB超のatomicity制限がありVE_ATOMIC_IO=1の対応が記載される。forkのCOW、mmapページサイズ・フラグも差分確認対象。これは文書上の制約でありOpenFS実障害の実測ではない。io_uring対応は未確認。",
+          "detail_en": "OpenFS provisional evaluation gate with no confirmed implementation date. Pin generation, VEOS, compiler, MPI, OS, scheduler, licensing and availability. First establish the VH-side OpenFS service/client and VE application path. Test mmap synchronization, concurrent I/O beyond 8/64 MB, append/rename/fsync, failure recovery and checkpoint/restart. Separate storage-to-VH-to-VE transfer from HBM bandwidth and measure MPI-IO, metadata, large transfers, PCIe overhead, node power and correctness. Until hardware testing, label this researched with compatibility validation pending. VEOS syscall differences rev3.6 pp10–11,27 state that file-backed MAP_SHARED changes become visible to another VE/VH only at msync/munmap/exit, and changes to the underlying file by another process are not automatically reflected in an existing VE mapping. Atomicity limits apply beyond 64 MB by default and beyond 8 MB with VE_ACC_IO=1; VE_ATOMIC_IO=1 is documented as mitigation. Fork copy-on-write and mmap page sizes/flags also need examination. These are documented constraints, not measured OpenFS failures. io_uring support remains unverified.",
+          "source_ids": [
+            "SRC-NEC26-DOCS",
+            "SRC-NEC26-CPP",
+            "SRC-NEC26-SYSCALL"
+          ],
+          "dependency_refs": []
+        }
+      ]
     }
   ],
   "dependencies": [
@@ -2565,6 +2595,30 @@
       "publisher": "Hossain et al. / arXiv",
       "url": "https://arxiv.org/abs/2609.15807",
       "source_class": "academic-primary"
+    },
+    {
+      "source_id": "SRC-NEC26-DOCS",
+      "title": "SX-Aurora documentation index",
+      "publisher": "NEC",
+      "url": "https://sxauroratsubasa.sakura.ne.jp/Documentation",
+      "source_class": "vendor-official",
+      "published_at": "2026-07-02"
+    },
+    {
+      "source_id": "SRC-NEC26-CPP",
+      "title": "C/C++ compiler guide rev38",
+      "publisher": "NEC",
+      "url": "https://sxauroratsubasa.sakura.ne.jp/documents/sdk/pdfs/g2af01e-C%2B%2BUsersGuide-038.pdf",
+      "source_class": "vendor-official",
+      "published_at": "2026-02-26"
+    },
+    {
+      "source_id": "SRC-NEC26-SYSCALL",
+      "title": "VEOS syscall differences rev3.6",
+      "publisher": "NEC",
+      "url": "https://sxauroratsubasa.sakura.ne.jp/documents/veos/en/Difference_Point_System_Calls.pdf",
+      "source_class": "vendor-official",
+      "published_at": "2023-06-29"
     }
   ],
   "coverage_gaps": [
@@ -2677,6 +2731,17 @@
       "next_action_ja": "EESSIの最新manifestとGPU試験、EPICUREの期間表記と2028年以降の支援を確認し、国内の担当・費用・引継ぎ計画と対比する。",
       "next_action_en": "Check current EESSI manifests/GPU tests, EPICURE duration descriptions and post-2028 support against Japanese ownership, resource and handover plans.",
       "status": "open"
+    },
+    {
+      "gap_id": "GAP-NEC26-COMPATIBILITY",
+      "priority": "P0",
+      "scope_ja": "現行VEOSのOpenFS適合性・io_uring対応",
+      "scope_en": "OpenFS compatibility and io_uring support on current VEOS",
+      "impact_ja": "互換性試験なしにOpenFS対応を保証できない。",
+      "impact_en": "OpenFS support cannot be guaranteed without compatibility tests.",
+      "next_action_ja": "世代・VEOS・compiler・MPI・OS・scheduler・ライセンス/入手性を固定し、まずVH側OpenFSサービス/クライアントとVEアプリ経路を確認。mmap同期、8/64 MB超同時I/O、append/rename/fsync、障害復旧、C/Rを試験。ストレージ→VH→VE転送をHBM帯域から分離し、MPI-IO・メタデータ・大容量転送・PCIe overhead・ノード電力・正確性を評価。実機検証前は調査済み・適合性検証待ち。",
+      "next_action_en": "Pin generation, VEOS, compiler, MPI, OS, scheduler, licensing and availability. First establish the VH-side OpenFS service/client and VE application path. Test mmap synchronization, concurrent I/O beyond 8/64 MB, append/rename/fsync, failure recovery and checkpoint/restart. Separate storage-to-VH-to-VE transfer from HBM bandwidth and measure MPI-IO, metadata, large transfers, PCIe overhead, node power and correctness. Until hardware testing, label this researched with compatibility validation pending.",
+      "status": "open"
     }
   ],
   "caveat_ja": "本ロードマップは、公開一次情報に基づくマイルストーンとOpenFSの暫定評価ゲートを区別して、単一のAIモデルが作成した作業版です。独立したAIモデルによる合意判定は完了していません。リリース番号は、HPCIアプリケーションの動作、性能、長期保守を保証するものではありません。",
@@ -2684,7 +2749,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-OCT05-CATALOG41-20261005",
-    "human_approval_directive_id": "DIR-900144"
+    "publication_decision_id": "PUBDEC-NEC-VECTOR-20261011",
+    "human_approval_directive_id": "DIR-900148"
   }
 }

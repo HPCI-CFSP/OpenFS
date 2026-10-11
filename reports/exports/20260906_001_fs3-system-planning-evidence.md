@@ -13,7 +13,7 @@ HPCI 27システム、公開調達20案件、EEA1 6アプリ、19ロードマッ
 | HPCIシステム | 27 | 将来時期 20、数値運用実績 16、公開集計 8、公開運用フィード 11、電力根拠 5 | 状態フィードと集計値を区別し、未確認を更新予定・ゼロ値として扱わない |
 | 公開調達 | 20 | 契約・落札総額 15、概算年額 1、公開仕様 5、60か月費用下限 2 | 費目別の価格内訳 0件、完全なTCO 0件 |
 | EEA1 | 6 | コード版固定 4、入力版固定 1、公開プロキシ 2 | 完全な再現パッケージ 0件、承認済み閾値 0件、検証済み予測 0件 |
-| ロードマップ | 19 | 452マイルストーン、30依存関係 | Consensus Gate未完了 |
+| ロードマップ | 19 | 454マイルストーン、30依存関係 | Consensus Gate未完了 |
 
 ```mermaid
 flowchart LR
@@ -24,7 +24,7 @@ flowchart LR
 
 ## 2. Web調査自動化のセキュリティ境界
 
-状態: **blocked**。本番利用可能なセキュリティプロファイルは0件、確認待ちの情報源は444件です。安全性を自己証明せず、プロファイルを実環境で検証するまでは全URLの再確認を実行しません。
+状態: **blocked**。本番利用可能なセキュリティプロファイルは0件、確認待ちの情報源は448件です。安全性を自己証明せず、プロファイルを実環境で検証するまでは全URLの再確認を実行しません。
 
 - `deploy-and-verify-security-profile`: 管理Web検索、匿名Safe Fetch、SSRF防止、Shell外向き通信遮断、依存取得分離、Git公開制限を実環境で検証します。
 - `record-owner-attestations`: GitHubとプロバイダー側の外部設定を確認し、秘密情報を含まない有効期限付き証明を記録します。
@@ -124,14 +124,14 @@ flowchart LR
 | [AI for Science・科学AIエージェント](https://hpci-cfsp.github.io/OpenFS/roadmaps/applications/ai-for-science-agents/?lang=ja) | 4 | 2 | 0/1/1 |
 | [緊急・リアルタイム・実験連携・量子応用](https://hpci-cfsp.github.io/OpenFS/roadmaps/applications/realtime-experiment-quantum/?lang=ja) | 9 | 1 | 0/2/0 |
 | [科学ワークロード・ベンチマーク・性能モデル](https://hpci-cfsp.github.io/OpenFS/roadmaps/applications/workloads-benchmarks-models/?lang=ja) | 41 | 5 | 4/4/1 |
-| [計算ノード・プロセッサ・アクセラレータ](https://hpci-cfsp.github.io/OpenFS/roadmaps/hardware/compute-nodes-accelerators/?lang=ja) | 66 | 3 | 3/5/1 |
+| [計算ノード・プロセッサ・アクセラレータ](https://hpci-cfsp.github.io/OpenFS/roadmaps/hardware/compute-nodes-accelerators/?lang=ja) | 67 | 3 | 3/6/1 |
 | [施設・電力・冷却](https://hpci-cfsp.github.io/OpenFS/roadmaps/hardware/facility-power-cooling/?lang=ja) | 8 | 1 | 0/1/1 |
 | [インターコネクト・光・資源分離](https://hpci-cfsp.github.io/OpenFS/roadmaps/hardware/interconnect-optics-disaggregation/?lang=ja) | 40 | 3 | 2/4/1 |
 | [メモリ・データ移動技術ロードマップ（2026年以降）](https://hpci-cfsp.github.io/OpenFS/roadmaps/hardware/memory-data-movement/?lang=ja) | 66 | 13 | 1/3/2 |
 | [供給網・技術主権・ライフサイクル](https://hpci-cfsp.github.io/OpenFS/roadmaps/hardware/supply-sovereignty-lifecycle/?lang=ja) | 10 | 0 | 0/2/0 |
 | [ストレージ・データ基盤](https://hpci-cfsp.github.io/OpenFS/roadmaps/hardware/storage-data-platforms/?lang=ja) | 20 | 5 | 1/1/1 |
 | [可観測性・性能工学・電力適応運用](https://hpci-cfsp.github.io/OpenFS/roadmaps/system-software/observability-performance-power/?lang=ja) | 5 | 1 | 0/2/0 |
-| [性能可搬性・コンパイラ・自動最適化](https://hpci-cfsp.github.io/OpenFS/roadmaps/system-software/portability-compilers-tuning/?lang=ja) | 54 | 6 | 4/5/1 |
+| [性能可搬性・コンパイラ・自動最適化](https://hpci-cfsp.github.io/OpenFS/roadmaps/system-software/portability-compilers-tuning/?lang=ja) | 55 | 7 | 5/5/1 |
 | [通信・ランタイム・スケジューリング・OS](https://hpci-cfsp.github.io/OpenFS/roadmaps/system-software/runtime-scheduling-os/?lang=ja) | 8 | 4 | 0/1/1 |
 | [認証・セキュリティ・連合運用](https://hpci-cfsp.github.io/OpenFS/roadmaps/system-software/identity-security-federation/?lang=ja) | 4 | 2 | 0/1/1 |
 | [データ・AI・実験ワークフロー基盤](https://hpci-cfsp.github.io/OpenFS/roadmaps/system-software/data-workflow-platform/?lang=ja) | 4 | 2 | 0/1/1 |
@@ -171,7 +171,7 @@ A provisional package connecting 27 HPCI systems, 20 public procurement cases, 6
 
 > A provisional public-information synthesis by one model and one agent. The Consensus Gate using independent models and accountable approval of requirements, thresholds, budgets, and procurement decisions are incomplete. Coverage counts are research scope, not scores or rankings.
 
-- Secure unattended Web research: **blocked**; 444 source-triage entries remain unresolved.
+- Secure unattended Web research: **blocked**; 448 source-triage entries remain unresolved.
 - HPCI inventory: 27 systems; 20 have public future lifecycle timing, 16 have quantitative operational observations, 8 have public aggregate products, 11 have public status or notice feeds; systems with registered power evidence: 5.
 - Procurement: 20 cases; public contract or award totals: 15; provider-reported approximate annual payment records: 1; itemized cases: 0; complete five-year TCO cases: 0.
 - EEA1: 6 applications; 2 public proxy assets, 0 complete reproducibility packages, 0 approved thresholds, and 0 validated forecasts.
