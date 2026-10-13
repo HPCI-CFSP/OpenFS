@@ -5,7 +5,7 @@
   "status": "published",
   "domain": "hardware",
   "slug": "hardware/compute-nodes-accelerators",
-  "as_of": "2026-10-11",
+  "as_of": "2026-10-13",
   "title_ja": "計算ノード・プロセッサ・アクセラレータ",
   "title_en": "Compute nodes, processors, and accelerators",
   "summary_ja": "2026年以降のCPU、GPU、ウェハスケール・データフロー型アクセラレータ、ラックスケール構成、日本・欧州のプロセッサ、富岳NEXTを対象に、製品の提供時期とHPCIでの評価時期を比較する暫定ロードマップです。",
@@ -295,6 +295,21 @@
       "hpci_implications_en": "Pin generation, VEOS, compiler, MPI, OS, scheduler, licensing and availability. First establish the VH-side OpenFS service/client and VE application path. Test mmap synchronization, concurrent I/O beyond 8/64 MB, append/rename/fsync, failure recovery and checkpoint/restart. Separate storage-to-VH-to-VE transfer from HBM bandwidth and measure MPI-IO, metadata, large transfers, PCIe overhead, node power and correctness. Until hardware testing, label this researched with compatibility validation pending.",
       "source_ids": [
         "SRC-NEC26-TYPES"
+      ]
+    },
+    {
+      "track_id": "COMP-SPARK64",
+      "group": "systems",
+      "name_ja": "DGX Spark 64GB：統合メモリ構成と提供予定",
+      "name_en": "DGX Spark 64GB: unified-memory configuration and planned availability",
+      "summary_ja": "開発・推論用の小規模ノード候補として、単一機の容量と複数機での分散実行、ソフトウェア対応を分けて評価します。",
+      "summary_en": "Assess a small development/inference-node option, separating single-system memory, multi-system distributed execution and software support.",
+      "current_state_ja": "NVIDIAはGB10 Grace Blackwellと64GBの統合メモリを備えるDGX Spark構成を発表し、メーカー各社から10月23日に提供予定としています。2台を200 GbEで接続する構成も説明しますが、これは合計128GBを持つ分散実行であり、1台のHBM容量やコヒーレント接続として比較しません。",
+      "current_state_en": "NVIDIA announced a GB10 Grace Blackwell DGX Spark configuration with 64GB unified memory, planned from manufacturer partners on October 23. Its two-system 200 GbE arrangement provides distributed execution with 128GB aggregate memory; do not compare it as one GPU's HBM capacity or a coherent interconnect.",
+      "hpci_implications_ja": "提供予定日は地域別の調達可能日とは別に確認する。価格例やベンダー性能例を学術調達単価・独立ベンチマークと扱わない。",
+      "hpci_implications_en": "Verify regional procurement readiness separately from the availability target; vendor price/performance examples are not academic unit-cost or independent benchmark evidence.",
+      "source_ids": [
+        "SRC-OCT13-SPARK64"
       ]
     }
   ],
@@ -1908,6 +1923,33 @@
           "dependency_refs": []
         }
       ]
+    },
+    {
+      "lane_id": "LANE-OCT13-SPARK64",
+      "track_id": "COMP-SPARK64",
+      "owner": "NVIDIA",
+      "scope_ja": "DGX Spark 64GB：統合メモリ構成と提供予定",
+      "scope_en": "DGX Spark 64GB: unified-memory configuration and planned availability",
+      "milestones": [
+        {
+          "milestone_id": "MS-OCT13-SPARK64",
+          "year": 2026,
+          "quarter": "Q4",
+          "timing_precision": "quarter",
+          "maturity": "target",
+          "event_type": "product",
+          "timing_basis": "vendor-target",
+          "comparison_priority": "supporting",
+          "label_ja": "10月23日提供予定",
+          "label_en": "Planned availability October 23",
+          "detail_ja": "NVIDIAはGB10 Grace Blackwellと64GBの統合メモリを備えるDGX Spark構成を発表し、メーカー各社から10月23日に提供予定としています。2台を200 GbEで接続する構成も説明しますが、これは合計128GBを持つ分散実行であり、1台のHBM容量やコヒーレント接続として比較しません。",
+          "detail_en": "NVIDIA announced a GB10 Grace Blackwell DGX Spark configuration with 64GB unified memory, planned from manufacturer partners on October 23. Its two-system 200 GbE arrangement provides distributed execution with 128GB aggregate memory; do not compare it as one GPU's HBM capacity or a coherent interconnect.",
+          "source_ids": [
+            "SRC-OCT13-SPARK64"
+          ],
+          "dependency_refs": []
+        }
+      ]
     }
   ],
   "dependencies": [
@@ -2431,6 +2473,14 @@
       "publisher": "NEC",
       "url": "https://www.nec.com/en/global/solutions/hpc/sx/Vector-Engine-Types.html",
       "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-OCT13-SPARK64",
+      "title": "NVIDIA DGX Spark 64GB Gives Developers More Ways to Build and Scale Local AI",
+      "publisher": "NVIDIA",
+      "url": "https://blogs.nvidia.com/blog/local-ai-dgx-spark-64gb-sync/",
+      "source_class": "vendor-official",
+      "published_at": "2026-10-02"
     }
   ],
   "coverage_gaps": [
@@ -2550,7 +2600,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-NEC-VECTOR-20261011",
-    "human_approval_directive_id": "DIR-900148"
+    "publication_decision_id": "PUBDEC-LATEST-OCT13-20261013",
+    "human_approval_directive_id": "DIR-910004"
   }
 }
