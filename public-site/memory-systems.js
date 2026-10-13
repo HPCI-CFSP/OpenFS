@@ -8,6 +8,9 @@
   const japanese = new Map([...document.querySelectorAll('[data-memory-en]')].map(el => [el, el.textContent]));
   function textElement(tag, text) {const el=document.createElement(tag);el.textContent=text;return el;}
   function render(lang) {
+    const pageUrl = new URL(location.href);
+    pageUrl.searchParams.set('lang', lang);
+    history.replaceState(null, '', pageUrl);
     document.documentElement.lang = lang;
     japanese.forEach((text,el) => {el.textContent=lang==='en'?el.dataset.memoryEn:text;});
     document.title=document.querySelector('.memory-entry-title').textContent+' | OpenFS';
