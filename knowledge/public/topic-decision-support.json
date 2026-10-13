@@ -5635,8 +5635,8 @@
     },
     {
       "topic_id": "ARCH-03",
-      "summary_ja": "メモリの出荷・試供・製品掲載と規格の適用範囲を区別する暫定調査。512GB RDIMMの地域別発表日は同一発表であり、最大容量・速度の同時達成条件は未確認です。CXL Type-3 SLDインターリーブとアクセラレータのbundled portsを区別し、既存の実機評価条件・未確認事項を保持します。",
-      "summary_en": "Provisional research distinguishing memory shipment, sampling, product listings and specification scope. Localized 512GB RDIMM dates describe one announcement; simultaneous maximum capacity/speed conditions are unverified. Distinguish Type-3 SLD interleaving from accelerator bundled ports, retaining existing hardware-evaluation conditions and open gaps.",
+      "summary_ja": "メモリの出荷・試供・製品掲載と規格の適用範囲を区別する暫定調査。512GB RDIMMの地域別発表日は同一発表であり、最大容量・速度の同時達成条件は未確認です。CXL Type-3 SLDインターリーブとアクセラレータのbundled portsを区別し、既存の実機評価条件・未確認事項を保持します。 不揮発性メモリ素子の実証範囲とシステム評価への接点を追補します。",
+      "summary_en": "Provisional research distinguishing memory shipment, sampling, product listings and specification scope. Localized 512GB RDIMM dates describe one announcement; simultaneous maximum capacity/speed conditions are unverified. Distinguish Type-3 SLD interleaving from accelerator bundled ports, retaining existing hardware-evaluation conditions and open gaps. Adds NVM device evidence scope and its connection to system-level evaluation.",
       "page_layout": {
         "layout_version": "1.0",
         "components": [
@@ -5655,7 +5655,8 @@
             "section_ids": [
               "TDS-HW3-ARCH-03-U01",
               "TDS-HW2-ARCH-03-U01",
-              "TDS-MEM26-RDIMM-CLARIFICATION"
+              "TDS-MEM26-RDIMM-CLARIFICATION",
+              "TDS-NVM26-DEVICES"
             ],
             "comparison_refs": [
               {
@@ -5665,6 +5666,16 @@
                   "TERM-LPDDR",
                   "TERM-HBM",
                   "TERM-HBF"
+                ]
+              },
+              {
+                "comparison_id": "CMP-NVM-DEVICE-SYSTEM",
+                "term_ids": [
+                  "TERM-MRAM",
+                  "TERM-RRAM",
+                  "TERM-FERAM",
+                  "TERM-FEFET",
+                  "TERM-PCM"
                 ]
               }
             ],
@@ -5695,6 +5706,36 @@
                 "item_ids": [
                   "TDI-HW2-HBF-SPEC",
                   "TDI-HW2-HBF-SAMPLE-TARGETS"
+                ]
+              },
+              {
+                "term_id": "TERM-MRAM",
+                "item_ids": [
+                  "TDI-NVM26-MRAM"
+                ]
+              },
+              {
+                "term_id": "TERM-RRAM",
+                "item_ids": [
+                  "TDI-NVM26-RRAM"
+                ]
+              },
+              {
+                "term_id": "TERM-FERAM",
+                "item_ids": [
+                  "TDI-NVM26-FERAM"
+                ]
+              },
+              {
+                "term_id": "TERM-FEFET",
+                "item_ids": [
+                  "TDI-NVM26-FEFET"
+                ]
+              },
+              {
+                "term_id": "TERM-PCM",
+                "item_ids": [
+                  "TDI-NVM26-PCM"
                 ]
               }
             ],
@@ -6899,6 +6940,150 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-NVM26-DEVICES",
+          "title_ja": "不揮発性メモリ素子と実証範囲",
+          "title_en": "Non-volatile memory devices and evidence scope",
+          "summary_ja": "組込み記憶、研究素子、CIM用アレイを用途別に区別します。研究実証はシステム採用や量産納期の保証ではありません。",
+          "summary_en": "Separate embedded storage, research devices and CIM arrays. Research demonstrations do not guarantee system adoption or production delivery.",
+          "items": [
+            {
+              "item_id": "TDI-NVM26-MRAM",
+              "name_ja": "STT-MRAM",
+              "name_en": "STT-MRAM",
+              "stage": "research",
+              "maturity": "prototype",
+              "timing_ja": "2022-06-16。導入時期は用途・製品ごとに未確認。",
+              "timing_en": "2022-06-16; deployment timing is unverified by use case and product.",
+              "statement_ja": "Renesasの2022年発表は22nm組込みSTT-MRAMのテストチップです。MCU向け回路実証を、サーバー主記憶の量産・採用実績とは扱いません。",
+              "statement_en": "Renesas reported a 22 nm embedded STT-MRAM test chip in 2022. MCU circuit demonstrations do not establish volume production or adoption as server main memory.",
+              "hpci_relevance_ja": "システム用途の候補: 保持・書換えとCMOSへの組込み。採用推奨ではありません。",
+              "hpci_relevance_en": "Candidate system role: Retention, rewriting and CMOS integration. Not an adoption recommendation.",
+              "adoption_conditions_ja": [
+                "温度、読出しマージン、容量、製品範囲",
+                "同じ問題・精度・データ移動・電力範囲でアプリ全体を検証する。"
+              ],
+              "adoption_conditions_en": [
+                "Temperature, read margin, capacity and product scope",
+                "Validate complete applications with matched problems, accuracy, transfers and power scope."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-NVM26-MRAM"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-NVM26-RRAM",
+              "name_ja": "RRAM / ReRAM",
+              "name_en": "RRAM / ReRAM",
+              "stage": "near-term",
+              "maturity": "announced",
+              "timing_ja": "Publication date not stated; checked 2026-10-13。導入時期は用途・製品ごとに未確認。",
+              "timing_en": "Publication date not stated; checked 2026-10-13; deployment timing is unverified by use case and product.",
+              "statement_ja": "Weebitは組込みReRAM IPを紹介し、独立チップは開発中と区別しています。組込みIPの提供状況とCIM用途の精度・性能・量産性は別に確認します。",
+              "statement_en": "Weebit describes embedded ReRAM IP and separately identifies discrete chips as under development. IP availability does not establish CIM accuracy, performance or manufacturability.",
+              "hpci_relevance_ja": "システム用途の候補: 組込み不揮発性記憶、CIMの素子候補。採用推奨ではありません。",
+              "hpci_relevance_en": "Candidate system role: Embedded non-volatile storage and a candidate CIM device. Not an adoption recommendation.",
+              "adoption_conditions_ja": [
+                "ばらつき、保持、書換え耐久性、周辺回路",
+                "同じ問題・精度・データ移動・電力範囲でアプリ全体を検証する。"
+              ],
+              "adoption_conditions_en": [
+                "Variability, retention, endurance and peripheral circuits",
+                "Validate complete applications with matched problems, accuracy, transfers and power scope."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-NVM26-RRAM"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-NVM26-FERAM",
+              "name_ja": "FeRAM",
+              "name_en": "FeRAM",
+              "stage": "research",
+              "maturity": "research",
+              "timing_ja": "2024 edition; exact publication day not stated。導入時期は用途・製品ごとに未確認。",
+              "timing_en": "2024 edition; exact publication day not stated; deployment timing is unverified by use case and product.",
+              "statement_ja": "IRDSは強誘電体メモリを新しいメモリ素子の分類に含めます。FeRAMとFeFETは同義ではなく、構造、読出し方式、集積条件を区別します。資料の実証値と予測値を混ぜません。",
+              "statement_en": "IRDS includes ferroelectric memories in its device taxonomy. FeRAM and FeFET are not interchangeable terms: distinguish structure, readout and integration, and separate demonstrated from projected parameters.",
+              "hpci_relevance_ja": "システム用途の候補: 分極を使った不揮発性記憶。採用推奨ではありません。",
+              "hpci_relevance_en": "Candidate system role: Non-volatile storage through polarization. Not an adoption recommendation.",
+              "adoption_conditions_ja": [
+                "読出し・再書込み、疲労、保持、集積",
+                "同じ問題・精度・データ移動・電力範囲でアプリ全体を検証する。"
+              ],
+              "adoption_conditions_en": [
+                "Readout/restore, fatigue, retention and integration",
+                "Validate complete applications with matched problems, accuracy, transfers and power scope."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-NVM26-FERAM"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-NVM26-FEFET",
+              "name_ja": "FeFET",
+              "name_en": "FeFET",
+              "stage": "research",
+              "maturity": "prototype",
+              "timing_ja": "2025-11-26。導入時期は用途・製品ごとに未確認。",
+              "timing_en": "2025-11-26; deployment timing is unverified by use case and product.",
+              "statement_ja": "2025年のNature論文は低消費電力の強誘電体NANDに向けたFeFETとストリング動作の研究です。ストリング単位の省電力をSSDやHPCシステム全体へ適用せず、量産製品とは区別します。",
+              "statement_en": "A 2025 Nature paper studies FeFETs and string operation for low-power ferroelectric NAND. String-level energy findings must not be extrapolated to an SSD or HPC system, or described as a shipping product.",
+              "hpci_relevance_ja": "システム用途の候補: 低電圧、多値化、立体集積の研究。採用推奨ではありません。",
+              "hpci_relevance_en": "Candidate system role: Research into low voltage, multilevel storage and 3D integration. Not an adoption recommendation.",
+              "adoption_conditions_ja": [
+                "保持、耐久性、ディスターブ、アレイ歩留まり",
+                "同じ問題・精度・データ移動・電力範囲でアプリ全体を検証する。"
+              ],
+              "adoption_conditions_en": [
+                "Retention, endurance, disturb and array yield",
+                "Validate complete applications with matched problems, accuracy, transfers and power scope."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-NVM26-FEFET"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-NVM26-PCM",
+              "name_ja": "PCM",
+              "name_en": "PCM",
+              "stage": "research",
+              "maturity": "prototype",
+              "timing_ja": "2023-08-10。導入時期は用途・製品ごとに未確認。",
+              "timing_en": "2023-08-10; deployment timing is unverified by use case and product.",
+              "statement_ja": "IBMの2023年研究チップはPCMを用いた64コアのアナログCIMに、デジタル処理とオンチップ通信を組み合わせます。報告された推論条件を科学計算の任意のカーネルやHPCI全体へ外挿しません。",
+              "statement_en": "IBM's 2023 research chip combines 64 PCM-based analog CIM cores with digital processing and on-chip communication. Its inference results do not establish performance for arbitrary scientific kernels or an HPCI system.",
+              "hpci_relevance_ja": "システム用途の候補: 記憶とアナログ積和の接点。採用推奨ではありません。",
+              "hpci_relevance_en": "Candidate system role: A connection between storage and analog matrix operations. Not an adoption recommendation.",
+              "adoption_conditions_ja": [
+                "ドリフト、精度、ADC/DAC、書込み、通信",
+                "同じ問題・精度・データ移動・電力範囲でアプリ全体を検証する。"
+              ],
+              "adoption_conditions_en": [
+                "Drift, accuracy, ADC/DAC, programming and communication",
+                "Validate complete applications with matched problems, accuracy, transfers and power scope."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-NVM26-PCM"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -7042,6 +7227,16 @@
             "ARCH-03-U03"
           ],
           "created_at": "2026-10-11T09:24:03Z",
+          "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000560",
+          "bundle_sha256": "eaf20ba61e802b27a0440630fe81c905978bb1e80ba7e919fe9bcc4abbc28402",
+          "base_commit": "9f7c38ddb64d38320358f634038c7435e12c04f8",
+          "unit_ids": [
+            "ARCH-03-U01"
+          ],
+          "created_at": "2026-10-13T14:16:29Z",
           "consensus_status": "incomplete"
         }
       ]
@@ -81220,6 +81415,46 @@
       "url": "https://blogs.nvidia.com/blog/local-ai-dgx-spark-64gb-sync/",
       "source_class": "official-vendor",
       "published_or_updated": "2026-10-02"
+    },
+    {
+      "source_id": "SRC-NVM26-MRAM",
+      "title": "STT-MRAM: primary evidence",
+      "publisher": "Renesas",
+      "url": "https://www.renesas.com/en/about/newsroom/renesas-develops-circuit-technologies-22-nm-embedded-stt-mram-faster-read-and-write-performance-mcus",
+      "source_class": "official-vendor",
+      "published_or_updated": "2022-06-16"
+    },
+    {
+      "source_id": "SRC-NVM26-RRAM",
+      "title": "RRAM / ReRAM: primary evidence",
+      "publisher": "Weebit Nano",
+      "url": "https://www.weebit-nano.com/technology/overview/",
+      "source_class": "official-vendor",
+      "published_or_updated": "Publication date not stated; checked 2026-10-13"
+    },
+    {
+      "source_id": "SRC-NVM26-FERAM",
+      "title": "FeRAM: primary evidence",
+      "publisher": "IEEE IRDS",
+      "url": "https://irds.ieee.org/images/files/pdf/2024/2024IRDS_BC.pdf",
+      "source_class": "official-standard",
+      "published_or_updated": "2024 edition; exact publication day not stated"
+    },
+    {
+      "source_id": "SRC-NVM26-FEFET",
+      "title": "FeFET: primary evidence",
+      "publisher": "Nature / research authors",
+      "url": "https://www.nature.com/articles/s41586-025-09793-3",
+      "source_class": "peer-reviewed",
+      "published_or_updated": "2025-11-26"
+    },
+    {
+      "source_id": "SRC-NVM26-PCM",
+      "title": "PCM: primary evidence",
+      "publisher": "IBM Research",
+      "url": "https://research.ibm.com/publications/a-64-core-mixed-signal-in-memory-compute-chip-based-on-phase-change-memory-for-deep-neural-network-inference",
+      "source_class": "peer-reviewed",
+      "published_or_updated": "2023-08-10"
     }
   ],
   "coverage_gaps": [
@@ -82404,7 +82639,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-LATEST-OCT13-20261013",
-    "human_approval_directive_id": "DIR-910004"
+    "publication_decision_id": "PUBDEC-MEMORY-SYSTEMS-20261013",
+    "human_approval_directive_id": "DIR-910005"
   }
 }

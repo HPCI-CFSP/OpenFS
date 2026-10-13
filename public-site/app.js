@@ -9,6 +9,7 @@
 
   const copy = {
     ja: {
+      memoryExpertEntry: "メモリ技術の研究者のみなさまへ",
       scopeTitle: "調査項目", relatedTopics: "関連する調査項目", movedTopic: "再編前の調査項目", movedTopicNote: "この項目は統合・移管されました。現在の調査範囲は以下の項目・成果物から確認できます。", relatedOutput: "関連する公開ページ", evidenceSections: "収集済みの関連情報", sharedEvidence: "同一の記述・根拠を参照", researchUnit: "調査", researchDetails: "詳しい調査結果", topicOverview: "調査結果の概要", unitRoadmaps: "対応するロードマップ", stageCurrentBadge: "実用化・市場導入済み", stageNearTermBadge: "導入初期・近い将来", stageResearchBadge: "中長期の研究開発候補", stageContestedBadge: "見解不一致・未確定",
       languageControl: "表示言語", publicStatus: "公開状態", inPageNavigation: "ページ内ナビゲーション", openfsSummary: "OpenFSの集計", tagline: "公開調査カタログとシステム整備計画案", publicOnly: "公開情報のみ", siteUpdated: "サイト更新日時", catalogAsOf: "カタログ基準日", researchAsOf: "調査基準日", asOf: "情報確認日", licenseLabel: "ライセンス",
       navOverview: "概要", navCatalog: "調査カタログ", navOperational: "ソフトウェア利用調査", navSearch: "検索", navRoadmaps: "ロードマップ", navScenarios: "システム整備計画案", navReports: "報告書", navGlossary: "専門用語",
@@ -55,6 +56,7 @@
       provisionalNotice: "公開情報に基づく暫定整理です。独立したAIモデルによる合意判定（Consensus Gate）は完了していません。", currentStage: "最新状況（調査基準日現在）", nearTermStage: "近い将来の方向性", researchStage: "中長期の研究開発候補", contestedStage: "見解が分かれている論点・未確定事項", maturity: "成熟度", timing: "時期", confidence: "確度", hpciRelevance: "HPCIシステム整備との関係", adoptionConditions: "採用判断で確認する条件", actorsLabel: "関係主体", actorRoles: "役割", sourceEvidence: "公開根拠", decisionDimensions: "整備判断の評価軸", relatedTables: "関連する比較表", catalogComparisons: "関連技術の比較", catalogComparisonsLead: "調査結果に現れる競合・補完技術を、共通の判断軸で比較します。", decisionUse: "整備判断での使い方", comparisonCaveat: "注意事項", comparisonRoadmaps: "比較対象のロードマップ", platformMatrix: "主要CPU・GPUのソフトウェア対応表", numericalMatrix: "数値計算アルゴリズム・精度対応表", capabilitySoftware: "機能／ソフトウェア", supportLevel: "対応状況", optimizationLevel: "最適化状況", versionLicense: "版・ライセンス", methodSoftware: "アルゴリズム／ソフトウェア", targetPlatforms: "対象プラットフォーム", inputPrecision: "入力精度", computePrecision: "演算精度", accumulationPrecision: "累積精度", outputPrecision: "出力精度", mixedPrecision: "混合精度", precisionEmulation: "精度エミュレーション", distributedSupport: "分散実行", coverageGaps: "未確認事項", nextAction: "次の調査", researchHistory: "調査履歴・個別知見", researchHistoryLead: "調査実行ごとの来歴と抽出知見を確認できます。", high: "高", medium: "中", low: "低", deployed: "運用中", standardized: "標準化済み", sampling: "サンプル提供中", announced: "発表済み", prototype: "試作", research: "研究", uncertain: "不確定", production: "製品対応", partial: "部分対応", experimental: "実験的", community: "コミュニティ対応", notVerified: "未確認", vendorTuned: "ベンダー最適化", architectureTuned: "アーキテクチャ最適化", portable: "移植可能", generic: "汎用", researchArtifact: "研究成果", native: "ネイティブ対応", libraryDependent: "ライブラリ依存", singleNode: "単一ノード"
     },
     en: {
+      memoryExpertEntry: "For memory-technology researchers",
       scopeTitle: "Research topics", relatedTopics: "Related research topics", movedTopic: "Previous catalog entry", movedTopicNote: "This entry has been merged or transferred. Its current scope is available through the following topics or outputs.", relatedOutput: "Related public page", evidenceSections: "Related evidence collected", sharedEvidence: "Refer to the same statement and evidence", researchUnit: "Study", researchDetails: "Detailed findings", topicOverview: "Research summary", unitRoadmaps: "Related roadmaps", stageCurrentBadge: "Deployed or commercially available", stageNearTermBadge: "Early adoption or near-term direction", stageResearchBadge: "Mid- to long-term R&D candidate", stageContestedBadge: "Contested or unresolved",
       languageControl: "Display language", publicStatus: "Publication status", inPageNavigation: "Page navigation", openfsSummary: "OpenFS summary", tagline: "Public research catalog and system planning options", publicOnly: "Public information only", siteUpdated: "Site updated", catalogAsOf: "Catalog as of", researchAsOf: "Research as of", asOf: "As of", licenseLabel: "License",
       navOverview: "Overview", navCatalog: "Research catalog", navOperational: "Software usage survey", navSearch: "Search", navRoadmaps: "Roadmaps", navScenarios: "System planning options", navReports: "Reports", navGlossary: "Glossary",
@@ -181,6 +183,12 @@
 
   function applyStaticCopy() {
     document.documentElement.lang = language;
+    const memoryEntry = document.getElementById("memory-expert-entry");
+    if (memoryEntry && memoryEntry.tagName === "A") {
+      const entryUrl = new URL(memoryEntry.href);
+      entryUrl.searchParams.set("lang", language);
+      memoryEntry.href = entryUrl.href;
+    }
     document.querySelectorAll("[data-i18n]").forEach((element) => { element.textContent = tr(element.dataset.i18n); });
     document.querySelectorAll("[data-i18n-placeholder]").forEach((element) => { element.placeholder = tr(element.dataset.i18nPlaceholder); });
     document.querySelectorAll("[data-i18n-aria-label]").forEach((element) => { element.setAttribute("aria-label", tr(element.dataset.i18nAriaLabel)); });
