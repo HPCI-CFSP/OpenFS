@@ -4,8 +4,8 @@
 > Generated from the canonical harness. Do not edit this managed block; put project-specific instructions outside it.
 
 - Harness ID: `kento-common`
-- Harness version: `0.3.5`
-- Source commit: `eb2befcfa2178d0ef57b05d19eaa5fadcd334f03`
+- Harness version: `0.3.6`
+- Source commit: `a1e867dee54bad8d4bcf45150b54c91eef586f0e`
 - Service adapter: `codex`
 - Profiles: `code`, `workspace`
 - Source ID: `kento-common`
