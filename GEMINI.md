@@ -5,7 +5,7 @@
 
 - Harness ID: `kento-common`
 - Harness version: `0.3.6`
-- Source commit: `a1e867dee54bad8d4bcf45150b54c91eef586f0e`
+- Source commit: `80a2679022315587e3433379fbcb35aeae88ab41`
 - Service adapter: `gemini`
 - Profiles: `code`, `workspace`
 - Source ID: `kento-common`
