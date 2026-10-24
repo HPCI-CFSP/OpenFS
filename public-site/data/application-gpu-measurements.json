@@ -1,0 +1,488 @@
+{
+  "schema_version": "1.0",
+  "export_id": "APPLICATION-GPU-MEASUREMENTS-20261024",
+  "as_of": "2026-10-24",
+  "status": "published",
+  "consensus_status": "incomplete",
+  "publication": {
+    "information_classification": "public",
+    "publication_approved": true,
+    "publication_decision_id": "PUBDEC-GPU-MEASUREMENTS-20261024",
+    "human_approval_directive_id": "DIR-910006"
+  },
+  "title_ja": "R-CCSクラウド・理究 GPUアプリケーション実測値",
+  "title_en": "Measured GPU application runtimes on R-CCS Cloud and Rikyu",
+  "summary_ja": "通常実行の実測値のみ。長時間5ケースと過去の短時間ケースを分離し、計測区間・GPU型番・反復値を保持します。",
+  "summary_en": "Normal-run measurements only. The five long-run cases and historical short tests remain separate, with explicit timer scopes, GPU variants and retained repetitions.",
+  "caveat_ja": "空欄は未掲載・未測定であり0秒ではありません。保存済み証拠の範囲で、両システムの全GPU・全条件の測定完了は未達です。GPU・CPU・コンパイラ・ライブラリ条件は統制されておらず、同一行でも純粋なGPU比較とは限りません。旧保存集計は反復内訳を再構成していません。過去の短時間ケースは今回の30秒以上／HPCG120秒以上の条件を満たした測定に昇格しません。予測値・精度評価は掲載していません。",
+  "caveat_en": "An empty cell is missing evidence, not zero seconds. This retained evidence does not complete all GPU/workload combinations or establish an exhaustive current device inventory. Host CPU, compiler and library conditions are not controlled, so a row is not necessarily a GPU-only comparison. Legacy saved aggregates do not reconstruct per-run samples. Historical short cases do not satisfy the current >=30 s / HPCG >=120 s duration gates. No predictions or accuracy results are included.",
+  "devices": [
+    {
+      "id": "rcc-a100",
+      "name": "A100 SXM4 80 GB",
+      "site": "R-CCS Cloud"
+    },
+    {
+      "id": "rcc-h100-pcie",
+      "name": "H100 PCIe 80 GB",
+      "site": "R-CCS Cloud"
+    },
+    {
+      "id": "rcc-gh200",
+      "name": "GH200 HBM3 96 GB",
+      "site": "R-CCS Cloud"
+    },
+    {
+      "id": "rcc-h200",
+      "name": "H200 SXM 141 GB",
+      "site": "R-CCS Cloud"
+    },
+    {
+      "id": "rcc-b300",
+      "name": "B300 SXM6 288 GB",
+      "site": "R-CCS Cloud"
+    },
+    {
+      "id": "rcc-h100-nvl",
+      "name": "H100 NVL",
+      "site": "R-CCS Cloud"
+    },
+    {
+      "id": "rikyu-gb200",
+      "name": "GB200 (one application GPU)",
+      "site": "Rikyu"
+    }
+  ],
+  "cases": [
+    {
+      "id": "lqcd-normal3-20261023",
+      "application": "LQCD",
+      "workload": "8^4 lattice; HMC 4 trajectories; trajectory length0.1; OMP1",
+      "scope": "native-compute",
+      "long_run": true,
+      "minimum_seconds": 30
+    },
+    {
+      "id": "genesis-normal3-20261023",
+      "application": "GENESIS",
+      "workload": "JAC27346 atoms; CHARMM/PME64^3; VVER4000; dt0.001; OMP4",
+      "scope": "native-compute",
+      "long_run": true,
+      "minimum_seconds": 30
+    },
+    {
+      "id": "salmon-normal3-20261023",
+      "application": "SALMON",
+      "workload": "Si8 RT; nt20000; fixed RCC restart; OMP1",
+      "scope": "native-compute",
+      "long_run": true,
+      "minimum_seconds": 30
+    },
+    {
+      "id": "hpl-normal3-20261023",
+      "application": "HPL",
+      "workload": "Netlib2.3+NVBLAS; N24576; NB256; P1 Q1; one rank/GPU; OMP1",
+      "scope": "native-solver",
+      "long_run": true,
+      "minimum_seconds": 30
+    },
+    {
+      "id": "hpcg-normal3-20261023",
+      "application": "HPCG",
+      "workload": "256^3; 500 CG sets x50 iterations; one rank/GPU; OMP4",
+      "scope": "native-solver",
+      "long_run": true,
+      "minimum_seconds": 120
+    },
+    {
+      "id": "genesis-legacy-20",
+      "application": "GENESIS",
+      "workload": "JAC 27346 atoms, PME64^3, VVER20; historical short test",
+      "scope": "native-compute",
+      "long_run": false,
+      "minimum_seconds": 0
+    },
+    {
+      "id": "salmon-legacy-gs",
+      "application": "SALMON",
+      "workload": "Si8 ground state, SCF up to120; historical short test",
+      "scope": "native-compute",
+      "long_run": false,
+      "minimum_seconds": 0
+    },
+    {
+      "id": "salmon-legacy-rt180",
+      "application": "SALMON",
+      "workload": "Si8, TDDFT nt180, dt0.16; historical short test",
+      "scope": "native-compute",
+      "long_run": false,
+      "minimum_seconds": 0
+    },
+    {
+      "id": "lqcd-legacy-1traj",
+      "application": "LQCD",
+      "workload": "8^4 DWF/HMC, 1 trajectory; historical short test",
+      "scope": "native-compute",
+      "long_run": false,
+      "minimum_seconds": 0
+    },
+    {
+      "id": "hpl-legacy-32768",
+      "application": "HPL",
+      "workload": "NVIDIA HPL N32768 NB512 P1 Q1; historical short solver case",
+      "scope": "native-solver",
+      "long_run": false,
+      "minimum_seconds": 0
+    },
+    {
+      "id": "hpcg-legacy-128",
+      "application": "HPCG",
+      "workload": "NVIDIA HPCG 128^3, rt2; historical short timed section, not official qualification",
+      "scope": "native-solver",
+      "long_run": false,
+      "minimum_seconds": 0
+    }
+  ],
+  "measurements": [
+    {
+      "id": "lqcd-normal3-20261023-rcc-h100-nvl",
+      "case_id": "lqcd-normal3-20261023",
+      "device_id": "rcc-h100-nvl",
+      "seconds": 52.900015674,
+      "samples_seconds": [
+        52.492530075,
+        52.926245463,
+        52.900015674
+      ],
+      "statistic": "median",
+      "evidence_sha256": "e9d0b51f75964478d8af58660407fa00b5463946769d4bfb69a5015321551c4e"
+    },
+    {
+      "id": "genesis-normal3-20261023-rcc-h100-nvl",
+      "case_id": "genesis-normal3-20261023",
+      "device_id": "rcc-h100-nvl",
+      "seconds": 35.817951172,
+      "samples_seconds": [
+        38.996356529,
+        35.817951172,
+        35.528176217
+      ],
+      "statistic": "median",
+      "evidence_sha256": "e9d0b51f75964478d8af58660407fa00b5463946769d4bfb69a5015321551c4e"
+    },
+    {
+      "id": "salmon-normal3-20261023-rcc-h100-nvl",
+      "case_id": "salmon-normal3-20261023",
+      "device_id": "rcc-h100-nvl",
+      "seconds": 77.399139725,
+      "samples_seconds": [
+        80.202535989,
+        77.399139725,
+        77.251529609
+      ],
+      "statistic": "median",
+      "evidence_sha256": "e9d0b51f75964478d8af58660407fa00b5463946769d4bfb69a5015321551c4e"
+    },
+    {
+      "id": "hpl-normal3-20261023-rcc-h100-nvl",
+      "case_id": "hpl-normal3-20261023",
+      "device_id": "rcc-h100-nvl",
+      "seconds": 35.163493223,
+      "samples_seconds": [
+        35.702096852,
+        35.163493223,
+        35.155136125
+      ],
+      "statistic": "median",
+      "evidence_sha256": "e9d0b51f75964478d8af58660407fa00b5463946769d4bfb69a5015321551c4e"
+    },
+    {
+      "id": "hpcg-normal3-20261023-rikyu-gb200",
+      "case_id": "hpcg-normal3-20261023",
+      "device_id": "rikyu-gb200",
+      "seconds": 138.54443032,
+      "samples_seconds": [
+        138.54443032,
+        138.439052362,
+        138.544872886
+      ],
+      "statistic": "median",
+      "evidence_sha256": "e9d0b51f75964478d8af58660407fa00b5463946769d4bfb69a5015321551c4e"
+    },
+    {
+      "id": "genesis-legacy-20-rcc-h200",
+      "case_id": "genesis-legacy-20",
+      "device_id": "rcc-h200",
+      "seconds": 0.259999178,
+      "samples_seconds": [
+        0.258464041,
+        0.259999178,
+        0.260465212
+      ],
+      "statistic": "median",
+      "evidence_sha256": "375725e61b0c7245f610b0b083476094f63c21eab935a2c4d9a55cce93ffa453"
+    },
+    {
+      "id": "genesis-legacy-20-rcc-b300",
+      "case_id": "genesis-legacy-20",
+      "device_id": "rcc-b300",
+      "seconds": 0.310881559,
+      "samples_seconds": [
+        0.310881559,
+        0.324019732,
+        0.310324189
+      ],
+      "statistic": "median",
+      "evidence_sha256": "375725e61b0c7245f610b0b083476094f63c21eab935a2c4d9a55cce93ffa453"
+    },
+    {
+      "id": "salmon-legacy-gs-rcc-gh200",
+      "case_id": "salmon-legacy-gs",
+      "device_id": "rcc-gh200",
+      "seconds": 1.407692919,
+      "samples_seconds": [
+        1.412440423,
+        1.407692919,
+        1.363775926
+      ],
+      "statistic": "median",
+      "evidence_sha256": "375725e61b0c7245f610b0b083476094f63c21eab935a2c4d9a55cce93ffa453"
+    },
+    {
+      "id": "salmon-legacy-gs-rcc-b300",
+      "case_id": "salmon-legacy-gs",
+      "device_id": "rcc-b300",
+      "seconds": 8.591668389,
+      "samples_seconds": [
+        8.600359052,
+        8.591668389,
+        8.499927626
+      ],
+      "statistic": "median",
+      "evidence_sha256": "375725e61b0c7245f610b0b083476094f63c21eab935a2c4d9a55cce93ffa453"
+    },
+    {
+      "id": "salmon-legacy-gs-rcc-h200",
+      "case_id": "salmon-legacy-gs",
+      "device_id": "rcc-h200",
+      "seconds": 6.657079425,
+      "samples_seconds": [
+        6.655308593,
+        6.657079425,
+        6.702120084
+      ],
+      "statistic": "median",
+      "evidence_sha256": "375725e61b0c7245f610b0b083476094f63c21eab935a2c4d9a55cce93ffa453"
+    },
+    {
+      "id": "salmon-legacy-rt180-rcc-gh200",
+      "case_id": "salmon-legacy-rt180",
+      "device_id": "rcc-gh200",
+      "seconds": 0.655053627,
+      "samples_seconds": [
+        0.664987543,
+        0.648672828,
+        0.655053627
+      ],
+      "statistic": "median",
+      "evidence_sha256": "375725e61b0c7245f610b0b083476094f63c21eab935a2c4d9a55cce93ffa453"
+    },
+    {
+      "id": "salmon-legacy-rt180-rcc-b300",
+      "case_id": "salmon-legacy-rt180",
+      "device_id": "rcc-b300",
+      "seconds": 1.288914388,
+      "samples_seconds": [
+        1.307196115,
+        1.288135051,
+        1.288914388
+      ],
+      "statistic": "median",
+      "evidence_sha256": "375725e61b0c7245f610b0b083476094f63c21eab935a2c4d9a55cce93ffa453"
+    },
+    {
+      "id": "salmon-legacy-rt180-rcc-h200",
+      "case_id": "salmon-legacy-rt180",
+      "device_id": "rcc-h200",
+      "seconds": 0.888927215,
+      "samples_seconds": [
+        0.900665146,
+        0.888927215,
+        0.880938094
+      ],
+      "statistic": "median",
+      "evidence_sha256": "375725e61b0c7245f610b0b083476094f63c21eab935a2c4d9a55cce93ffa453"
+    },
+    {
+      "id": "lqcd-legacy-1traj-rcc-gh200",
+      "case_id": "lqcd-legacy-1traj",
+      "device_id": "rcc-gh200",
+      "seconds": 13.19442789,
+      "samples_seconds": [
+        13.229023795,
+        13.088285572,
+        13.19442789
+      ],
+      "statistic": "median",
+      "evidence_sha256": "375725e61b0c7245f610b0b083476094f63c21eab935a2c4d9a55cce93ffa453"
+    },
+    {
+      "id": "lqcd-legacy-1traj-rcc-b300",
+      "case_id": "lqcd-legacy-1traj",
+      "device_id": "rcc-b300",
+      "seconds": 26.200436497,
+      "samples_seconds": [
+        26.500478614,
+        25.970612717,
+        26.200436497
+      ],
+      "statistic": "median",
+      "evidence_sha256": "375725e61b0c7245f610b0b083476094f63c21eab935a2c4d9a55cce93ffa453"
+    },
+    {
+      "id": "lqcd-legacy-1traj-rcc-h200",
+      "case_id": "lqcd-legacy-1traj",
+      "device_id": "rcc-h200",
+      "seconds": 16.604624612,
+      "samples_seconds": [
+        16.604624612,
+        16.524132838,
+        16.733181927
+      ],
+      "statistic": "median",
+      "evidence_sha256": "375725e61b0c7245f610b0b083476094f63c21eab935a2c4d9a55cce93ffa453"
+    },
+    {
+      "id": "lqcd-legacy-1traj-rcc-a100",
+      "case_id": "lqcd-legacy-1traj",
+      "device_id": "rcc-a100",
+      "seconds": 17.808398837,
+      "samples_seconds": null,
+      "statistic": "saved-aggregate",
+      "evidence_sha256": "53f0dbae24edf0a3b7a6857cc365b82b833a44d7b4e9219f3f2deec669f96936"
+    },
+    {
+      "id": "genesis-legacy-20-rcc-a100",
+      "case_id": "genesis-legacy-20",
+      "device_id": "rcc-a100",
+      "seconds": 0.436368905,
+      "samples_seconds": null,
+      "statistic": "saved-aggregate",
+      "evidence_sha256": "53f0dbae24edf0a3b7a6857cc365b82b833a44d7b4e9219f3f2deec669f96936"
+    },
+    {
+      "id": "salmon-legacy-rt180-rcc-a100",
+      "case_id": "salmon-legacy-rt180",
+      "device_id": "rcc-a100",
+      "seconds": 0.959871743,
+      "samples_seconds": null,
+      "statistic": "saved-aggregate",
+      "evidence_sha256": "53f0dbae24edf0a3b7a6857cc365b82b833a44d7b4e9219f3f2deec669f96936"
+    },
+    {
+      "id": "salmon-legacy-gs-rcc-a100",
+      "case_id": "salmon-legacy-gs",
+      "device_id": "rcc-a100",
+      "seconds": 8.908879576,
+      "samples_seconds": null,
+      "statistic": "saved-aggregate",
+      "evidence_sha256": "53f0dbae24edf0a3b7a6857cc365b82b833a44d7b4e9219f3f2deec669f96936"
+    },
+    {
+      "id": "lqcd-legacy-1traj-rcc-h100-pcie",
+      "case_id": "lqcd-legacy-1traj",
+      "device_id": "rcc-h100-pcie",
+      "seconds": 13.739830863,
+      "samples_seconds": [
+        13.700249389,
+        13.739830863,
+        13.810669064
+      ],
+      "statistic": "median",
+      "evidence_sha256": "f07d044556942d6cbbd68c407cafe9e848035ef90d6bfc355cd14de842fd7ef4"
+    },
+    {
+      "id": "genesis-legacy-20-rcc-h100-pcie",
+      "case_id": "genesis-legacy-20",
+      "device_id": "rcc-h100-pcie",
+      "seconds": 0.332505115,
+      "samples_seconds": [
+        0.332505115,
+        0.334462396,
+        0.331009894
+      ],
+      "statistic": "median",
+      "evidence_sha256": "f07d044556942d6cbbd68c407cafe9e848035ef90d6bfc355cd14de842fd7ef4"
+    },
+    {
+      "id": "salmon-legacy-rt180-rcc-h100-pcie",
+      "case_id": "salmon-legacy-rt180",
+      "device_id": "rcc-h100-pcie",
+      "seconds": 0.733381846,
+      "samples_seconds": [
+        0.735268041,
+        0.733381846,
+        0.730481114
+      ],
+      "statistic": "median",
+      "evidence_sha256": "f07d044556942d6cbbd68c407cafe9e848035ef90d6bfc355cd14de842fd7ef4"
+    },
+    {
+      "id": "salmon-legacy-gs-rcc-h100-pcie",
+      "case_id": "salmon-legacy-gs",
+      "device_id": "rcc-h100-pcie",
+      "seconds": 8.978050254,
+      "samples_seconds": [
+        9.001739476,
+        8.972476196,
+        8.978050254
+      ],
+      "statistic": "median",
+      "evidence_sha256": "f07d044556942d6cbbd68c407cafe9e848035ef90d6bfc355cd14de842fd7ef4"
+    },
+    {
+      "id": "hpl-legacy-32768-rcc-a100",
+      "case_id": "hpl-legacy-32768",
+      "device_id": "rcc-a100",
+      "seconds": 1.915,
+      "samples_seconds": [
+        1.92,
+        1.92,
+        1.91,
+        1.91
+      ],
+      "statistic": "median",
+      "evidence_sha256": "23201ad71eaf84640f2dffa900f43d66622aa67e683bee323d93bea1b314670a"
+    },
+    {
+      "id": "hpcg-legacy-128-rcc-a100",
+      "case_id": "hpcg-legacy-128",
+      "device_id": "rcc-a100",
+      "seconds": 2.0302249999999997,
+      "samples_seconds": [
+        2.02877,
+        2.03003,
+        2.03771,
+        2.03042
+      ],
+      "statistic": "median",
+      "evidence_sha256": "ca69f3023547a8f7aa25bc2c16e8bcd7fba3a6f4f1236c13ae96ea4dc73aeb94"
+    },
+    {
+      "id": "hpl-legacy-32768-rcc-h100-pcie",
+      "case_id": "hpl-legacy-32768",
+      "device_id": "rcc-h100-pcie",
+      "seconds": 1.08,
+      "samples_seconds": [
+        1.08,
+        1.08,
+        1.08,
+        1.08
+      ],
+      "statistic": "median",
+      "evidence_sha256": "d93ee0e97ff2e82bb813630f5c91e0c7741cc4bc59690b158a84d413a3f16764"
+    }
+  ],
+  "predictions_included": false,
+  "site_inventory_complete": false
+}
