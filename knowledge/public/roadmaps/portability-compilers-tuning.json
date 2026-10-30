@@ -5,7 +5,7 @@
   "status": "published",
   "domain": "system-software",
   "slug": "system-software/portability-compilers-tuning",
-  "as_of": "2026-10-11",
+  "as_of": "2026-10-30",
   "title_ja": "性能可搬性・コンパイラ・自動最適化",
   "title_en": "Performance portability, compilers, and automated optimization",
   "summary_ja": "並列API、通信ランタイム、コンパイラ基盤、性能可搬性レイヤー、ベンダー提供のソフトウェアスタック、自動移植・最適化を、HPCIの世代移行に向けた評価ゲートとともに比較する暫定ロードマップです。",
@@ -299,8 +299,8 @@
       "summary_en": "Provisional OpenFS decision gates that connect continuous evaluation across multiple ISAs and GPUs to application migration and acceptance criteria.",
       "current_state_ja": "コンパイラに関する公開情報は多いが、HPCIアプリケーション群の移植性を同一条件で比較した台帳は整備されていない。 2026年10月3日に確認したPETSc概要ではHIP Vec/MatがSUPPORTEDに更新されたが、取得した概要3.26.0とAPI 3.25.5の版は一致しない。数値ライブラリの対応表と、同一版・実問題での受入検証を区別する。",
       "current_state_en": "Substantial compiler information is public, but no common portability inventory compares the HPCI application portfolio under identical conditions. The PETSc overview checked on October 3, 2026 marks HIP Vec/Mat SUPPORTED, but the retrieved overview 3.26.0 and API 3.25.5 differ in version. Distinguish numerical-library support tables from version-matched qualification on actual problems.",
-      "hpci_implications_ja": "ビルド可否、計算結果の妥当性、性能、移植工数、保守性を別々の指標で評価し、センターごとに必要なバックエンドを維持する。 数値ライブラリでは、oneMathの領域・処理系・backend別対応を固定し、入力・演算・累積/再構成・出力精度を分ける評価を提案する。cuBLASのworkspace・特殊値設定・fallback、GEMMul8のmoduli数・scaling・実数/複素・INT8/FP8経路も記録する。これは既存移植性台帳と複数backend再現性ゲートへの評価条件の追加案であり、将来のライブラリ提供日・保守期限や精度保証ではない。",
-      "hpci_implications_en": "Track buildability, numerical correctness, performance, porting effort, and maintainability separately while retaining the backends required by each center. For numerical libraries, propose pinning oneMath domain/compiler/backend coverage and distinguishing input, compute, accumulation/reconstruction and output precision. Also record cuBLAS workspace, special-value settings and fallback, plus GEMMul8 modulus count, scaling, real/complex mode and INT8/FP8 path. These are proposed qualification conditions for the existing inventory and multi-backend reproducibility gates, not future library delivery dates, support lifetimes or accuracy guarantees.",
+      "hpci_implications_ja": "ビルド可否、計算結果の妥当性、性能、移植工数、保守性を別々の指標で評価し、センターごとに必要なバックエンドを維持する。 数値ライブラリでは、oneMathの領域・処理系・backend別対応を固定し、入力・演算・累積/再構成・出力精度を分ける評価を提案する。cuBLASのworkspace・特殊値設定・fallback、GEMMul8のmoduli数・scaling・実数/複素・INT8/FP8経路も記録する。これは既存移植性台帳と複数backend再現性ゲートへの評価条件の追加案であり、将来のライブラリ提供日・保守期限や精度保証ではない。 評価案として、元実装・移植直後・最適化後と、移植の正しさ・最適化同値性・実測性能を分けて記録する。達成や日程変更を意味しない。",
+      "hpci_implications_en": "Track buildability, numerical correctness, performance, porting effort, and maintainability separately while retaining the backends required by each center. For numerical libraries, propose pinning oneMath domain/compiler/backend coverage and distinguishing input, compute, accumulation/reconstruction and output precision. Also record cuBLAS workspace, special-value settings and fallback, plus GEMMul8 modulus count, scaling, real/complex mode and INT8/FP8 path. These are proposed qualification conditions for the existing inventory and multi-backend reproducibility gates, not future library delivery dates, support lifetimes or accuracy guarantees. Proposed evaluation: record original, ported and optimized baselines, separating migration correctness, optimization equivalence and measured performance. This does not establish achievement or change dates.",
       "source_ids": [
         "SRC-PORT011",
         "SRC-PORT012",
@@ -308,7 +308,8 @@
         "SRC-OCT03-SSW004-PETSC-OVERVIEW-ROADMAP",
         "SRC-OCT03-SSW004-PETSC-HIP-ROADMAP",
         "SRC-OCT03-SSW004-CUBLAS-ROADMAP",
-        "SRC-OCT03-SSW004-GEMMUL8-ROADMAP"
+        "SRC-OCT03-SSW004-GEMMUL8-ROADMAP",
+        "SRC-OCT23-APP005-AQUEDUCT"
       ]
     },
     {
@@ -2619,6 +2620,14 @@
       "url": "https://sxauroratsubasa.sakura.ne.jp/documents/veos/en/Difference_Point_System_Calls.pdf",
       "source_class": "vendor-official",
       "published_at": "2023-06-29"
+    },
+    {
+      "source_id": "SRC-OCT23-APP005-AQUEDUCT",
+      "title": "Agentic Verified Optimization of Real-World Software (v1)",
+      "publisher": "Zhe Ye et al. / arXiv",
+      "url": "https://arxiv.org/html/2610.30188v1",
+      "published_at": "2026-10-20",
+      "source_class": "academic-primary"
     }
   ],
   "coverage_gaps": [
@@ -2749,7 +2758,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-NEC-VECTOR-20261011",
-    "human_approval_directive_id": "DIR-900148"
+    "publication_decision_id": "PUBDEC-AQUEDUCT-BOUNDARIES-20261030",
+    "human_approval_directive_id": "DIR-900150"
   }
 }
