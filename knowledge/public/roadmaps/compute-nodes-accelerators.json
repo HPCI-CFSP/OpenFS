@@ -135,14 +135,16 @@
       "summary_en": "Tracks x86, Arm, and Japanese CPU performance, efficiency, memory attachment, and vector or matrix capabilities.",
       "current_state_ja": "9月14日の富士通発表は、MONAKAの2026年11月販売、FY2026 Q4のCPU供給、2027年4月からのサーバー順次出荷を区別する。従来の2027年・四半期未公表という表現に代わる日程であり、納入実績ではない。 富岳NEXTでは発展型のMONAKA-XがCPU候補に挙げられている。AMDはZen 7 EPYC群を2028年、Zen 8 “Ravenna”を2030年の目標として公表した。 AMDは9月18日にVeniceを生産中と報告したが、OEM投入とクラウド展開は後続予定として区別する。",
       "current_state_en": "Fujitsu’s September 14 announcement separates November 2026 MONAKA sales, FY2026 Q4 CPU supply and sequential server shipments from April 2027. This supersedes the generic 2027/quarter-undisclosed timing and is not delivery evidence. FugakuNEXT identifies the evolved MONAKA-X as a CPU candidate. AMD targets Zen 7 EPYC families for 2028 and Zen 8 'Ravenna' for 2030. AMD reported Venice in production on September 18, while separating subsequent OEM launches and cloud deployment.",
-      "hpci_implications_ja": "CPU単体の性能に加え、既存のCPU向けアプリケーションの移行費用、GPUとの密結合、メモリ帯域、国内の保守体制を評価する。",
-      "hpci_implications_en": "Evaluation should cover migration costs for CPU applications, tight GPU coupling, memory bandwidth, and support available in Japan in addition to CPU performance.",
+      "hpci_implications_ja": "CPU単体の性能に加え、既存のCPU向けアプリケーションの移行費用、GPUとの密結合、メモリ帯域、国内の保守体制を評価する。 Dell R8822/M9882の構成・提供予定・実出荷を分離し、CPU独立プールとGPU混在構成を同条件で比較する評価案。Arm64の対応版・実buildと負荷分解、品質・遅延・電力量を固定し、既出測定の引用を新しい性能実証に数えない。日本向け供給・保守と独立検証は未確認で、既存gate・日程は維持する。",
+      "hpci_implications_en": "Evaluation should cover migration costs for CPU applications, tight GPU coupling, memory bandwidth, and support available in Japan in addition to CPU performance. Propose separating Dell R8822/M9882 configurations,availability targets and shipments when comparing CPU pools with mixed GPU configurations. Pin Arm64 versions,actual builds,workflow decomposition,quality,latency and energy;quoted older measurements are not new performance evidence. Japanese supply/support and independent validation remain unresolved;retain existing gates and dates.",
       "source_ids": [
         "SRC-COMP002",
         "SRC-COMP005",
         "SRC-COMP006",
         "SRC-OCT03-ARCH001-E1",
-        "SRC-OCT03-ARCH001-E7"
+        "SRC-OCT03-ARCH001-E7",
+        "SRC-OCT23-ARCH001-DELLVERA",
+        "SRC-OCT23-ARCH001-ARMSOFTWARE"
       ]
     },
     {
@@ -154,12 +156,14 @@
       "summary_en": "Decomposes agentic workloads into serial orchestration, inference, retrieval, tool execution, communication waits, and concurrency, then tracks core-count, frequency, voltage-frequency, memory, power, and cost tradeoffs.",
       "current_state_ja": "2026年の企業向けCPU発表では、エージェント型AIが主要用途として強調された。一方、ベンダー資料は、エージェント型ワークロード全体が常に単一スレッド性能で律速されることや、高周波数・少コア構成が常に有利であることを示していない。CPU上の直列処理、GPU推論、検索・通信待ち、複数エージェントの同時実行を分けて評価する必要がある。",
       "current_state_en": "Enterprise CPU presentations in 2026 emphasized agentic AI as a major target. Vendor material does not establish that an entire agentic workload is always limited by single-thread performance or that fewer high-frequency cores always win. Serial CPU orchestration, GPU inference, retrieval and communication waits, and concurrent agents must be measured separately.",
-      "hpci_implications_ja": "CPU選定ではコア数や周波数だけを比較せず、タスク完了時間、p95・p99遅延、tasks/J、cost/task、agents/nodeを、動作点と同時実行数を変えて測定する。",
-      "hpci_implications_en": "CPU selection should vary operating points and concurrency while measuring task completion time, p95 and p99 latency, tasks per joule, cost per task, and agents per node rather than comparing core count or frequency alone.",
+      "hpci_implications_ja": "CPU選定ではコア数や周波数だけを比較せず、タスク完了時間、p95・p99遅延、tasks/J、cost/task、agents/nodeを、動作点と同時実行数を変えて測定する。 Dell R8822/M9882の構成・提供予定・実出荷を分離し、CPU独立プールとGPU混在構成を同条件で比較する評価案。Arm64の対応版・実buildと負荷分解、品質・遅延・電力量を固定し、既出測定の引用を新しい性能実証に数えない。日本向け供給・保守と独立検証は未確認で、既存gate・日程は維持する。",
+      "hpci_implications_en": "CPU selection should vary operating points and concurrency while measuring task completion time, p95 and p99 latency, tasks per joule, cost per task, and agents per node rather than comparing core count or frequency alone. Propose separating Dell R8822/M9882 configurations,availability targets and shipments when comparing CPU pools with mixed GPU configurations. Pin Arm64 versions,actual builds,workflow decomposition,quality,latency and energy;quoted older measurements are not new performance evidence. Japanese supply/support and independent validation remain unresolved;retain existing gates and dates.",
       "source_ids": [
         "SRC-COMP014",
         "SRC-COMP030",
-        "SRC-COMP031"
+        "SRC-COMP031",
+        "SRC-OCT23-ARCH001-DELLVERA",
+        "SRC-OCT23-ARCH001-ARMSOFTWARE"
       ]
     },
     {
@@ -2499,6 +2503,22 @@
       "url": "https://cloud.google.com/blog/topics/ai-infrastructure/google-cloud-infrastructure-at-nvidia-gtc-berlin-2026",
       "source_class": "vendor-official",
       "published_at": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-OCT23-ARCH001-DELLVERA",
+      "title": "Dell Technologies Advances Enterprise Agentic AI from the Deskside to Data Center with NVIDIA",
+      "publisher": "Dell Technologies",
+      "url": "https://investors.delltechnologies.com/news-events/press-releases/detail/1659/dell-technologies-advances-enterprise-agentic-ai-from-the-deskside-to-data-center-with-nvidia",
+      "source_class": "vendor-official",
+      "published_at": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-OCT23-ARCH001-ARMSOFTWARE",
+      "title": "Powering agentic AI with the Arm AGI CPU software ecosystem",
+      "publisher": "Arm",
+      "url": "https://newsroom.arm.com/blog/how-to-build-the-agentic-ai-software-stack-on-arm-agi-cpu",
+      "source_class": "vendor-official",
+      "published_at": "2026-10-21"
     }
   ],
   "coverage_gaps": [
@@ -2618,7 +2638,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-ARCH001-DELIVERY-20261030",
-    "human_approval_directive_id": "DIR-900155"
+    "publication_decision_id": "PUBDEC-ARCH001-FOLLOWUP-20261030",
+    "human_approval_directive_id": "DIR-900156"
   }
 }

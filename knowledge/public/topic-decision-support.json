@@ -528,8 +528,8 @@
   "topic_profiles": [
     {
       "topic_id": "ARCH-01",
-      "summary_ja": "MONAKA日程を訂正：2026年11月販売、FY2026 Q4のCPU供給、2027年4月からのサーバー順次出荷を分離し、旧来の2027年・四半期未公表という説明に代える。Rubin顧客本番利用、Helios受注、Venice生産状態を追加。単独モデルの暫定調査で、性能・供給条件の独立検証は未完了。 NEC Vector Engineの限定的な一次資料追補。実機適合性と独立Consensusは未完了。 10月の公式発表を追補。提供・稼働・性能の未確認事項は保持します。 DSX PODとA5Xの公表計画を施設・提供条件に限定して追補。",
-      "summary_en": "MONAKA timing correction: distinguish November 2026 sales, FY2026 Q4 CPU supply and sequential server shipments from April 2027, replacing the old generic 2027/quarter-undisclosed description. Add Rubin customer production use, Helios orders and Venice production status. This single-model provisional update leaves independent performance and supply validation incomplete. Scoped NEC Vector Engine primary-source supplement; hardware compatibility and independent Consensus remain incomplete. Append October official announcements; availability, operation and performance gaps remain open. Add scoped DSX POD and A5X plans with facility and availability limits.",
+      "summary_ja": "MONAKA日程を訂正：2026年11月販売、FY2026 Q4のCPU供給、2027年4月からのサーバー順次出荷を分離し、旧来の2027年・四半期未公表という説明に代える。Rubin顧客本番利用、Helios受注、Venice生産状態を追加。単独モデルの暫定調査で、性能・供給条件の独立検証は未完了。 NEC Vector Engineの限定的な一次資料追補。実機適合性と独立Consensusは未完了。 10月の公式発表を追補。提供・稼働・性能の未確認事項は保持します。 DSX PODとA5Xの公表計画を施設・提供条件に限定して追補。 Dell Vera構成とArm64の版・負荷条件を限定追補。",
+      "summary_en": "MONAKA timing correction: distinguish November 2026 sales, FY2026 Q4 CPU supply and sequential server shipments from April 2027, replacing the old generic 2027/quarter-undisclosed description. Add Rubin customer production use, Helios orders and Venice production status. This single-model provisional update leaves independent performance and supply validation incomplete. Scoped NEC Vector Engine primary-source supplement; hardware compatibility and independent Consensus remain incomplete. Append October official announcements; availability, operation and performance gaps remain open. Add scoped DSX POD and A5X plans with facility and availability limits. Add scoped Dell Vera configurations and Arm64 version/workflow conditions.",
       "sections": [
         {
           "section_id": "TDS-ARCH01-CURRENT",
@@ -2448,6 +2448,80 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-OCT23-ARCH001-VERA-CONFIG",
+          "title_ja": "CPU構成と提供予定の境界",
+          "title_en": "CPU configurations and availability boundaries",
+          "summary_ja": "構成公表・提供予定・出荷を別状態にする。",
+          "summary_en": "Keep configuration announcements,availability targets and shipments separate.",
+          "items": [
+            {
+              "item_id": "TDI-OCT23-ARCH001-DELLVERA",
+              "name_ja": "Dell Vera製品の構成と提供予定を区別",
+              "name_en": "Separate Dell Vera configurations and availability targets",
+              "stage": "near-term",
+              "maturity": "announced",
+              "timing_ja": "2026-10-21公表。R8822は2026年10月、M9882はQ1 CY2027の予定。",
+              "timing_en": "Announced2026-10-21:R8822 October2026,M9882 Q1CY2027 targets.",
+              "statement_ja": "Dellの10月21日公表はR8822を空冷2ソケットVera・標準19インチラック・最大4基のdouble-wide GPU対応とし、同月提供予定とする。256 Vera CPUを48Uラックへ収容するM9882はQ1 CY2027予定で、別製品の構成・時期を混同しない。実際の出荷・日本向け条件は未確認。",
+              "statement_en": "Dell’s October21 announcement describes air-cooled,two-socket Vera R8822 systems for standard19-inch racks with up to four double-wide GPUs,targeted for that month. The separate M9882 rack with256Vera CPUs in48U targetsQ1CY2027. Actual shipments and Japanese terms remain unverified.",
+              "hpci_relevance_ja": "CPU独立プールとGPU混在構成を別候補として、負荷・施設・受入条件を固定する評価案。",
+              "hpci_relevance_en": "Compare separate CPU pools and mixed CPU/GPU configurations with fixed workload,facility and acceptance conditions.",
+              "adoption_conditions_ja": [
+                "製品ごとのCPU/GPU構成と公表予定・実出荷を区別",
+                "日本向け供給・保守・電力・冷却と同条件受入を確認"
+              ],
+              "adoption_conditions_en": [
+                "Separate product configurations,announced targets and actual shipments",
+                "Verify Japanese supply/support,power,cooling and matched acceptance tests"
+              ],
+              "actor_ids": [
+                "ACT-NVIDIA"
+              ],
+              "source_ids": [
+                "SRC-OCT23-ARCH001-DELLVERA"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-OCT23-ARCH001-ARM-SOFTWARE",
+          "title_ja": "ソフトウェア対応版と負荷の境界",
+          "title_en": "Software-version and workload boundaries",
+          "summary_ja": "版対応と性能・品質実証を別状態にする。",
+          "summary_en": "Separate software enablement from performance and quality validation.",
+          "items": [
+            {
+              "item_id": "TDI-OCT23-ARCH001-ARMSOFTWARE",
+              "name_ja": "Arm64の版対応とエージェント負荷の分解",
+              "name_en": "Arm64 software versions and agent-workflow decomposition",
+              "stage": "current",
+              "maturity": "research",
+              "timing_ja": "2026-10-21公表のソフトウェア整理。既出測定の実施日ではない。",
+              "timing_en": "Software overview published2026-10-21,not a new measurement date.",
+              "statement_ja": "Armの10月21日記事はframework、orchestration、sandbox、retrieval、model servingを分け、Software Ecosystem Dashboardで対応版を確認する経路を示す。引用するOCP・Signal65結果を新しい独立実測として追加せず、Arm64対応を製品認証やend-to-end品質・電力量の証明へ格上げしない。",
+              "statement_en": "Arm’s October21 article separates frameworks,orchestration,sandboxes,retrieval and model serving,and points to its Software Ecosystem Dashboard for supported versions. Quoted OCP/Signal65 results are not new independent measurements;Arm64 enablement does not establish product certification or end-to-end quality and energy.",
+              "hpci_relevance_ja": "実際の版、負荷分解、同時実行数、品質・遅延・電力量を共通評価の入力条件として固定する案。",
+              "hpci_relevance_en": "Fix actual versions,workflow decomposition,concurrency,quality,latency and energy conditions for common evaluation.",
+              "adoption_conditions_ja": [
+                "対応版と使用したbuild・構成・実行環境を固定",
+                "既出測定の引用と新規実測・認証を区別"
+              ],
+              "adoption_conditions_en": [
+                "Pin supported versions,actual builds,configuration and execution environment",
+                "Distinguish quotations of earlier measurements from new measurements or certification"
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-ARCH001-ARMSOFTWARE"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -2615,6 +2689,18 @@
           ],
           "created_at": "2026-10-30T16:35:03.812725+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000568",
+          "bundle_sha256": "736472457d435562b0764c18e85d568ccfe25a300edcd50f197d391ffd496efc",
+          "base_commit": "9662b53c7cbed4e71ebdc8593d2ec67f152b75eb",
+          "unit_ids": [
+            "ARCH-01-U01",
+            "ARCH-01-U02",
+            "ARCH-01-U03"
+          ],
+          "created_at": "2026-10-30T17:13:51.859880+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -2641,7 +2727,8 @@
               "TDS-OCT03-ARCH001-REPLACEMENT-2",
               "TDS-OCT03-ARCH001-REPLACEMENT-3",
               "TDS-NEC26-PRODUCT",
-              "TDS-OCT23-ARCH001-FACTORY-CLOUD"
+              "TDS-OCT23-ARCH001-FACTORY-CLOUD",
+              "TDS-OCT23-ARCH001-VERA-CONFIG"
             ],
             "comparison_refs": [
               {
@@ -2660,7 +2747,8 @@
                 "item_ids": [
                   "TDI-OCT03-ARCH001-RETAIN-CPU",
                   "TDI-OCT03-ARCH001-RETAIN-MONAKA-FUTURE",
-                  "TDI-HW1-CPU-FAMILIES"
+                  "TDI-HW1-CPU-FAMILIES",
+                  "TDI-OCT23-ARCH001-DELLVERA"
                 ]
               },
               {
@@ -2716,7 +2804,8 @@
               "TDS-HW1-ARCH-01-U03",
               "TDS-CD16-ARCH-01-AGENTIC-SYSTEM-TRACE",
               "TDS-WC367-ARCH-01-01",
-              "TDS-OCT03-ARCH001-U03"
+              "TDS-OCT03-ARCH001-U03",
+              "TDS-OCT23-ARCH001-ARM-SOFTWARE"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -81920,6 +82009,22 @@
       "url": "https://cloud.google.com/blog/topics/ai-infrastructure/google-cloud-infrastructure-at-nvidia-gtc-berlin-2026",
       "source_class": "official-vendor",
       "published_or_updated": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-OCT23-ARCH001-DELLVERA",
+      "title": "Dell Technologies Advances Enterprise Agentic AI from the Deskside to Data Center with NVIDIA",
+      "publisher": "Dell Technologies",
+      "url": "https://investors.delltechnologies.com/news-events/press-releases/detail/1659/dell-technologies-advances-enterprise-agentic-ai-from-the-deskside-to-data-center-with-nvidia",
+      "source_class": "official-vendor",
+      "published_or_updated": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-OCT23-ARCH001-ARMSOFTWARE",
+      "title": "Powering agentic AI with the Arm AGI CPU software ecosystem",
+      "publisher": "Arm",
+      "url": "https://newsroom.arm.com/blog/how-to-build-the-agentic-ai-software-stack-on-arm-agi-cpu",
+      "source_class": "official-vendor",
+      "published_or_updated": "2026-10-21"
     }
   ],
   "coverage_gaps": [
@@ -83104,7 +83209,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-ARCH001-DELIVERY-20261030",
-    "human_approval_directive_id": "DIR-900155"
+    "publication_decision_id": "PUBDEC-ARCH001-FOLLOWUP-20261030",
+    "human_approval_directive_id": "DIR-900156"
   }
 }
