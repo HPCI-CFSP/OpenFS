@@ -5,7 +5,7 @@
   "status": "published",
   "domain": "system-software",
   "slug": "system-software/runtime-scheduling-os",
-  "as_of": "2026-10-04",
+  "as_of": "2026-10-30",
   "title_ja": "通信・ランタイム・スケジューリング・OS",
   "title_en": "Communication, runtimes, scheduling, and operating systems",
   "summary_ja": "通信標準、GPU通信、実行時系、ジョブ管理を連合資源へ接続する暫定ロードマップです。仕様公開と各システムでの相互運用確認を区別します。",
@@ -41,8 +41,8 @@
       "summary_en": "Track specifications, implementations, and GPU/NIC support separately.",
       "current_state_ja": "MPI 5.0資料、MPICH 5.0、UCX/UCCの公開資料を基準にします。 2026-10-03再確認では、Open MPI 5.0.11、MPICH 5.0.2、UCX 1.22.0、UCC 1.9.0、libfabric 2.7.0とNCCL/RCCLの版別条件を追加した。標準ABIの言語差、device APIのprovider対応、配布版とdevelop、実験経路を区別する。 今回の限定的な追補：NCCLのB100 PCIe MLoPartのCUDA error 101条件の既知問題とvendor workaround NCCL_CUMEM_ENABLE=0を限定して追記する。nccl4py実験bindingとlib/device IR整合、barrier終了・event全rank一致・CUDA条件を分ける。upstream issue closedはAuroraのwrong-result適合確認ではない。Open MPI5.0.11 download rowの9月16日と8月changelogを区別し、2月source日付を現行release日へ誤用しない。NCCL表示release stampの年・timezone不明を保持。",
       "current_state_en": "MPI 5.0 documents, MPICH 5.0, and UCX/UCC public materials form the baseline. The 2026-10-03 recheck adds Open MPI 5.0.11, MPICH 5.0.2, UCX 1.22.0, UCC 1.9.0, libfabric 2.7.0 and version-specific NCCL/RCCL conditions. Distinguish language-specific standard ABI, provider implementation of device APIs, packaged versus development code, and experimental paths. Scoped additions in this batch: Add the configuration-scoped B100 PCIe MLoPart NCCL allocation issue with CUDA error 101 and vendor NCCL_CUMEM_ENABLE=0 workaround. Separate experimental nccl4py binding/lib/device-IR matching, barrier teardown, all-rank events and CUDA requirements. A closed upstream issue does not qualify Aurora wrong-result recovery. Distinguish Open MPI 5.0.11 download-row September 16 from August changelog and avoid using the old February source date for the current release. Retain unknown NCCL release-label year/timezone.",
-      "hpci_implications_ja": "候補ノードとファブリックの組合せごとに適合試験が必要です。 ABI、起動系、provider、GPU/NIC、実際の転送経路、build flagsを固定し、正確性・終了処理・障害回復と実アプリ性能を別に検証する。",
-      "hpci_implications_en": "Each candidate node/fabric combination needs conformance testing. Pin ABI, launch stack, provider, GPU/NIC, actual transfer paths and build flags; separately qualify correctness, teardown, recovery and application performance.",
+      "hpci_implications_ja": "候補ノードとファブリックの組合せごとに適合試験が必要です。 ABI、起動系、provider、GPU/NIC、実際の転送経路、build flagsを固定し、正確性・終了処理・障害回復と実アプリ性能を別に検証する。 評価案として、peer死亡後の終了・取消・再開を版固定で区別し、上流issueの提案と公開修正版・現地検証を別状態で記録する。",
+      "hpci_implications_en": "Each candidate node/fabric combination needs conformance testing. Pin ABI, launch stack, provider, GPU/NIC, actual transfer paths and build flags; separately qualify correctness, teardown, recovery and application performance. Proposed evaluation: distinguish pinned-version teardown, cancellation and restart after peer failure, and separately record issue proposals, released fixes and site validation.",
       "source_ids": [
         "SRC-PORT014",
         "SRC-PORT026",
@@ -65,7 +65,8 @@
         "SRC-OCT05-SSW003-10",
         "SRC-OCT05-SSW003-11",
         "SRC-OCT05-SSW003-14",
-        "SRC-OCT05-SSW003-15"
+        "SRC-OCT05-SSW003-15",
+        "SRC-OCT23-SSW003-NCCL2506"
       ]
     },
     {
@@ -676,6 +677,14 @@
       "publisher": "EuroHPC Federation Platform consortium",
       "url": "https://docs.my-eurohpc.eu/workflows/overview/",
       "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT23-SSW003-NCCL2506",
+      "title": "NCCL issue2506: host-local dead-peer teardown hang",
+      "publisher": "NVIDIA/nccl issue participants",
+      "url": "https://github.com/NVIDIA/nccl/issues/2506",
+      "published_at": "2026-10-22",
+      "source_class": "project-official"
     }
   ],
   "coverage_gaps": [
@@ -707,7 +716,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-OCT05-CATALOG41-20261005",
-    "human_approval_directive_id": "DIR-900144"
+    "publication_decision_id": "PUBDEC-AQUEDUCT-BOUNDARIES-20261030",
+    "human_approval_directive_id": "DIR-900150"
   }
 }
