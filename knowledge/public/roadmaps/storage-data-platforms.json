@@ -5,7 +5,7 @@
   "status": "published",
   "domain": "hardware",
   "slug": "hardware/storage-data-platforms",
-  "as_of": "2026-10-04",
+  "as_of": "2026-10-30",
   "title_ja": "ストレージ・データ基盤",
   "title_en": "Storage and data platforms",
   "summary_ja": "SSD・HDD・テープ、NVMe、統合ストレージ製品、データ継続を比較する暫定ロードマップです。調査カタログARCH-012の小項目と対応し、発売時期と資料確認時点を区別します。",
@@ -132,8 +132,8 @@
       "summary_en": "Evaluate transfer, retention, and reuse together with I/O performance.",
       "current_state_ja": "Globus、S3管理機能、IOR／mdtest、MLPerf Storageの公開文書を確認しました。今回実行したベンチマークはありません。 今回の限定的な追補：Gfarmのupstream patch版・replica scheduling/localityを評価変数へ追加するがHPCI導入済み版とはしない。DDNのEOL一覧、exact SKU、契約保守とservice継続は別に確認する。root READMEの再取得成功とpinned rendering失敗を、旧失敗履歴と共に保持し、version pin・実配備・再現性Gapは閉じない。 Workflow Run RO-Crate0.6（9月7日）はRO-Crate1.3/Workflow1.1へ整合し、旧0.1–0.5の1.1/1.0とIRIが異なる。旧0.5確認は履歴で、適合は全失敗・取消・cache・retry試行の完全性やlossless再実行を保証しない。不老・弐の大学報告による10月1日9時開始と希望home staging・利用者copy責任を反映し、3MIG queue復旧・ACL/checksum受入は未確認。Roihu文書のidentity assurance・24時間SSH certificate・CPU/GPU再build条件は実移行実績ではなく、Allas無制限容量も仮定しない。",
       "current_state_en": "Public documentation for Globus, S3 management, IOR/mdtest, and MLPerf Storage was reviewed. No benchmark was executed. Scoped additions in this batch: Add upstream Gfarm patch/replica scheduling/locality as assessment variables without calling them deployed HPCI versions. DDN EOL listings, exact SKUs, contractual support and continuing service require separate checks. Retain successful root README retrieval, failed pinned rendering and earlier failure history; version-pin/deployment/reproducibility gaps remain open. Workflow Run RO-Crate 0.6 (September 7) aligns with RO-Crate 1.3/Workflow 1.1 and changes IRIs from legacy 0.1–0.5 at 1.1/1.0. Keep historical 0.5; conformance does not assure all failed/cancelled/cached/retry attempts or lossless replay. Reflect Nagoya-reported October 1 09:00 start, requested-home staging and user copy responsibilities without MIG recovery/ACL/checksum acceptance. Roihu identity assurance, 24-hour SSH certificates and CPU/GPU rebuild requirements are documented prerequisites, not migration results or unlimited Allas capacity.",
-      "hpci_implications_ja": "データ所在・権限・保持・バックアップ復元を含む受入試験が必要です。",
-      "hpci_implications_en": "Acceptance tests should include location, permissions, retention, and restoration.",
+      "hpci_implications_ja": "データ所在・権限・保持・バックアップ復元を含む受入試験が必要です。 Personal3.3.2の新規・再setupと既存collectionを区別し、共有RAG indexはgraph build5時間34分と全工程25時間、品質・入力・復旧条件を分けて比較する評価案。現地修正・独立再現・SLA達成ではない。",
+      "hpci_implications_en": "Acceptance tests should include location, permissions, retention, and restoration. Proposed checks distinguish Personal 3.3.2 new/repeated setup from existing collections;for shared RAG, separate 5h 34m graph build from 25h end-to-end with quality, input and recovery conditions. This is not site remediation, independent reproduction or achieved SLA.",
       "source_ids": [
         "SRC-STP010",
         "SRC-STP011",
@@ -149,7 +149,9 @@
         "SRC-OCT05-CROSS002-01",
         "SRC-OCT05-CROSS002-02",
         "SRC-OCT05-CROSS002-03",
-        "SRC-OCT05-CROSS002-07"
+        "SRC-OCT05-CROSS002-07",
+        "SRC-OCT23-ARCH012-GCP332",
+        "SRC-OCT23-ARCH012-DDNRAG"
       ]
     }
   ],
@@ -944,6 +946,22 @@
       "publisher": "Nagoya University",
       "url": "https://www.cc.nagoya-u.ac.jp/ja/operation/",
       "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT23-ARCH012-GCP332",
+      "title": "Globus Connect Personal Changes: v3.3.2",
+      "publisher": "Globus",
+      "url": "https://docs.globus.org/globus-connect-personal/changes/",
+      "source_class": "project-official",
+      "published_at": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-OCT23-ARCH012-DDNRAG",
+      "title": "1 Billion-Scale RAG out of the box with DDN Infinia",
+      "publisher": "DDN and NVIDIA collaborators",
+      "url": "https://www.ddn.com/blog/1-billion-scale-rag-out-of-the-box-with-ddn-infinia/",
+      "source_class": "vendor-official",
+      "published_at": "2026-10-21"
     }
   ],
   "coverage_gaps": [
@@ -986,7 +1004,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-OCT05-CATALOG41-20261005",
-    "human_approval_directive_id": "DIR-900144"
+    "publication_decision_id": "PUBDEC-STORAGE-BOUNDARIES-20261030",
+    "human_approval_directive_id": "DIR-900153"
   }
 }
