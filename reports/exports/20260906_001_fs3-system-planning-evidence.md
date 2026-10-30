@@ -24,7 +24,7 @@ flowchart LR
 
 ## 2. Web調査自動化のセキュリティ境界
 
-状態: **blocked**。本番利用可能なセキュリティプロファイルは0件、確認待ちの情報源は481件です。安全性を自己証明せず、プロファイルを実環境で検証するまでは全URLの再確認を実行しません。
+状態: **blocked**。本番利用可能なセキュリティプロファイルは0件、確認待ちの情報源は486件です。安全性を自己証明せず、プロファイルを実環境で検証するまでは全URLの再確認を実行しません。
 
 - `deploy-and-verify-security-profile`: 管理Web検索、匿名Safe Fetch、SSRF防止、Shell外向き通信遮断、依存取得分離、Git公開制限を実環境で検証します。
 - `record-owner-attestations`: GitHubとプロバイダー側の外部設定を確認し、秘密情報を含まない有効期限付き証明を記録します。
@@ -171,7 +171,7 @@ A provisional package connecting 27 HPCI systems, 20 public procurement cases, 6
 
 > A provisional public-information synthesis by one model and one agent. The Consensus Gate using independent models and accountable approval of requirements, thresholds, budgets, and procurement decisions are incomplete. Coverage counts are research scope, not scores or rankings.
 
-- Secure unattended Web research: **blocked**; 481 source-triage entries remain unresolved.
+- Secure unattended Web research: **blocked**; 486 source-triage entries remain unresolved.
 - HPCI inventory: 27 systems; 20 have public future lifecycle timing, 16 have quantitative operational observations, 8 have public aggregate products, 11 have public status or notice feeds; systems with registered power evidence: 5.
 - Procurement: 20 cases; public contract or award totals: 15; provider-reported approximate annual payment records: 1; itemized cases: 0; complete five-year TCO cases: 0.
 - EEA1: 6 applications; 2 public proxy assets, 0 complete reproducibility packages, 0 approved thresholds, and 0 validated forecasts.
