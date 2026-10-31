@@ -41,8 +41,8 @@
       "summary_en": "Cover parallelism, memory, checkpoints, and latency.",
       "current_state_ja": "Megatron、DeepSpeed、vLLM、MLPerfの公開資料を基準にします。 今回の限定的な追補：ECMWFは入力解析世代の変更でGraphCast・Aurora・AIFS v1.1の精度変化を報告し、AIFS v2適応と外部モデルの同センター実時間運用停止を説明する。モデルの世界的廃止ではない。Anemoiの研究例は約100km・6時間入力から約30km・1時間出力へ反復samplerで変換するが、運用日・全系節約は未報告。AgentActionBenchは150論文（AI4Science30）、人手注釈15、GPT-4o-mini採点で行動過程と5段階を評価する。rubric総合点は完全再現論文の割合ではない。 PyTorch DCP2.14のstaging thread所有・cleanupをmemory条件と共に確認する。JSON checkpoint packageのlegacy resume条件は既存msgpack advisoryと別で、JS/TS Storeの設定依存cross-user認可問題を全Python packageの一般脆弱性へ拡張しない。package版・serializer・principal・expiry・checkpoint再開・Store認可を既存agent試験へ組み込み、site診断や再現済みとはしない。",
       "current_state_en": "Public Megatron, DeepSpeed, vLLM, and MLPerf materials form the baseline. Scoped additions in this batch: ECMWF reports quality changes for GraphCast, Aurora and AIFS v1.1 after initial-condition changes, adaptation of AIFS v2 and cessation of its external-model realtime runs, not worldwide model retirement. Anemoi research maps roughly 100km/six-hour inputs to 30km/hourly outputs through iterative sampling without reported deployment dates or end-to-end savings. AgentActionBench covers 150 papers (30 AI4Science), 15 human-annotated papers and GPT-4o-mini scoring of actions/five stages. Overall rubric scores are not fractions of completely reproduced papers. Add PyTorch DCP 2.14 staging-thread ownership/cleanup alongside memory conditions. Keep JSON-package legacy resume conditions distinct from the existing msgpack advisory; configuration-dependent JS/TS Store authorization does not establish a universal Python vulnerability. Add package versions, serializers, principals, expiry, checkpoint resumption and Store authorization to existing agent tests without site diagnosis or reproduction claims.",
-      "hpci_implications_ja": "学習と推論を同じピーク演算値だけで評価せず、通信、KV cache、データ経路を測定します。 非同期保存の境界と等資源推論比較を受入試験に加える。",
-      "hpci_implications_en": "Do not evaluate training and inference by peak arithmetic alone; measure communication, KV cache, and data paths. Add asynchronous-save boundaries and equal-resource serving comparisons to acceptance tests.",
+      "hpci_implications_ja": "学習と推論を同じピーク演算値だけで評価せず、通信、KV cache、データ経路を測定します。 非同期保存の境界と等資源推論比較を受入試験に加える。 公式2.15 releaseにより従前のRC限定保留を更新できる。nccl groupは新backendが既定となりlegacy rollbackとhang診断を示すが関連分散APIはunstable。Python3.10対応を終了。backend・環境適合を再確認する案で、施設受入ではない。 rc2もprerelease。noteはwheel1.4.0rc2.post1とcontainer/docs1.4.0rc2を区別しtransceiverV2のV1対応削除を示す。RPC/MPI初期化hangを記載。rc1取消/schema問題は直接の解決証拠まで保留し、記載消失を修正証明としない。",
+      "hpci_implications_en": "Do not evaluate training and inference by peak arithmetic alone; measure communication, KV cache, and data paths. Add asynchronous-save boundaries and equal-resource serving comparisons to acceptance tests. The official 2.15 release replaces the prior RC-only hold. It defaults nccl groups to the rewritten backend, with legacy rollback and hang diagnostics; the relevant distributed APIs remain unstable. Python 3.10 support is removed. Requalify backend and environment compatibility; release is not facility acceptance. rc2 stays prerelease. Its note distinguishes wheel 1.4.0rc2.post1 from container/docs 1.4.0rc2 and removes V1 support from transceiver V2. It lists an RPC/MPI initialization hang. Preserve rc1 cancellation/schema concerns until direct resolution evidence; note omission does not prove fixes.",
       "source_ids": [
         "SRC-CDS048",
         "SRC-CDS050",
@@ -56,7 +56,9 @@
         "SRC-OCT05-APP012-03",
         "SRC-OCT05-SSW009-01",
         "SRC-OCT05-SSW009-02",
-        "SRC-OCT05-SSW009-03"
+        "SRC-OCT05-SSW009-03",
+        "SRC-D31-SSW009-02-01",
+        "SRC-D31-SSW009-03-01"
       ]
     },
     {
@@ -68,8 +70,8 @@
       "summary_en": "Cover correctness, reproducibility, cost, time, and tool use.",
       "current_state_ja": "ScienceAgentBenchとJalapenoの公開成果は異なる評価範囲を持ちます。 今回の限定的な追補：ECMWFは入力解析世代の変更でGraphCast・Aurora・AIFS v1.1の精度変化を報告し、AIFS v2適応と外部モデルの同センター実時間運用停止を説明する。モデルの世界的廃止ではない。Anemoiの研究例は約100km・6時間入力から約30km・1時間出力へ反復samplerで変換するが、運用日・全系節約は未報告。AgentActionBenchは150論文（AI4Science30）、人手注釈15、GPT-4o-mini採点で行動過程と5段階を評価する。rubric総合点は完全再現論文の割合ではない。 PyTorch DCP2.14のstaging thread所有・cleanupをmemory条件と共に確認する。JSON checkpoint packageのlegacy resume条件は既存msgpack advisoryと別で、JS/TS Storeの設定依存cross-user認可問題を全Python packageの一般脆弱性へ拡張しない。package版・serializer・principal・expiry・checkpoint再開・Store認可を既存agent試験へ組み込み、site診断や再現済みとはしない。",
       "current_state_en": "ScienceAgentBench and Jalapeno public results cover different evaluation scopes. Scoped additions in this batch: ECMWF reports quality changes for GraphCast, Aurora and AIFS v1.1 after initial-condition changes, adaptation of AIFS v2 and cessation of its external-model realtime runs, not worldwide model retirement. Anemoi research maps roughly 100km/six-hour inputs to 30km/hourly outputs through iterative sampling without reported deployment dates or end-to-end savings. AgentActionBench covers 150 papers (30 AI4Science), 15 human-annotated papers and GPT-4o-mini scoring of actions/five stages. Overall rubric scores are not fractions of completely reproduced papers. Add PyTorch DCP 2.14 staging-thread ownership/cleanup alongside memory conditions. Keep JSON-package legacy resume conditions distinct from the existing msgpack advisory; configuration-dependent JS/TS Store authorization does not establish a universal Python vulnerability. Add package versions, serializers, principals, expiry, checkpoint resumption and Store authorization to existing agent tests without site diagnosis or reproduction claims.",
-      "hpci_implications_ja": "HPCIで実行可能な科学タスク群と監査可能な実行記録が必要です。 永続状態の整合性と再開時の復元型の制約も検証する。 評価案として、元実装・移植直後・最適化後と、移植の正しさ・最適化同値性・実測性能を分けて記録する。達成や日程変更を意味しない。",
-      "hpci_implications_en": "HPCI needs executable scientific task suites and auditable run records. Also qualify persistent-state integrity and type restrictions during resume. Proposed evaluation: record original, ported and optimized baselines, separating migration correctness, optimization equivalence and measured performance. This does not establish achievement or change dates.",
+      "hpci_implications_ja": "HPCIで実行可能な科学タスク群と監査可能な実行記録が必要です。 永続状態の整合性と再開時の復元型の制約も検証する。 評価案として、元実装・移植直後・最適化後と、移植の正しさ・最適化同値性・実測性能を分けて記録する。達成や日程変更を意味しない。 著者はRNGD上のGemma-4-12B decode 3 kernelで公式baseline比幾何平均9.293倍を報告。希少デバイスでの知識構築・反復実測と固定入力shortcutの除外を具体例として追加。 EasyProver/AegisはRust翻訳後の固定命題について証明と反証を分離。Aegis層別sample 2,000命題中1,997試行、1命題30分で1,054証明を報告。事前反証例と偽を要求したcategoryはsampleから除外。 著者preprintはNVダイヤモンド実測とTSUBAME4検証を結合した事例を報告。予測一致でもドリフトした取得を不確定とし、基準を緩めず修正した。Sageのsimulation/replayとは別の限定的な物理workflow例。装置構築・安全上限設定は人が担当。最終予測固定は取得後・target解析前であり、実測dataは要請提供、研究promptは非公開。 MLCommonsはLLM judgeから専用の決定的分類器へ変更し、Safetyを固定参照分布のpercentileへ移したと報告する。Safety1.2.1結果は公開、Jailbreak1.1結果は通知期間後の予定。対象は単一turn英語の有害応答で、agent操作・科学的正しさを含まず、課題成功率や負荷・遅延・電力量の代替ではない。 SDK0.4.11はSSE cursor・chunk保持とwait/join/cancel再接続のbackoffを収録。空ID・分割event・応答切断を試験する案。PR9481は5回上限と初回失敗時raiseを維持。Store認可とは別で、exactly-onceや施設受入を保証しない。 rc2もprerelease。noteはwheel1.4.0rc2.post1とcontainer/docs1.4.0rc2を区別しtransceiverV2のV1対応削除を示す。RPC/MPI初期化hangを記載。rc1取消/schema問題は直接の解決証拠まで保留し、記載消失を修正証明としない。",
+      "hpci_implications_en": "HPCI needs executable scientific task suites and auditable run records. Also qualify persistent-state integrity and type restrictions during resume. Proposed evaluation: record original, ported and optimized baselines, separating migration correctness, optimization equivalence and measured performance. This does not establish achievement or change dates. Author reports 9.293x geomean over official baselines for three Gemma-4-12B decode kernels on RNGD. Adds a scarce-device target-onboarding case with repeated device comparisons and disclosed fixed-input cheating excluded from results. EasyProver/Aegis adds frozen-statement proof-or-refutation accounting over translated Rust. Authors report 1,054 proofs from a 2,000-statement stratified Aegis sample, 1,997 attempted, at 30 minutes per statement; negatives screened beforehand and requested-false category excluded. An author preprint reports an NV-diamond physical investigation coupled to TSUBAME4 computational checks. Agents rejected a drifting acquisition despite predictive agreement and revised it without loosening criteria. This adds a bounded physical-workflow example beyond Sage simulations/replays. Humans built the apparatus and configured safety limits; final predictions were locked after acquisition but before target analysis. Raw data require request and study prompts are omitted. MLCommons reports replacing LLM judges with its deterministic classifier and moving Safety to fixed-reference percentiles; Safety1.2.1 public results are available while Jailbreak1.1 public results await notification. Scope is single-turn English harmful-response evaluation, excluding agent actions and scientific correctness. These scores cannot substitute for task success or load, latency and energy measurements. SDK 0.4.11 ships SSE cursor/chunk preservation and bounded backoff for wait/join/cancel reconnects. Qualify empty IDs, split events and interrupted responses; PR9481 retains five attempts and first-request failures still raise. This is separate from Store authorization; no exactly-once guarantee or site acceptance. rc2 stays prerelease. Its note distinguishes wheel 1.4.0rc2.post1 from container/docs 1.4.0rc2 and removes V1 support from transceiver V2. It lists an RPC/MPI initialization hang. Preserve rc1 cancellation/schema concerns until direct resolution evidence; note omission does not prove fixes.",
       "source_ids": [
         "SRC-CDA053",
         "SRC-HC26-JALAPENO-RESULTS",
@@ -80,7 +82,18 @@
         "SRC-OCT05-SSW009-01",
         "SRC-OCT05-SSW009-02",
         "SRC-OCT05-SSW009-03",
-        "SRC-OCT23-APP005-AQUEDUCT"
+        "SRC-OCT23-APP005-AQUEDUCT",
+        "SRC-D31-APP005-01-01",
+        "SRC-D31-APP005-01-02",
+        "SRC-D31-APP005-02-01",
+        "SRC-D31-APP005-02-02",
+        "SRC-D31-APP012-01-01",
+        "SRC-D31-APP012-01-02",
+        "SRC-D31-APP013-02-01",
+        "SRC-D31-SSW009-01-01",
+        "SRC-D31-SSW009-01-02",
+        "SRC-D31-SSW009-01-03",
+        "SRC-D31-SSW009-03-01"
       ]
     }
   ],
@@ -367,6 +380,102 @@
       "url": "https://arxiv.org/html/2610.30188v1",
       "published_at": "2026-10-20",
       "source_class": "academic-primary"
+    },
+    {
+      "source_id": "SRC-D31-SSW009-02-01",
+      "title": "PyTorch 2.15 Release Blog",
+      "publisher": "PyTorch Foundation",
+      "url": "https://pytorch.org/blog/pytorch-2-15-release-blog/",
+      "source_class": "project-official",
+      "published_at": "2026-10-28"
+    },
+    {
+      "source_id": "SRC-D31-SSW009-03-01",
+      "title": "TensorRT-LLM v1.4.0rc2",
+      "publisher": "NVIDIA maintainers",
+      "url": "https://github.com/NVIDIA/TensorRT-LLM/releases/tag/v1.4.0rc2",
+      "source_class": "project-official",
+      "published_at": "2026-10-28"
+    },
+    {
+      "source_id": "SRC-D31-APP005-01-01",
+      "title": "A Case Study of a Multi-Agent Kernel-Optimization Loop That Learns a New AI Accelerator",
+      "publisher": "Byonggon Chun / arXiv",
+      "url": "https://arxiv.org/abs/2610.38329",
+      "source_class": "academic-primary",
+      "published_at": "2026-10-28"
+    },
+    {
+      "source_id": "SRC-D31-APP005-01-02",
+      "title": "A Case Study of a Multi-Agent Kernel-Optimization Loop That Learns a New AI Accelerator",
+      "publisher": "Byonggon Chun / arXiv",
+      "url": "https://arxiv.org/html/2610.38329v1",
+      "source_class": "academic-primary",
+      "published_at": "2026-10-28"
+    },
+    {
+      "source_id": "SRC-D31-APP005-02-01",
+      "title": "Scaling Lean Theorem Proving for Real-World Code Verification",
+      "publisher": "Ganguly et al. / arXiv",
+      "url": "https://arxiv.org/abs/2610.38174",
+      "source_class": "academic-primary",
+      "published_at": "2026-10-28"
+    },
+    {
+      "source_id": "SRC-D31-APP005-02-02",
+      "title": "Scaling Lean Theorem Proving for Real-World Code Verification",
+      "publisher": "Ganguly et al. / arXiv",
+      "url": "https://arxiv.org/html/2610.38174v1",
+      "source_class": "academic-primary",
+      "published_at": "2026-10-28"
+    },
+    {
+      "source_id": "SRC-D31-APP012-01-01",
+      "title": "Collaborative AI agents for autonomous experimental research with solid-state quantum spins",
+      "publisher": "Mansouri et al. / arXiv",
+      "url": "https://arxiv.org/abs/2610.40589",
+      "source_class": "academic-primary",
+      "published_at": "2026-10-29"
+    },
+    {
+      "source_id": "SRC-D31-APP012-01-02",
+      "title": "Collaborative AI agents for autonomous experimental research with solid-state quantum spins v1",
+      "publisher": "Mansouri et al. / arXiv",
+      "url": "https://arxiv.org/html/2610.40589v1",
+      "source_class": "academic-primary",
+      "published_at": "2026-10-29"
+    },
+    {
+      "source_id": "SRC-D31-APP013-02-01",
+      "title": "Test Your Own AI Against Real-World Risks and Attacks with AILuminate Safety1.2.1 and Jailbreak1.1",
+      "publisher": "MLCommons / Isaac Holeman",
+      "url": "https://mlcommons.org/2026/10/ailuminate-safety-1-2-1-and-jailbreak-1-1/",
+      "source_class": "project-official",
+      "published_at": "2026-10-29"
+    },
+    {
+      "source_id": "SRC-D31-SSW009-01-01",
+      "title": "langgraph-sdk==0.4.11",
+      "publisher": "LangGraph maintainers",
+      "url": "https://github.com/langchain-ai/langgraph/releases/tag/sdk==0.4.11",
+      "source_class": "project-official",
+      "published_at": "2026-10-30"
+    },
+    {
+      "source_id": "SRC-D31-SSW009-01-02",
+      "title": "Preserve SSE data and cursor state across chunks",
+      "publisher": "LangGraph contributors",
+      "url": "https://github.com/langchain-ai/langgraph/pull/9477",
+      "source_class": "project-official",
+      "published_at": "2026-10-28"
+    },
+    {
+      "source_id": "SRC-D31-SSW009-01-03",
+      "title": "Retry wait/join/cancel reconnects with backoff",
+      "publisher": "LangGraph contributors",
+      "url": "https://github.com/langchain-ai/langgraph/pull/9481",
+      "source_class": "project-official",
+      "published_at": "2026-10-28"
     }
   ],
   "coverage_gaps": [
@@ -398,7 +507,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-AQUEDUCT-BOUNDARIES-20261030",
-    "human_approval_directive_id": "DIR-900150"
+    "publication_decision_id": "PUBDEC-DAILY41-BOUNDED-PUBLIC-20261031",
+    "human_approval_directive_id": "DIR-900167"
   }
 }

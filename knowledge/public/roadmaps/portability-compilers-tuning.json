@@ -99,8 +99,8 @@
       "summary_en": "Tracks cross-vendor directive-based and C++ heterogeneous-programming APIs together with implementation support.",
       "current_state_ja": "OpenMP 6.0は公開済みで、6.1は2026年11月に公開される予定である。2026年Q3の公式資料では、GCCとLLVMが機能単位の実装表を公開している。Intel oneAPIは5.2と6.0の一部、NVIDIA HPC SDK 26.5はGPU向け5.0の一部、AMD AOCC 5.2はC/C++で5.0、Fortranで4.5、Fujitsu Technical Computing Suiteは4.5と5.0の一部への対応を掲げる。AOCCとROCmは別のソフトウェアスタックであり、言語、バックエンド、機能を横断して比較するには共通試験が必要である。SYCL 2020 Revision 12は2026年Q3に公開された。Khronosの公式適合製品一覧でSYCL 2020として掲載されているのは、Intel oneAPI DPC++をIntel製CPUまたはGPUで使用する構成に限られる。 今回の限定的な追補：PETSc moving3.26の機能記述をすべて9月28日release追加とはせず、overview/API版不一致と実operation適合を残す。GEMMul8のnative fallback・workspace・memory-savingとskip-scaling reuseの非両立を評価条件にする。oneMathは今回develop READMEを確認したがbranch変更日は不明。support記載はHPCI速度・精度・energy実測ではない。 zfpの値域・pointwise/block-relative誤差とendpoint設定を分け、FAQとdevelopのsubnormal記述差を1.0.1の確定挙動や修正済み状態へ一般化しない。GEMMul8のmodulus数は調整の出発点で精度保証ではなく、memory-saving構成はskip-scaling reuseを無効化する。mutableで未固定のREADMEによる条件で、科学速度・energyの新実測ではない。",
       "current_state_en": "OpenMP 6.0 is current, and 6.1 is scheduled for November 2026. Official Q3 2026 sources provide feature-level implementation tables for GCC and LLVM. Intel oneAPI declares support for 5.2 and selected 6.0 features; NVIDIA HPC SDK 26.5 documents a GPU-oriented subset of 5.0; AMD AOCC 5.2 declares 5.0 support for C/C++ and 4.5 for Fortran; and the Fujitsu Technical Computing Suite declares support for 4.5 and part of 5.0. AOCC and ROCm are distinct software stacks, so a common test is still required for comparisons across languages, backends, and features. SYCL 2020 Revision 12 was published in Q3 2026. The SYCL 2020 entries in Khronos's official conformant-products list are limited to Intel oneAPI DPC++ configurations on Intel CPUs and GPUs. Scoped additions in this batch: Do not date every mutable PETSc 3.26 feature bullet to September 28; retain overview/API mismatch and actual-operation qualification. Add GEMMul8 native fallback/workspace/memory-saving versus skip-scaling-reuse conditions. This read observes oneMath develop README with unknown branch-change date. Support listings are not HPCI performance, accuracy or energy measurements. Separate zfp value domains, pointwise/block-relative errors and endpoint configuration; FAQ/develop subnormal differences do not establish release 1.0.1 behavior or a fix. GEMMul8 modulus counts are tuning starting points, not accuracy guarantees; memory-saving disables skip-scaling reuse. These are mutable unpinned README conditions, not new scientific speed or energy measurements.",
-      "hpci_implications_ja": "仕様公開とCPU/GPU実装範囲を分け、Fortran、デバイス機能、デバッグ、性能差をコンパイラ別に検証する。",
-      "hpci_implications_en": "Separate specification publication from CPU/GPU implementation coverage and test Fortran, device features, debugging, and performance per compiler.",
+      "hpci_implications_ja": "仕様公開とCPU/GPU実装範囲を分け、Fortran、デバイス機能、デバッグ、性能差をコンパイラ別に検証する。 Intelはifx2026.2の公開日を10月30日と記載。Fortran2023のTYPEOF/CLASSOF、OpenMPのtask・device mapping関連の選択的機能、fast浮動小数点モデル時だけ有効な再結合最適化抑止optionを追加した。OpenMP6.1自体はpublic-comment draftのまま。規格全体への対応、数値妥当性、性能、HPCI配備は未検証。 凍結baselineにない10月22日公開のDPC++2026.2.0はSYCLのprecompiled headerとhost/device compile traceに対応。host memory登録はLevel ZeroかつBattlemage以降のIntel GPUに限定。Toolkit2026.2の日付は別の10月23日であり、HPCIでの利用可能性や実測改善は未確認。",
+      "hpci_implications_en": "Separate specification publication from CPU/GPU implementation coverage and test Fortran, device features, debugging, and performance per compiler. Intel dates ifx2026.2 to October30. Notes add Fortran2023 TYPEOF/CLASSOF, selected OpenMP task and device-mapping controls, and a reassociation-disable option effective only with the fast floating-point model. OpenMP6.1 itself remains a public-comment draft. This does not establish complete standards support, numerical correctness, performance or HPCI deployment. The October22 DPC++2026.2.0 release, absent from the frozen baseline, adds SYCL precompiled headers and host/device compile traces. Host-memory registration is restricted to Level Zero on Battlemage-or-newer Intel GPUs. Toolkit2026.2 is separately dated October23; neither component nor suite dates demonstrate HPCI availability or measured gains.",
       "source_ids": [
         "SRC-PORT001",
         "SRC-PORT002",
@@ -122,7 +122,11 @@
         "SRC-OCT05-SSW004-07",
         "SRC-OCT05-APP016-01",
         "SRC-OCT05-APP016-02",
-        "SRC-OCT05-APP016-05"
+        "SRC-OCT05-APP016-05",
+        "SRC-CDS281",
+        "SRC-CDS085",
+        "SRC-CDS084",
+        "SRC-CDS006"
       ]
     },
     {
@@ -202,15 +206,19 @@
       "summary_en": "Tracks product compiler, library, and profiler stacks needed for accelerators.",
       "current_state_ja": "AMDは2026年8月27日にROCm 10を公開し、ROCm.AIを一般提供した。ROCm.AIはHyperloom、AMD Skills、ROCm CLIを統合するが、ROCm CLIはTechnology Previewであり、ROCm 10への正式対応は今後とされる。NVIDIA HPC SDK 26.5は2026年Q2に提供された。将来のサポート期間に関する公開情報は限られている。 2026年9月にはHPC SDK 26.9が公開された。構成表はCUDA 12.9U1/13.3U1を記載する一方、コンパイラ手引書5.8は13.0と記載し、文書間の不一致が残る。AVX2への移行記述と現行AVX要件も分けて扱い、廃止日を推定しない。",
       "current_state_en": "AMD released ROCm 10 on August 27, 2026 and made ROCm.AI generally available. ROCm.AI combines Hyperloom, AMD Skills, and the ROCm CLI, while the CLI remains a Technology Preview whose official ROCm 10 support is still forthcoming. NVIDIA HPC SDK 26.5 arrived in Q2 2026. Public information about long-term support is limited. HPC SDK 26.9 followed in September 2026. Its component table names CUDA 12.9U1/13.3U1 while compiler-guide section 5.8 names 13.0, leaving a documentation discrepancy. Separate the AVX2 transition wording from the current AVX requirement; no cutoff date is inferred.",
-      "hpci_implications_ja": "最新版性能と調達後の固定版保守を両立し、コンテナ、Spack、セキュリティ修正、旧GPU互換を検証する。 OpenFSの評価案として、SDK更新時はMPI起動・配置、ドライバ、割当・メモリ方式を固定して再試験する。NVIDIAのR615/13.4に関するCDMM既定化はバージョン条件であり、HPCIの導入日や性能保証ではない。",
-      "hpci_implications_en": "Balance current performance with post-procurement support, testing containers, Spack, security fixes, and older-GPU compatibility. For OpenFS evaluation, requalify MPI launch/placement with pinned driver, allocator and memory mode during SDK updates. NVIDIA’s CDMM default at R615/13.4 is a version condition, not an HPCI deployment date or performance guarantee.",
+      "hpci_implications_ja": "最新版性能と調達後の固定版保守を両立し、コンテナ、Spack、セキュリティ修正、旧GPU互換を検証する。 OpenFSの評価案として、SDK更新時はMPI起動・配置、ドライバ、割当・メモリ方式を固定して再試験する。NVIDIAのR615/13.4に関するCDMM既定化はバージョン条件であり、HPCIの導入日や性能保証ではない。 Intelはifx2026.2の公開日を10月30日と記載。Fortran2023のTYPEOF/CLASSOF、OpenMPのtask・device mapping関連の選択的機能、fast浮動小数点モデル時だけ有効な再結合最適化抑止optionを追加した。OpenMP6.1自体はpublic-comment draftのまま。規格全体への対応、数値妥当性、性能、HPCI配備は未検証。 凍結baselineにない10月22日公開のDPC++2026.2.0はSYCLのprecompiled headerとhost/device compile traceに対応。host memory登録はLevel ZeroかつBattlemage以降のIntel GPUに限定。Toolkit2026.2の日付は別の10月23日であり、HPCIでの利用可能性や実測改善は未確認。",
+      "hpci_implications_en": "Balance current performance with post-procurement support, testing containers, Spack, security fixes, and older-GPU compatibility. For OpenFS evaluation, requalify MPI launch/placement with pinned driver, allocator and memory mode during SDK updates. NVIDIA’s CDMM default at R615/13.4 is a version condition, not an HPCI deployment date or performance guarantee. Intel dates ifx2026.2 to October30. Notes add Fortran2023 TYPEOF/CLASSOF, selected OpenMP task and device-mapping controls, and a reassociation-disable option effective only with the fast floating-point model. OpenMP6.1 itself remains a public-comment draft. This does not establish complete standards support, numerical correctness, performance or HPCI deployment. The October22 DPC++2026.2.0 release, absent from the frozen baseline, adds SYCL precompiled headers and host/device compile traces. Host-memory registration is restricted to Level Zero on Battlemage-or-newer Intel GPUs. Toolkit2026.2 is separately dated October23; neither component nor suite dates demonstrate HPCI availability or measured gains.",
       "source_ids": [
         "SRC-PORT008",
         "SRC-PORT009",
         "SRC-PORT037",
         "SRC-OCT03-SSW001-NVHPC269",
         "SRC-OCT03-SSW001-NVHPC-DATE",
-        "SRC-OCT03-SSW001-CDMM"
+        "SRC-OCT03-SSW001-CDMM",
+        "SRC-CDS281",
+        "SRC-CDS085",
+        "SRC-CDS084",
+        "SRC-CDS006"
       ]
     },
     {
@@ -230,14 +238,18 @@
         "SRC-OCT05-SSW010-07",
         "SRC-OCT05-SSW010-08",
         "SRC-OCT05-SSW010-09",
-        "SRC-OCT05-SSW010-10"
+        "SRC-OCT05-SSW010-10",
+        "SRC-D31-APP005-01-01",
+        "SRC-D31-APP005-01-02",
+        "SRC-D31-APP005-02-01",
+        "SRC-D31-APP005-02-02"
       ],
       "group": "automation",
       "summary_ja": "AIによるコード移植、性能予測、ボトルネック分析、最適化、回帰評価を自動的に反復する仕組みを追跡する。",
       "current_state_en": "FugakuNEXT plans a prototype around mid-FY2026 combining Benchpark/BenchKit, on-premises AI, commercial AI, and testbeds. The 2025 ParEval-Repo study adds evidence for repository translation evaluation including generated builds, beyond source-only evaluation. Scoped additions in this batch: The CReSS author preprint reports 162 active kernels among 387 regions, single-node GH200/H100, single precision and a 360-step typhoon case. Its 5.1x versus 72-thread Grace is application speed, not labor savings. Five numerical discrepancies required human investigation and snapshots missed a branch. HPCAgent-Bench separates solved-task speedup geometric mean, overall success rate, feedback modes and resubmission selection. Multinode validity and causal effort savings remain unestablished. Retain Julia-kernel research scope and changelog/release-UI date dissent. Latest IR-ranking full text is unavailable; preserve v1/main limitations. Evaluation counts are not total time/energy savings: include training-data acquisition, model training, cold starts and reuse rates in the existing total-cost gate. HPCI numerical qualification and a new October event remain unestablished.",
-      "hpci_implications_en": "Do not automatically accept generated code; mechanically verify tests, performance, numerical differences, licenses, and provenance before review by the accountable decision maker. Track build failures, execution on the specified GPU, public-port contamination and actual review effort separately. For autotuning, propose retaining effective compiler targets and decision records, distinguishing cached, newly measured and failed trials, accounting for search/compile/revalidation costs, and retesting held-out inputs after version changes.",
+      "hpci_implications_en": "Do not automatically accept generated code; mechanically verify tests, performance, numerical differences, licenses, and provenance before review by the accountable decision maker. Track build failures, execution on the specified GPU, public-port contamination and actual review effort separately. For autotuning, propose retaining effective compiler targets and decision records, distinguishing cached, newly measured and failed trials, accounting for search/compile/revalidation costs, and retesting held-out inputs after version changes. Author reports 9.293x geomean over official baselines for three Gemma-4-12B decode kernels on RNGD. Adds a scarce-device target-onboarding case with repeated device comparisons and disclosed fixed-input cheating excluded from results. EasyProver/Aegis adds frozen-statement proof-or-refutation accounting over translated Rust. Authors report 1,054 proofs from a 2,000-statement stratified Aegis sample, 1,997 attempted, at 30 minutes per statement; negatives screened beforehand and requested-false category excluded.",
       "track_id": "PORT-AUTO",
-      "hpci_implications_ja": "生成コードを自動採用せず、テスト、性能、数値差、ライセンス、来歴を機械的に検証したうえで、判断責任者による確認へ渡す。 build失敗、指定GPUでの実行、公開portによる評価汚染と実際のreview工数を別々に管理する。 自動チューニングでは、実効コンパイラtargetと判断記録、cache由来・新規実測・失敗の区別、探索・コンパイル・再検証費用を保存し、版変更後の独立入力で再評価することを提案する。",
+      "hpci_implications_ja": "生成コードを自動採用せず、テスト、性能、数値差、ライセンス、来歴を機械的に検証したうえで、判断責任者による確認へ渡す。 build失敗、指定GPUでの実行、公開portによる評価汚染と実際のreview工数を別々に管理する。 自動チューニングでは、実効コンパイラtargetと判断記録、cache由来・新規実測・失敗の区別、探索・コンパイル・再検証費用を保存し、版変更後の独立入力で再評価することを提案する。 著者はRNGD上のGemma-4-12B decode 3 kernelで公式baseline比幾何平均9.293倍を報告。希少デバイスでの知識構築・反復実測と固定入力shortcutの除外を具体例として追加。 EasyProver/AegisはRust翻訳後の固定命題について証明と反証を分離。Aegis層別sample 2,000命題中1,997試行、1命題30分で1,054証明を報告。事前反証例と偽を要求したcategoryはsampleから除外。",
       "name_ja": "AI支援移植・自動最適化",
       "summary_en": "Tracks closed-loop AI code migration, performance prediction, bottleneck analysis, optimization, and regression evaluation."
     },
@@ -250,8 +262,8 @@
       "summary_en": "Tracks frameworks and integration forks for large-scale Transformer parallelism, memory sharding, checkpointing, and low-precision training.",
       "current_state_ja": "正式名称はMegatron-MLではなくMegatron-LMである。NVIDIAのMegatron-LMには構成可能なライブラリMegatron Coreが含まれ、2026年8月19日に0.19.0が公開された。Megatron Bridge 0.5.0は2026年6月に公開され、Megatron Coreを基盤にHugging Faceとのチェックポイント変換、検証、学習レシピを提供する。NeMo Framework 26.06はMegatron Core 0.18.0とMegatron Bridge 0.5.0を組み合わせており、最新版同士が常に同一ではない。Megatron-DeepSpeedはDeepSpeed機能を統合したフォークで、公式READMEが明示するNVIDIA/Megatron-LMとの大規模同期は2023年7月である。DeepSpeed-Ulyssesの公式チュートリアルでは現在も利用例が示されるが、最新Megatron Coreとの機能同等性は確認できない。",
       "current_state_en": "The official name is Megatron-LM, not Megatron-ML. NVIDIA's Megatron-LM includes the composable Megatron Core library, whose 0.19.0 release was published on August 19, 2026. Megatron Bridge 0.5.0 was released in June 2026 and builds on Megatron Core to provide Hugging Face checkpoint conversion, verification, and training recipes. NeMo Framework 26.06 combines Megatron Core 0.18.0 with Megatron Bridge 0.5.0, so the latest releases are not necessarily paired. Megatron-DeepSpeed is a fork integrating DeepSpeed features; its README identifies July 2023 as the last large synchronization with NVIDIA/Megatron-LM. A current DeepSpeed-Ulysses tutorial still uses it, but feature parity with current Megatron Core is not established.",
-      "hpci_implications_ja": "モデル規模だけでなく、対象GPU、並列方式の組合せ、通信ライブラリ、チェックポイント互換性、障害回復、数値精度、更新頻度を同一モデル・データで比較する。フォーク名だけから保守継続性やベンダー横断性を推定しない。",
-      "hpci_implications_en": "Compare supported GPUs, combinations of parallelism, communication libraries, checkpoint compatibility, recovery, numerical precision, and update cadence on the same model and data rather than model size alone. Do not infer maintenance continuity or cross-vendor portability from a fork name.",
+      "hpci_implications_ja": "モデル規模だけでなく、対象GPU、並列方式の組合せ、通信ライブラリ、チェックポイント互換性、障害回復、数値精度、更新頻度を同一モデル・データで比較する。フォーク名だけから保守継続性やベンダー横断性を推定しない。 公式2.15 releaseにより従前のRC限定保留を更新できる。nccl groupは新backendが既定となりlegacy rollbackとhang診断を示すが関連分散APIはunstable。Python3.10対応を終了。backend・環境適合を再確認する案で、施設受入ではない。",
+      "hpci_implications_en": "Compare supported GPUs, combinations of parallelism, communication libraries, checkpoint compatibility, recovery, numerical precision, and update cadence on the same model and data rather than model size alone. Do not infer maintenance continuity or cross-vendor portability from a fork name. The official 2.15 release replaces the prior RC-only hold. It defaults nccl groups to the rewritten backend, with legacy rollback and hang diagnostics; the relevant distributed APIs remain unstable. Python 3.10 support is removed. Requalify backend and environment compatibility; release is not facility acceptance.",
       "source_ids": [
         "SRC-PORT029",
         "SRC-PORT030",
@@ -262,7 +274,8 @@
         "SRC-PORT035",
         "SRC-PORT036",
         "SRC-UPD-CSTRAIN",
-        "SRC-UPD-CSL"
+        "SRC-UPD-CSL",
+        "SRC-D31-SSW009-02-01"
       ]
     },
     {
@@ -274,8 +287,8 @@
       "summary_en": "Tracks vLLM, llama.cpp, SGLang, TensorRT-LLM, TGI, and ONNX Runtime GenAI across hardware and model support, quantization, batching, KV cache, distributed inference, agent APIs, and operations.",
       "current_state_ja": "vLLM 0.28.0が公開されましたが、確認したROCm Core SDK 10.0.0のdevelop資料はvLLM 0.27.0対応を記載しています。公開版と検証対象版を区別し、GPU・backend・機能併用条件を固定して比較します。llama.cppはGGUFとCPUを含む実行環境、SGLangは分散サービング、TensorRT LLMはNVIDIA向け最適化を提供します。TGIの保守モード、ONNX Runtime GenAIのPreviewも、すべて同じ成熟度とは扱いません。",
       "current_state_en": "vLLM 0.28.0 is released, while the inspected ROCm Core SDK 10.0.0 develop page lists support for 0.27.0. Separate public releases from qualified versions and pin GPU, backend and feature combinations. llama.cpp supplies GGUF and CPU-capable deployment, SGLang distributed serving and TensorRT LLM NVIDIA-focused optimization. TGI maintenance mode and ONNX Runtime GenAI Preview are also distinct maturity states.",
-      "hpci_implications_ja": "同一モデル、精度、ハードウェア、到着過程、SLAでTTFT、ITL、p95・p99、スループット、メモリ、電力、回復時間を測定し、構造化出力、ツール呼び出し、監視、保守を別々に確認する。",
-      "hpci_implications_en": "Measure TTFT, ITL, p95 and p99 latency, throughput, memory, power, and recovery time using the same model, precision, hardware, arrival process, and SLA, while verifying structured output, tool calling, observability, and maintenance separately.",
+      "hpci_implications_ja": "同一モデル、精度、ハードウェア、到着過程、SLAでTTFT、ITL、p95・p99、スループット、メモリ、電力、回復時間を測定し、構造化出力、ツール呼び出し、監視、保守を別々に確認する。 rc2もprerelease。noteはwheel1.4.0rc2.post1とcontainer/docs1.4.0rc2を区別しtransceiverV2のV1対応削除を示す。RPC/MPI初期化hangを記載。rc1取消/schema問題は直接の解決証拠まで保留し、記載消失を修正証明としない。",
+      "hpci_implications_en": "Measure TTFT, ITL, p95 and p99 latency, throughput, memory, power, and recovery time using the same model, precision, hardware, arrival process, and SLA, while verifying structured output, tool calling, observability, and maintenance separately. rc2 stays prerelease. Its note distinguishes wheel 1.4.0rc2.post1 from container/docs 1.4.0rc2 and removes V1 support from transceiver V2. It lists an RPC/MPI initialization hang. Preserve rc1 cancellation/schema concerns until direct resolution evidence; note omission does not prove fixes.",
       "source_ids": [
         "SRC-PORT038",
         "SRC-PORT039",
@@ -287,7 +300,8 @@
         "SRC-PORT048",
         "SRC-PORT049",
         "SRC-PORT050",
-        "SRC-PORT051"
+        "SRC-PORT051",
+        "SRC-D31-SSW009-03-01"
       ]
     },
     {
@@ -299,8 +313,8 @@
       "summary_en": "Provisional OpenFS decision gates that connect continuous evaluation across multiple ISAs and GPUs to application migration and acceptance criteria.",
       "current_state_ja": "コンパイラに関する公開情報は多いが、HPCIアプリケーション群の移植性を同一条件で比較した台帳は整備されていない。 2026年10月3日に確認したPETSc概要ではHIP Vec/MatがSUPPORTEDに更新されたが、取得した概要3.26.0とAPI 3.25.5の版は一致しない。数値ライブラリの対応表と、同一版・実問題での受入検証を区別する。",
       "current_state_en": "Substantial compiler information is public, but no common portability inventory compares the HPCI application portfolio under identical conditions. The PETSc overview checked on October 3, 2026 marks HIP Vec/Mat SUPPORTED, but the retrieved overview 3.26.0 and API 3.25.5 differ in version. Distinguish numerical-library support tables from version-matched qualification on actual problems.",
-      "hpci_implications_ja": "ビルド可否、計算結果の妥当性、性能、移植工数、保守性を別々の指標で評価し、センターごとに必要なバックエンドを維持する。 数値ライブラリでは、oneMathの領域・処理系・backend別対応を固定し、入力・演算・累積/再構成・出力精度を分ける評価を提案する。cuBLASのworkspace・特殊値設定・fallback、GEMMul8のmoduli数・scaling・実数/複素・INT8/FP8経路も記録する。これは既存移植性台帳と複数backend再現性ゲートへの評価条件の追加案であり、将来のライブラリ提供日・保守期限や精度保証ではない。 評価案として、元実装・移植直後・最適化後と、移植の正しさ・最適化同値性・実測性能を分けて記録する。達成や日程変更を意味しない。",
-      "hpci_implications_en": "Track buildability, numerical correctness, performance, porting effort, and maintainability separately while retaining the backends required by each center. For numerical libraries, propose pinning oneMath domain/compiler/backend coverage and distinguishing input, compute, accumulation/reconstruction and output precision. Also record cuBLAS workspace, special-value settings and fallback, plus GEMMul8 modulus count, scaling, real/complex mode and INT8/FP8 path. These are proposed qualification conditions for the existing inventory and multi-backend reproducibility gates, not future library delivery dates, support lifetimes or accuracy guarantees. Proposed evaluation: record original, ported and optimized baselines, separating migration correctness, optimization equivalence and measured performance. This does not establish achievement or change dates.",
+      "hpci_implications_ja": "ビルド可否、計算結果の妥当性、性能、移植工数、保守性を別々の指標で評価し、センターごとに必要なバックエンドを維持する。 数値ライブラリでは、oneMathの領域・処理系・backend別対応を固定し、入力・演算・累積/再構成・出力精度を分ける評価を提案する。cuBLASのworkspace・特殊値設定・fallback、GEMMul8のmoduli数・scaling・実数/複素・INT8/FP8経路も記録する。これは既存移植性台帳と複数backend再現性ゲートへの評価条件の追加案であり、将来のライブラリ提供日・保守期限や精度保証ではない。 評価案として、元実装・移植直後・最適化後と、移植の正しさ・最適化同値性・実測性能を分けて記録する。達成や日程変更を意味しない。 著者はRNGD上のGemma-4-12B decode 3 kernelで公式baseline比幾何平均9.293倍を報告。希少デバイスでの知識構築・反復実測と固定入力shortcutの除外を具体例として追加。 EasyProver/AegisはRust翻訳後の固定命題について証明と反証を分離。Aegis層別sample 2,000命題中1,997試行、1命題30分で1,054証明を報告。事前反証例と偽を要求したcategoryはsampleから除外。 mpWYQRはHouseholderの2つのnorm評価にfp32を使い、他のreflector計算はfp16を主体とする。決定論的な精度は低精度水準のまま。著者はEmerald Rapids CPUとMKLで合成行列のQR残差・直交性を評価し、GPU実装は今後の課題とする。normの範囲・累積演算に関する具体的な失敗境界であり、fp32相当の科学的精度を意味しない。 Intelはifx2026.2の公開日を10月30日と記載。Fortran2023のTYPEOF/CLASSOF、OpenMPのtask・device mapping関連の選択的機能、fast浮動小数点モデル時だけ有効な再結合最適化抑止optionを追加した。OpenMP6.1自体はpublic-comment draftのまま。規格全体への対応、数値妥当性、性能、HPCI配備は未検証。 凍結baselineにない10月22日公開のDPC++2026.2.0はSYCLのprecompiled headerとhost/device compile traceに対応。host memory登録はLevel ZeroかつBattlemage以降のIntel GPUに限定。Toolkit2026.2の日付は別の10月23日であり、HPCIでの利用可能性や実測改善は未確認。",
+      "hpci_implications_en": "Track buildability, numerical correctness, performance, porting effort, and maintainability separately while retaining the backends required by each center. For numerical libraries, propose pinning oneMath domain/compiler/backend coverage and distinguishing input, compute, accumulation/reconstruction and output precision. Also record cuBLAS workspace, special-value settings and fallback, plus GEMMul8 modulus count, scaling, real/complex mode and INT8/FP8 path. These are proposed qualification conditions for the existing inventory and multi-backend reproducibility gates, not future library delivery dates, support lifetimes or accuracy guarantees. Proposed evaluation: record original, ported and optimized baselines, separating migration correctness, optimization equivalence and measured performance. This does not establish achievement or change dates. Author reports 9.293x geomean over official baselines for three Gemma-4-12B decode kernels on RNGD. Adds a scarce-device target-onboarding case with repeated device comparisons and disclosed fixed-input cheating excluded from results. EasyProver/Aegis adds frozen-statement proof-or-refutation accounting over translated Rust. Authors report 1,054 proofs from a 2,000-statement stratified Aegis sample, 1,997 attempted, at 30 minutes per statement; negatives screened beforehand and requested-false category excluded. mpWYQR uses fp32 for two Householder norm evaluations with other reflector work governed by fp16. Its deterministic accuracy remains at low-precision level. Authors evaluate QR residual and orthogonality on synthetic matrices using MKL on an Emerald Rapids CPU; GPU implementation is future work. This adds a concrete norm-range/accumulation failure boundary, not fp32-equivalent scientific accuracy. Intel dates ifx2026.2 to October30. Notes add Fortran2023 TYPEOF/CLASSOF, selected OpenMP task and device-mapping controls, and a reassociation-disable option effective only with the fast floating-point model. OpenMP6.1 itself remains a public-comment draft. This does not establish complete standards support, numerical correctness, performance or HPCI deployment. The October22 DPC++2026.2.0 release, absent from the frozen baseline, adds SYCL precompiled headers and host/device compile traces. Host-memory registration is restricted to Level Zero on Battlemage-or-newer Intel GPUs. Toolkit2026.2 is separately dated October23; neither component nor suite dates demonstrate HPCI availability or measured gains.",
       "source_ids": [
         "SRC-PORT011",
         "SRC-PORT012",
@@ -309,7 +323,17 @@
         "SRC-OCT03-SSW004-PETSC-HIP-ROADMAP",
         "SRC-OCT03-SSW004-CUBLAS-ROADMAP",
         "SRC-OCT03-SSW004-GEMMUL8-ROADMAP",
-        "SRC-OCT23-APP005-AQUEDUCT"
+        "SRC-OCT23-APP005-AQUEDUCT",
+        "SRC-D31-APP005-01-01",
+        "SRC-D31-APP005-01-02",
+        "SRC-D31-APP005-02-01",
+        "SRC-D31-APP005-02-02",
+        "SRC-D31-APP016-01-01",
+        "SRC-D31-APP016-01-02",
+        "SRC-CDS281",
+        "SRC-CDS085",
+        "SRC-CDS084",
+        "SRC-CDS006"
       ]
     },
     {
@@ -2638,6 +2662,98 @@
       "url": "https://github.com/apptainer/apptainer/releases/tag/v1.5.5",
       "source_class": "project-official",
       "published_at": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-CDS281",
+      "title": "OpenMP Specifications",
+      "publisher": "OpenMP Architecture Review Board",
+      "url": "https://www.openmp.org/specifications/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-CDS085",
+      "title": "Intel Fortran Compiler 2026 release notes",
+      "publisher": "Intel",
+      "url": "https://www.intel.com/content/www/us/en/developer/articles/release-notes/fortran-compiler/2026.html",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-CDS084",
+      "title": "Intel oneAPI Toolkit 2026 release notes and component versions",
+      "publisher": "Intel",
+      "url": "https://www.intel.com/content/www/us/en/developer/articles/release-notes/oneapi-toolkit/2026.html",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-CDS006",
+      "title": "Intel oneAPI DPC++/C++ Compiler 2026 release notes",
+      "publisher": "Intel",
+      "url": "https://www.intel.com/content/www/us/en/developer/articles/release-notes/oneapi-dpcpp/2026.html",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-D31-APP005-01-01",
+      "title": "A Case Study of a Multi-Agent Kernel-Optimization Loop That Learns a New AI Accelerator",
+      "publisher": "Byonggon Chun / arXiv",
+      "url": "https://arxiv.org/abs/2610.38329",
+      "source_class": "academic-primary",
+      "published_at": "2026-10-28"
+    },
+    {
+      "source_id": "SRC-D31-APP005-01-02",
+      "title": "A Case Study of a Multi-Agent Kernel-Optimization Loop That Learns a New AI Accelerator",
+      "publisher": "Byonggon Chun / arXiv",
+      "url": "https://arxiv.org/html/2610.38329v1",
+      "source_class": "academic-primary",
+      "published_at": "2026-10-28"
+    },
+    {
+      "source_id": "SRC-D31-APP005-02-01",
+      "title": "Scaling Lean Theorem Proving for Real-World Code Verification",
+      "publisher": "Ganguly et al. / arXiv",
+      "url": "https://arxiv.org/abs/2610.38174",
+      "source_class": "academic-primary",
+      "published_at": "2026-10-28"
+    },
+    {
+      "source_id": "SRC-D31-APP005-02-02",
+      "title": "Scaling Lean Theorem Proving for Real-World Code Verification",
+      "publisher": "Ganguly et al. / arXiv",
+      "url": "https://arxiv.org/html/2610.38174v1",
+      "source_class": "academic-primary",
+      "published_at": "2026-10-28"
+    },
+    {
+      "source_id": "SRC-D31-SSW009-02-01",
+      "title": "PyTorch 2.15 Release Blog",
+      "publisher": "PyTorch Foundation",
+      "url": "https://pytorch.org/blog/pytorch-2-15-release-blog/",
+      "source_class": "project-official",
+      "published_at": "2026-10-28"
+    },
+    {
+      "source_id": "SRC-D31-SSW009-03-01",
+      "title": "TensorRT-LLM v1.4.0rc2",
+      "publisher": "NVIDIA maintainers",
+      "url": "https://github.com/NVIDIA/TensorRT-LLM/releases/tag/v1.4.0rc2",
+      "source_class": "project-official",
+      "published_at": "2026-10-28"
+    },
+    {
+      "source_id": "SRC-D31-APP016-01-01",
+      "title": "Reduced and Mixed-Precision Block Householder QR Factorization",
+      "publisher": "Authors via arXiv",
+      "url": "https://arxiv.org/abs/2610.38537",
+      "source_class": "academic-primary",
+      "published_at": "2026-10-28"
+    },
+    {
+      "source_id": "SRC-D31-APP016-01-02",
+      "title": "Reduced and Mixed-Precision Block Householder QR Factorization",
+      "publisher": "Authors via arXiv",
+      "url": "https://arxiv.org/html/2610.38537v1",
+      "source_class": "academic-primary",
+      "published_at": "2026-10-28"
     }
   ],
   "coverage_gaps": [
@@ -2768,7 +2884,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-SSW008-DEPENDENCIES-20261030",
-    "human_approval_directive_id": "DIR-900154"
+    "publication_decision_id": "PUBDEC-DAILY41-BOUNDED-PUBLIC-20261031",
+    "human_approval_directive_id": "DIR-900167"
   }
 }

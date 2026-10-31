@@ -160,8 +160,8 @@
       "summary_en": "Tracks purpose-built HPC and AI fabrics such as Omni-Path separately from Ethernet, including NICs, switches, software, interoperability, and operations.",
       "current_state_ja": "CornelisのCN5000 Omni-Pathは400 Gbit/sのSuperNIC、スイッチ、Director Class Switch、OPXソフトウェアで構成される。CN6000は800 Gbit/sのSuperNICとして、Omni-Path、RoCEv2、Ultra Ethernet、PCIe 6.0への対応が発表されているが、2026年8月時点で一般提供開始を示す一次情報は確認できない。 今回の限定的な追補：UEC 1.0.3とIEEE P802.3dj D3.3の9月25日–10月10日AOE再投票を分け、最終承認・適合量産は未確認。CN6000のQ4 CY2026一般提供目標と9月のcustomer samplingを実際のGAから区別する。Active Compute Fabricは9月14日のarchitecture発表で、UALink/ESUN/UEの出荷済み相互運用証明ではない。ベンダー測定のOMB 7.2.0表と7.5.2 recipe不一致、ROCm/MPI/OPX版、affinity・GPU buffer・one-switch条件を再現前提に保持する。",
       "current_state_en": "Cornelis CN5000 Omni-Path comprises 400 Gbit/s SuperNICs, switches, director-class switches, and the OPX software stack. CN6000 has been announced as an 800 Gbit/s SuperNIC supporting Omni-Path, RoCEv2, Ultra Ethernet, and PCIe 6.0, but no primary evidence of general availability was confirmed as of August 2026. Scoped additions in this batch: Separate UEC 1.0.3 from ongoing IEEE P802.3dj D3.3 recirculation September 25–October 10 AOE; final approval and compliant volume remain unverified. CN6000 Q4 CY2026 GA targets/September customer sampling do not prove GA. Active Compute Fabric is a September 14 architecture announcement, not shipping UALink/ESUN/UE interoperability. Preserve OMB 7.2.0 table versus 7.5.2 recipe, ROCm/MPI/OPX versions, affinity/GPU-buffer/one-switch conditions as reproduction prerequisites.",
-      "hpci_implications_ja": "公称帯域だけでなく、MPI・SHMEM・libfabric・GPU集合通信、テールレイテンシ、輻輳、障害回復、管理、消費電力、国内保守を共通条件で比較する。",
-      "hpci_implications_en": "Compare MPI, SHMEM, libfabric, GPU collectives, tail latency, congestion, recovery, management, power, and service in Japan under common conditions rather than nominal bandwidth alone.",
+      "hpci_implications_ja": "公称帯域だけでなく、MPI・SHMEM・libfabric・GPU集合通信、テールレイテンシ、輻輳、障害回復、管理、消費電力、国内保守を共通条件で比較する。 Cornelisはdual Xeon8480+・fat-treeの512ノードNAMD評価を公表。STMV-28Mは512ノードで約69%、128ノードまで90%超の並列効率。分散配置した32ノードjob16本の合計throughputは単独実行比99%超。従来の単一switch microbenchmarkにアプリ実測を追加するが、方式間優位性は未証明。",
+      "hpci_implications_en": "Compare MPI, SHMEM, libfabric, GPU collectives, tail latency, congestion, recovery, management, power, and service in Japan under common conditions rather than nominal bandwidth alone. Cornelis reports a 512-node dual-Xeon8480+ fat-tree NAMD test: STMV-28M reaches about69% parallel efficiency at512 nodes and above90% through128. Sixteen distributed32-node jobs retain above99% of isolated aggregate throughput. This vendor workload measurement adds evidence beyond the earlier one-switch microbenchmark; it does not establish cross-fabric superiority.",
       "source_ids": [
         "SRC-NET027",
         "SRC-NET028",
@@ -171,7 +171,8 @@
         "SRC-OCT05-ARCH004-04",
         "SRC-OCT05-ARCH004-05",
         "SRC-OCT05-ARCH004-06",
-        "SRC-OCT05-ARCH004-08"
+        "SRC-OCT05-ARCH004-08",
+        "SRC-D31-ARCH004-01-01"
       ]
     },
     {
@@ -183,13 +184,14 @@
       "summary_en": "OpenFS provisional gates connecting standards and products to HPCI communication behavior, operations, and facility constraints.",
       "current_state_ja": "共通の通信負荷、障害注入、消費電力、運用性を複数の方式で比較する手順は確立されていない。",
       "current_state_en": "A cross-platform procedure for comparing common traffic patterns, fault injection, power consumption, and operability has not yet been established.",
-      "hpci_implications_ja": "アプリケーションの通信特性とセンター規模を考慮し、名目上最速の単一方式に絞らず、複数のトポロジ候補を維持する。 HPEのH200/RTX PRO 6000 Blackwell同一cluster混在とKAI一般提供は指定構成の公表で、同一node・任意組合せ・日本提供・fabric性能の証明ではない。Supermicroの256 Vera CPU rack単独/併用構成は見積受付とし、NVL72出荷と分離する。配置・割当・転送・共通I/O・電力冷却・保守復旧を同条件で評価し、既存gate・日程・gapを保持する。",
-      "hpci_implications_en": "Use application communication behavior and center scale to retain multiple topology options rather than a single nominally fastest fabric. HPE reports same-cluster H200/RTX PRO 6000 Blackwell composition and KAI general availability, not same-node/arbitrary combinations, Japanese availability or fabric performance. Treat Supermicro’s standalone/paired256-Vera CPU rack as available for quotation, distinct from NVL72 shipment. Compare placement, allocation, transfer, shared I/O, power/cooling, support and recovery under matched conditions; retain existing gates, dates and gaps.",
+      "hpci_implications_ja": "アプリケーションの通信特性とセンター規模を考慮し、名目上最速の単一方式に絞らず、複数のトポロジ候補を維持する。 HPEのH200/RTX PRO 6000 Blackwell同一cluster混在とKAI一般提供は指定構成の公表で、同一node・任意組合せ・日本提供・fabric性能の証明ではない。Supermicroの256 Vera CPU rack単独/併用構成は見積受付とし、NVL72出荷と分離する。配置・割当・転送・共通I/O・電力冷却・保守復旧を同条件で評価し、既存gate・日程・gapを保持する。 Cornelisはdual Xeon8480+・fat-treeの512ノードNAMD評価を公表。STMV-28Mは512ノードで約69%、128ノードまで90%超の並列効率。分散配置した32ノードjob16本の合計throughputは単独実行比99%超。従来の単一switch microbenchmarkにアプリ実測を追加するが、方式間優位性は未証明。",
+      "hpci_implications_en": "Use application communication behavior and center scale to retain multiple topology options rather than a single nominally fastest fabric. HPE reports same-cluster H200/RTX PRO 6000 Blackwell composition and KAI general availability, not same-node/arbitrary combinations, Japanese availability or fabric performance. Treat Supermicro’s standalone/paired256-Vera CPU rack as available for quotation, distinct from NVL72 shipment. Compare placement, allocation, transfer, shared I/O, power/cooling, support and recovery under matched conditions; retain existing gates, dates and gaps. Cornelis reports a 512-node dual-Xeon8480+ fat-tree NAMD test: STMV-28M reaches about69% parallel efficiency at512 nodes and above90% through128. Sixteen distributed32-node jobs retain above99% of isolated aggregate throughput. This vendor workload measurement adds evidence beyond the earlier one-switch microbenchmark; it does not establish cross-fabric superiority.",
       "source_ids": [
         "SRC-NET013",
         "SRC-NET014",
         "SRC-OCT23-ARCH005-HPE-MIXED",
-        "SRC-OCT23-ARCH005-SUPERMICRO-CPU"
+        "SRC-OCT23-ARCH005-SUPERMICRO-CPU",
+        "SRC-D31-ARCH004-01-01"
       ]
     },
     {
@@ -1633,6 +1635,14 @@
       "url": "https://www.supermicro.com/en/pressreleases/supermicro-introduces-nvidia-vera-cpu-rack-256-cpu-100-liquid-cooled-rack-scale",
       "source_class": "vendor-official",
       "published_at": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-D31-ARCH004-01-01",
+      "title": "Scaling NAMD Molecular Dynamics to 512 Nodes with Intel Xeon Processors and Cornelis CN5000",
+      "publisher": "Cornelis",
+      "url": "https://www.cornelis.com/blog/scaling-namd-molecular-dynamics-512-nodes-intel-xeon-cn5000",
+      "source_class": "project-official",
+      "published_at": "2026-10-26"
     }
   ],
   "coverage_gaps": [
@@ -1719,7 +1729,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-ARCH005-NIGHT-20261030",
-    "human_approval_directive_id": "DIR-900159"
+    "publication_decision_id": "PUBDEC-DAILY41-BOUNDED-PUBLIC-20261031",
+    "human_approval_directive_id": "DIR-900167"
   }
 }
