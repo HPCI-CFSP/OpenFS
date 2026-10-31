@@ -56,14 +56,18 @@
       "summary_en": "Tracks accelerator generations and rack-scale products spanning FP64 scientific computing through low-precision AI.",
       "current_state_ja": "NVIDIA Vera RubinとAMD Heliosは2026年に生産移行を公表し、AMDはMI500を2027年、MI600を2028年の目標として追加した。IntelはCrescent Islandのサンプル提供を2026年後半、QualcommはDragonflyの商用化を2028年の目標としている。",
       "current_state_en": "NVIDIA and AMD announced 2026 production milestones for Vera Rubin and Helios, while AMD also set targets for MI500 in 2027 and MI600 in 2028. Intel targets Crescent Island sampling in H2 2026, and Qualcomm targets Dragonfly commercial availability in 2028.",
-      "hpci_implications_ja": "ピーク値だけでなく、FP64性能、混合精度演算、メモリ容量、通信、RAS、消費電力、実アプリケーション性能を同じ受入試験で比較する必要がある。",
-      "hpci_implications_en": "HPCI needs common acceptance tests for FP64, mixed precision, memory capacity, communication, RAS, power, and application performance rather than peak figures alone.",
+      "hpci_implications_ja": "ピーク値だけでなく、FP64性能、混合精度演算、メモリ容量、通信、RAS、消費電力、実アプリケーション性能を同じ受入試験で比較する必要がある。 GROMACS2026.4はGPU halo通信時のhost timerによるload imbalance表示を無意味として削除し、出力forceのPME寄与欠落とGPU非局所相互作用の古いshift vector使用を修正。旧計時・force確認は版と構成を固定して解釈する。修正公表であり速度向上やHPCI妥当性の検証ではない。 AMDはMI355X上でMONAI推論5種をBF16・channels-last 3D・torch.compileで評価したと10月30日に公表。測定は9月21日、単一の脾臓CT入力、予備5回・計測20回。Early Accessの推論対応であり、学習対応は今後の検証。 NVIDIAはAllen Telescope ArrayでHoloscan/DAQIRIによるGPU直接取込とCyberEther/CUDA-X処理を紹介。RTX PRO 6000 Blackwellを用いるシステムが2.4 Tb/sを処理可能とするベンダー報告であり、GPU台数・計測方法は不明。GPU1台当たりの実測値や独立再現性能とは扱わない。",
+      "hpci_implications_en": "HPCI needs common acceptance tests for FP64, mixed precision, memory capacity, communication, RAS, power, and application performance rather than peak figures alone. GROMACS2026.4 removes host-timer load-imbalance reporting when halo communication is on GPU because those values were meaningless. It also fixes missing PME contributions in written forces and stale shift vectors in GPU non-local interactions. Preserve release/configuration identity when interpreting old timings and force checks; this establishes fixes, not validated speedups. AMD reports five MONAI inference bundles on MI355X using BF16, channels-last 3D and torch.compile. The September21 vendor test uses one spleen CT input, five warmups and20 timed iterations. Support is Early Access; training remains future work. NVIDIA describes direct GPU ingest with Holoscan/DAQIRI and CyberEther/CUDA-X at the Allen Telescope Array. Its vendor account says the system can handle 2.4 Tb/s using RTX PRO 6000 Blackwell. GPU count and measurement method are unknown; this is neither a per-GPU throughput measurement nor independently reproduced performance.",
       "source_ids": [
         "SRC-COMP001",
         "SRC-COMP002",
         "SRC-COMP003",
         "SRC-COMP004",
-        "SRC-COMP013"
+        "SRC-COMP013",
+        "SRC-D31-APP002-01-01",
+        "SRC-D31-APP002-01-02",
+        "SRC-D31-ARCH001-01-01",
+        "SRC-D31-ARCH001-02-01"
       ]
     },
     {
@@ -112,8 +116,8 @@
       "summary_en": "Track manufacturing processes, package integration scale and transitions from prototypes to production.",
       "current_state_ja": "TSMCは2028-2029年のプロセス・実装計画を公表。Intelの18A-Pはリスク生産段階、Rapidusは先行PDKと量産準備を進める。これらは完成したCPU/GPUの発売日ではない。 2026年9月のIntel/ASML報告は18Aの一部製品・選択層でのHigh-NA EUV量産利用を示す。6月のEMIB-T報告は実装大型化の能力値であり、全構成の量産認定とは区別する。 今回の限定的な追補：UCIeのundated ECN公開概要は信頼・lifecycle・debug管理の範囲を示すが規範本文・実装認定は未検証。Synopsys/TSMCのA14 flow認証、N3P/CoWoS-S上の32/40G test silicon、2/3nmの64G tape-outは異なる段階で、64G実測や製品出荷ではない。TSMCの2030 High-NA意向、2031 mask pilot、2033装置準備は年単位の別目標である。Rapidusの価格注意を保持し、数値価格や2033の表示範囲内milestoneを捏造しない。",
       "current_state_en": "TSMC published 2028-2029 process/packaging plans; Intel 18A-P is in risk production and Rapidus is advancing PDKs and production preparation. These are not launch dates for finished CPUs/GPUs. Intel/ASML’s September 2026 update reports High-NA EUV production on selected layers of a subset of 18A products. The June EMIB-T scaling report describes capabilities, not volume qualification of every configuration. Scoped additions in this batch: The undated UCIe ECN overview describes trust/lifecycle/debug scope without normative-text or implementation validation. Synopsys/TSMC A14 flow certification, 32/40G test silicon on N3P/CoWoS-S and 64G tape-outs at 2/3nm are distinct, not measured 64G shipping products. TSMC 2030 High-NA intent, 2031 mask pilot and 2033 system readiness are separate year-level targets. Retain Rapidus price caution; invent neither numerical prices nor an in-horizon 2033 milestone.",
-      "hpci_implications_ja": "製造技術の提供後に設計、検証、パッケージ歩留まり、基板・冷却、ソフトウェア認定が必要。顧客製品の日程を自動外挿しない。 マスク・stitching/PDK認定と、構成別の熱・反り・検査条件を確認する。 設計・製造・実装・検査・顧客認定・供給を別段階で評価する案。NVIDIAの工程別能力増強は予定で実能力・歩留まり・HPCI割当の保証ではない。Intel Fab 62の建設・装置導入と2028年末までの操業目標、Ohioのトラス設置と量産日未公表を分離する。Cadenceは欧州向けOnCloud基盤の提供中とVera/Grace・M2000・Reality等の追加計算能力の計画を区別し、設計データ所在を製造主権やPDK利用権の保証へ読み替えない。 既存日程・gate・未解決事項を保持する。",
-      "hpci_implications_en": "Design, validation, package yield, boards/cooling and software qualification remain necessary after process availability. Do not automatically extrapolate customer-product dates. Verify mask and stitching/PDK qualification and configuration-specific thermal, warpage and test conditions. Propose evaluating design, manufacturing, packaging, testing, customer qualification and supply as separate stages. NVIDIA process-specific capacity targets do not guarantee actual output, yields or HPCI allocations. Separate Intel Fab 62 construction/tool installation from its operations target by end-2028, and Ohio truss installation from undisclosed production timing. Distinguish available European Cadence OnCloud infrastructure from planned added Vera/Grace, M2000 and Reality compute; design-data residency does not establish manufacturing sovereignty or PDK rights. Retain existing dates, gates and open gaps.",
+      "hpci_implications_ja": "製造技術の提供後に設計、検証、パッケージ歩留まり、基板・冷却、ソフトウェア認定が必要。顧客製品の日程を自動外挿しない。 マスク・stitching/PDK認定と、構成別の熱・反り・検査条件を確認する。 設計・製造・実装・検査・顧客認定・供給を別段階で評価する案。NVIDIAの工程別能力増強は予定で実能力・歩留まり・HPCI割当の保証ではない。Intel Fab 62の建設・装置導入と2028年末までの操業目標、Ohioのトラス設置と量産日未公表を分離する。Cadenceは欧州向けOnCloud基盤の提供中とVera/Grace・M2000・Reality等の追加計算能力の計画を区別し、設計データ所在を製造主権やPDK利用権の保証へ読み替えない。 既存日程・gate・未解決事項を保持する。 Intelは四半期末後の基板供給契約2件を開示し、所要資金53–61億ドル、2027年末まで約33億ドルを見込むが、一部条件は未確定。データセンターCPUの基板制約と2027年への不足継続見通しを記載。Kiryat Gatは約2週間停止、10月末再開は予想であり実績未確認。 RapidusとHCLTechはBengaluru・Hubliの開発拠点を開設し、マスク設計、設計基盤、PDK開発、DTCO、レイアウトを支援すると発表。設計支援拠点の事象であり、製造認定、実測期間短縮、供給量の証拠ではない。",
+      "hpci_implications_en": "Design, validation, package yield, boards/cooling and software qualification remain necessary after process availability. Do not automatically extrapolate customer-product dates. Verify mask and stitching/PDK qualification and configuration-specific thermal, warpage and test conditions. Propose evaluating design, manufacturing, packaging, testing, customer qualification and supply as separate stages. NVIDIA process-specific capacity targets do not guarantee actual output, yields or HPCI allocations. Separate Intel Fab 62 construction/tool installation from its operations target by end-2028, and Ohio truss installation from undisclosed production timing. Distinguish available European Cadence OnCloud infrastructure from planned added Vera/Grace, M2000 and Reality compute; design-data residency does not establish manufacturing sovereignty or PDK rights. Retain existing dates, gates and open gaps. Intel discloses two subsequent-quarter substrate agreements with estimated $5.3–6.1B funding, about $3.3B through end-2027; some terms remain unfinished. It reports substrate constraints affecting data-center CPUs and expects shortages into 2027. Kiryat Gat manufacturing had stopped for about two weeks; end-October restart was expected, not confirmed. Rapidus and HCLTech inaugurated Bengaluru and Hubli engineering centers supporting mask design, design infrastructure, PDK development, DTCO and layout. This is an engineering-service event, without manufacturing qualification, measured turnaround or supply-volume evidence.",
       "source_ids": [
         "SRC-HW1-TSMC-SYMP26",
         "SRC-HW1-INTEL-VLSI26",
@@ -126,7 +130,9 @@
         "SRC-OCT05-ARCH002-06",
         "SRC-OCT23-ARCH001-SUPPLY",
         "SRC-OCT23-ARCH002-INTELCAPACITY",
-        "SRC-OCT23-ARCH002-CADENCEDESIGN"
+        "SRC-OCT23-ARCH002-CADENCEDESIGN",
+        "SRC-D31-ARCH002-01-01",
+        "SRC-D31-ARCH002-02-01"
       ]
     },
     {
@@ -270,11 +276,22 @@
       "summary_en": "OpenFS provisional gates connecting public roadmaps to continuous benchmarking and procurement decisions.",
       "current_state_ja": "共通の評価基準とベンチマーク実行環境は整備途上であり、製品発表だけでは採用判断できない。",
       "current_state_en": "Common evaluation criteria and benchmark execution remain under development; product announcements alone cannot determine adoption.",
-      "hpci_implications_ja": "センター別ワークロードと全体共通カーネルを両方用い、候補構成を反復評価する。",
-      "hpci_implications_en": "Candidate configurations should be evaluated repeatedly with both center-specific workloads and shared kernels.",
+      "hpci_implications_ja": "センター別ワークロードと全体共通カーネルを両方用い、候補構成を反復評価する。 GROMACS2026.4はGPU halo通信時のhost timerによるload imbalance表示を無意味として削除し、出力forceのPME寄与欠落とGPU非局所相互作用の古いshift vector使用を修正。旧計時・force確認は版と構成を固定して解釈する。修正公表であり速度向上やHPCI妥当性の検証ではない。 mpWYQRはHouseholderの2つのnorm評価にfp32を使い、他のreflector計算はfp16を主体とする。決定論的な精度は低精度水準のまま。著者はEmerald Rapids CPUとMKLで合成行列のQR残差・直交性を評価し、GPU実装は今後の課題とする。normの範囲・累積演算に関する具体的な失敗境界であり、fp32相当の科学的精度を意味しない。 AMDはMI355X上でMONAI推論5種をBF16・channels-last 3D・torch.compileで評価したと10月30日に公表。測定は9月21日、単一の脾臓CT入力、予備5回・計測20回。Early Accessの推論対応であり、学習対応は今後の検証。 NVIDIAはAllen Telescope ArrayでHoloscan/DAQIRIによるGPU直接取込とCyberEther/CUDA-X処理を紹介。RTX PRO 6000 Blackwellを用いるシステムが2.4 Tb/sを処理可能とするベンダー報告であり、GPU台数・計測方法は不明。GPU1台当たりの実測値や独立再現性能とは扱わない。 Tenstorrent v0.26.0はQwen2.5-VLとolmOCRのモデル・機種別対応を追加。表ではT3Kの32BはEXPERIMENTAL、72BはFUNCTIONAL、7BのT3K/GalaxyとolmOCR-2-7B-1025のT3KはCOMPLETE。Galaxy推奨はtt-smi5.2.0・firmware19.10.0.0・tt-kmd2.9.0。保守者の対応状態であり、独立した正確性検証やHPCI受入ではない。 Firmware19.17.1はGalaxyのGDDR問題対策としてMRISC powerdownを無効にし、保守者はGalaxyのidle電力が1.6kW増すと記載。推論v0.26.0の推奨firmware19.10.0.0と別に、版固有の安定性・idle電力トレードオフを保持する。自動更新や版間互換性の推奨ではない。 DCGM4.7.1は旧診断run messageを拒否し、run API版10/11・response版12を要求するため、診断clientとhostengineの同時整合が必要とする。未対応health watch指定時の既存watch維持、不正YAML入力時のpolicy維持も記載。",
+      "hpci_implications_en": "Candidate configurations should be evaluated repeatedly with both center-specific workloads and shared kernels. GROMACS2026.4 removes host-timer load-imbalance reporting when halo communication is on GPU because those values were meaningless. It also fixes missing PME contributions in written forces and stale shift vectors in GPU non-local interactions. Preserve release/configuration identity when interpreting old timings and force checks; this establishes fixes, not validated speedups. mpWYQR uses fp32 for two Householder norm evaluations with other reflector work governed by fp16. Its deterministic accuracy remains at low-precision level. Authors evaluate QR residual and orthogonality on synthetic matrices using MKL on an Emerald Rapids CPU; GPU implementation is future work. This adds a concrete norm-range/accumulation failure boundary, not fp32-equivalent scientific accuracy. AMD reports five MONAI inference bundles on MI355X using BF16, channels-last 3D and torch.compile. The September21 vendor test uses one spleen CT input, five warmups and20 timed iterations. Support is Early Access; training remains future work. NVIDIA describes direct GPU ingest with Holoscan/DAQIRI and CyberEther/CUDA-X at the Allen Telescope Array. Its vendor account says the system can handle 2.4 Tb/s using RTX PRO 6000 Blackwell. GPU count and measurement method are unknown; this is neither a per-GPU throughput measurement nor independently reproduced performance. Tenstorrent v0.26.0 adds Qwen2.5-VL and olmOCR model/device entries. Its matrix marks Qwen2.5-VL-32B on T3K EXPERIMENTAL, 72B FUNCTIONAL, 7B on T3K/Galaxy COMPLETE, and olmOCR-2-7B-1025 on T3K COMPLETE. Galaxy recommendations are tt-smi5.2.0, firmware19.10.0.0 and tt-kmd2.9.0. These are maintainer support states, not independent correctness or HPC acceptance. Firmware19.17.1 disables MRISC powerdown on Galaxy to resolve GDDR issues; maintainers report a resulting1.6kW increase in Galaxy idle power. Preserve this version-specific stability/idle-energy tradeoff alongside inference v0.26.0 separately recommending19.10.0.0; no automatic upgrade or cross-version compatibility claim. DCGM4.7.1 requires diagnostic clients and hostengine to move together: older run messages are rejected, with run API versions10/11 and response12 required. It also rejects unsupported health-watch bits without replacing watches and preserves policies on invalid YAML imports.",
       "source_ids": [
         "SRC-COMP008",
-        "SRC-COMP009"
+        "SRC-COMP009",
+        "SRC-D31-APP002-01-01",
+        "SRC-D31-APP002-01-02",
+        "SRC-D31-APP016-01-01",
+        "SRC-D31-APP016-01-02",
+        "SRC-D31-ARCH001-01-01",
+        "SRC-D31-ARCH001-02-01",
+        "SRC-D31-ARCH009-01-01",
+        "SRC-D31-ARCH009-01-02",
+        "SRC-D31-ARCH009-02-02",
+        "SRC-D31-OPS002-01-01",
+        "SRC-D31-OPS002-01-02"
       ]
     },
     {
@@ -2556,6 +2573,105 @@
       "url": "https://investor.cadence.com/news/news-details/2026/Cadence-Unveils-Europes-First-Sovereign-AI-Platform-for-Semiconductor-System-and-AI-Factory-Design-in-Collaboration-with-NVIDIA/default.aspx",
       "source_class": "vendor-official",
       "published_at": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-D31-APP002-01-01",
+      "title": "Release notes - GROMACS 2026.4 documentation",
+      "publisher": "GROMACS developers",
+      "url": "https://manual.gromacs.org/current/release-notes/index.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-D31-APP002-01-02",
+      "title": "GROMACS 2026.4 release notes",
+      "publisher": "GROMACS developers",
+      "url": "https://manual.gromacs.org/current/release-notes/2026/2026.4.html",
+      "source_class": "project-official",
+      "published_at": "2026-10-02"
+    },
+    {
+      "source_id": "SRC-D31-ARCH001-01-01",
+      "title": "Bringing the MONAI Model Zoo to AMD Instinct GPUs: Validated Inference on ROCm",
+      "publisher": "AMD",
+      "url": "https://rocm.blogs.amd.com/artificial-intelligence/monai-zoo-2608/README.html",
+      "source_class": "vendor-official",
+      "published_at": "2026-10-30"
+    },
+    {
+      "source_id": "SRC-D31-ARCH001-02-01",
+      "title": "Things That Go Beep in the Night: Agentic AI Joins the Search for Extraterrestrial Signals",
+      "publisher": "NVIDIA",
+      "url": "https://blogs.nvidia.com/blog/ai-joins-the-search-for-extraterrestrial-signals/",
+      "source_class": "vendor-official",
+      "published_at": "2026-10-30"
+    },
+    {
+      "source_id": "SRC-D31-ARCH002-01-01",
+      "title": "Intel Q3 2026 Form 10-Q, period ended September26",
+      "publisher": "Intel",
+      "url": "https://www.intc.com/filings-reports/all-sec-filings/content/0000050863-26-000191/intc-20260926.htm",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-D31-ARCH002-02-01",
+      "title": "Rapidus and HCLTech announce partnership for next-generation semiconductor technologies",
+      "publisher": "Rapidus/HCLTech",
+      "url": "https://www.rapidus.inc/en/news_topics/information/20261026-2/",
+      "source_class": "project-official",
+      "published_at": "2026-10-26"
+    },
+    {
+      "source_id": "SRC-D31-APP016-01-01",
+      "title": "Reduced and Mixed-Precision Block Householder QR Factorization",
+      "publisher": "Authors via arXiv",
+      "url": "https://arxiv.org/abs/2610.38537",
+      "source_class": "academic-primary",
+      "published_at": "2026-10-28"
+    },
+    {
+      "source_id": "SRC-D31-APP016-01-02",
+      "title": "Reduced and Mixed-Precision Block Householder QR Factorization",
+      "publisher": "Authors via arXiv",
+      "url": "https://arxiv.org/html/2610.38537v1",
+      "source_class": "academic-primary",
+      "published_at": "2026-10-28"
+    },
+    {
+      "source_id": "SRC-D31-ARCH009-01-01",
+      "title": "Planet Tenstorrent",
+      "publisher": "Tenstorrent",
+      "url": "https://docs.tenstorrent.com/tt-awesome/planet/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-D31-ARCH009-01-02",
+      "title": "Release v0.26.0",
+      "publisher": "Tenstorrent maintainers",
+      "url": "https://github.com/tenstorrent/tt-inference-server/releases/tag/v0.26.0",
+      "source_class": "project-official",
+      "published_at": "2026-10-30"
+    },
+    {
+      "source_id": "SRC-D31-ARCH009-02-02",
+      "title": "Release v19.17.1",
+      "publisher": "Tenstorrent maintainers",
+      "url": "https://github.com/tenstorrent/tt-system-firmware/releases/tag/v19.17.1",
+      "source_class": "project-official",
+      "published_at": "2026-10-29"
+    },
+    {
+      "source_id": "SRC-D31-OPS002-01-01",
+      "title": "DCGM Release Notes",
+      "publisher": "NVIDIA",
+      "url": "https://docs.nvidia.com/datacenter/dcgm/latest/release-notes/changelog.html",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-D31-OPS002-01-02",
+      "title": "DCGM NGC container tags",
+      "publisher": "NVIDIA",
+      "url": "https://catalog.ngc.nvidia.com/orgs/nvidia/cloud-native/containers/dcgm/4.7.1-ubi10/tags",
+      "source_class": "vendor-official"
     }
   ],
   "coverage_gaps": [
@@ -2675,7 +2791,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-ARCH002-NIGHT-20261030",
-    "human_approval_directive_id": "DIR-900158"
+    "publication_decision_id": "PUBDEC-DAILY41-BOUNDED-PUBLIC-20261031",
+    "human_approval_directive_id": "DIR-900167"
   }
 }

@@ -151,8 +151,8 @@
       "summary_en": "Evaluates complete agent configurations including the harness, tools, permissions, state management, recovery, and cost rather than the base model alone.",
       "current_state_ja": "既存のSWE-bench、GAIA、tau-bench等に加え、2026年8月にTerminal-Bench 4.0とTerminal-Bench-Science 0.1が公開されました。端末作業と科学研究作業の成功率、実行資源、評価器、モデルとハーネスの組合せを区別します。版による課題・時間上限の変更があるため、異なる版のスコアを同じ尺度で直接比較しません。",
       "current_state_en": "In addition to SWE-bench, GAIA, tau-bench and related suites, Terminal-Bench 4.0 and Terminal-Bench-Science 0.1 were released in August 2026. Distinguish terminal/scientific task success, execution resources, verifiers and model-harness combinations. Changed tasks and time budgets prevent direct score comparisons across incompatible versions.",
-      "hpci_implications_ja": "OpenFSでは最終的な正答率だけでなく、根拠の追跡可能性、再現性、費用、権限逸脱、中間状態の保存、失敗からの回復も記録する。結果はモデル名だけでなく、モデルとハーネスの構成単位で報告する。",
-      "hpci_implications_en": "In addition to final accuracy, OpenFS should record evidence traceability, reproducibility, cost, permission violations, preservation of intermediate state, and recovery from failure. Results should be reported for each model-harness configuration rather than by model name alone.",
+      "hpci_implications_ja": "OpenFSでは最終的な正答率だけでなく、根拠の追跡可能性、再現性、費用、権限逸脱、中間状態の保存、失敗からの回復も記録する。結果はモデル名だけでなく、モデルとハーネスの構成単位で報告する。 10月28日のdraftレビューは、保留中の遅延変換報告へ分布上の差を追加する。変換後の下限clampは下限への確率集中を生み、棄却再標本化と同じ分布ではない。既定値と負荷モデルの根拠は未合意で、採択済み修正・修正版releaseではない。 MLCommonsはLLM judgeから専用の決定的分類器へ変更し、Safetyを固定参照分布のpercentileへ移したと報告する。Safety1.2.1結果は公開、Jailbreak1.1結果は通知期間後の予定。対象は単一turn英語の有害応答で、agent操作・科学的正しさを含まず、課題成功率や負荷・遅延・電力量の代替ではない。",
+      "hpci_implications_en": "In addition to final accuracy, OpenFS should record evidence traceability, reproducibility, cost, permission violations, preservation of intermediate state, and recovery from failure. Results should be reported for each model-harness configuration rather than by model name alone. The October28 draft review adds a distribution-level tradeoff to the pending delay-transform report: enforcing a post-scaling floor by clamping creates mass at the floor rather than preserving rejection-sampling semantics. The proposed default and workload rationale remain unresolved; this is neither accepted remediation nor a released fix. MLCommons reports replacing LLM judges with its deterministic classifier and moving Safety to fixed-reference percentiles; Safety1.2.1 public results are available while Jailbreak1.1 public results await notification. Scope is single-turn English harmful-response evaluation, excluding agent actions and scientific correctness. These scores cannot substitute for task success or load, latency and energy measurements.",
       "source_ids": [
         "SRC-WORK020",
         "SRC-WORK021",
@@ -165,7 +165,10 @@
         "SRC-WORK054",
         "SRC-WORK055",
         "SRC-WORK056",
-        "SRC-WORK057"
+        "SRC-WORK057",
+        "SRC-D31-APP013-01-01",
+        "SRC-D31-APP013-01-02",
+        "SRC-D31-APP013-02-01"
       ]
     },
     {
@@ -177,13 +180,19 @@
       "summary_en": "Tracks a cross-site pipeline for reproducible specifications, CI/CD execution, aggregation, and publication.",
       "current_state_ja": "富岳NEXT基本設計では、BenchKitを軽量な継続評価に、Benchparkを依存関係まで含めた厳密な実行環境の再現に用い、両者を段階的に連携させる計画を示している。",
       "current_state_en": "The FugakuNEXT basic design positions BenchKit as a lightweight continuous-evaluation tool and Benchpark as a framework for reproducible execution environments, including software dependencies. It also plans staged interoperability between them.",
-      "hpci_implications_ja": "各センターが同じ定義を実行しつつ、結果の公開範囲、機密性、費用、失敗ログを統一管理する。",
-      "hpci_implications_en": "Centers should run shared definitions while consistently managing publication scope, confidentiality, cost, and failed-run logs.",
+      "hpci_implications_ja": "各センターが同じ定義を実行しつつ、結果の公開範囲、機密性、費用、失敗ログを統一管理する。 GROMACS2026.4はGPU halo通信時のhost timerによるload imbalance表示を無意味として削除し、出力forceのPME寄与欠落とGPU非局所相互作用の古いshift vector使用を修正。旧計時・force確認は版と構成を固定して解釈する。修正公表であり速度向上やHPCI妥当性の検証ではない。 DEFAIR tutorialのfixture manifestは9月28日時点のproduct path・容量・object ETagを記録し、folder productには単一ETagがない。Dask読込例は40ファイルのFCI scene3組・合計3315.8MBだが、実読込量はchannel/region指定で減る。既存前処理候補の入力同定を具体化する一方、package版固定・数値許容差・性能実測は未解決。",
+      "hpci_implications_en": "Centers should run shared definitions while consistently managing publication scope, confidentiality, cost, and failed-run logs. GROMACS2026.4 removes host-timer load-imbalance reporting when halo communication is on GPU because those values were meaningless. It also fixes missing PME contributions in written forces and stale shift vectors in GPU non-local interactions. Preserve release/configuration identity when interpreting old timings and force checks; this establishes fixes, not validated speedups. The DEFAIR tutorial fixture manifest records product paths, sizes and object ETags as of September28, while folder products have no single ETag. Its Dask-read example lists three40-file FCI scenes totaling3315.8MB; requested channels/regions read less. This supplies concrete input references for the pending preprocessing candidate, while package pinning, numerical tolerances and measured performance remain open.",
       "source_ids": [
         "SRC-WORK001",
         "SRC-WORK007",
         "SRC-WORK008",
-        "SRC-WORK045"
+        "SRC-WORK045",
+        "SRC-D31-APP002-01-01",
+        "SRC-D31-APP002-01-02",
+        "SRC-D31-APP002-02-01",
+        "SRC-D31-APP002-02-02",
+        "SRC-D31-APP002-02-03",
+        "SRC-D31-APP002-02-04"
       ]
     },
     {
@@ -215,15 +224,26 @@
       "summary_en": "OpenFS provisional gates for periodic decisions on workload composition, execution frequency, prediction error, and procurement use.",
       "current_state_ja": "HPCI公式統計は資源別の応募・採択、分野構成、要求・配分資源量、参加者数を公開し、利用報告書はアプリケーション名・計算機・分野・年度で検索できる。富岳年報は、2024年度B期と2025年度A期に要求資源量が提供可能量を上回ったこと、一般課題の上限縮小、上半期の利用実績に基づく資源の返却・再配分も報告している。一方、全センターの主要ワークロード、実消費資源量別の規模分布、共通ベンチマークとの対応は未確定である。",
       "current_state_en": "Official HPCI statistics publish resource-level application and acceptance data, field composition, requested and allocated resources, and participant counts, while user reports can be searched by application, system, field, and year. The Fugaku annual report also records requested resources exceeding available capacity in the FY2024-B and FY2025-A calls, a lower cap for general projects, and the return and reallocation of resources based on first-half utilization. Top workloads across all centers, scale distributions by actual resource consumption, and mappings to common benchmarks remain unresolved.",
-      "hpci_implications_ja": "固定スイートにせず、安定コアと更新可能な拡張部を分け、履歴を保ったまま四半期ごとに見直す。",
-      "hpci_implications_en": "Separate a stable core from an evolvable extension set and review quarterly while retaining history.",
+      "hpci_implications_ja": "固定スイートにせず、安定コアと更新可能な拡張部を分け、履歴を保ったまま四半期ごとに見直す。 ECMWFはVALORADAのリスク評価教材2種を紹介。気候データ処理を自動化しても、地域の曝露・脆弱性データ統合には手作業が残る。需要項目の候補は、気候ハザード計算と分けた地域入力の出所・標準化・手作業量。 エアロゾル予報では、同化する総AODだけで個々の粒子種を拘束できず配分仮定が必要。科学的品質の需要項目候補として、粒子種・粒径の観測可能性、観測誤差、集約観測から状態変数への配分仮定を記録する。 GROMACS2026.4はGPU halo通信時のhost timerによるload imbalance表示を無意味として削除し、出力forceのPME寄与欠落とGPU非局所相互作用の古いshift vector使用を修正。旧計時・force確認は版と構成を固定して解釈する。修正公表であり速度向上やHPCI妥当性の検証ではない。 DEFAIR tutorialのfixture manifestは9月28日時点のproduct path・容量・object ETagを記録し、folder productには単一ETagがない。Dask読込例は40ファイルのFCI scene3組・合計3315.8MBだが、実読込量はchannel/region指定で減る。既存前処理候補の入力同定を具体化する一方、package版固定・数値許容差・性能実測は未解決。 mpWYQRはHouseholderの2つのnorm評価にfp32を使い、他のreflector計算はfp16を主体とする。決定論的な精度は低精度水準のまま。著者はEmerald Rapids CPUとMKLで合成行列のQR残差・直交性を評価し、GPU実装は今後の課題とする。normの範囲・累積演算に関する具体的な失敗境界であり、fp32相当の科学的精度を意味しない。",
+      "hpci_implications_en": "Separate a stable core from an evolvable extension set and review quarterly while retaining history. ECMWF announces two VALORADA risk-assessment books. Local exposure/vulnerability integration still requires substantial manual work despite automated climate-data workflows. Candidate demand field: provenance, standardisation and manual effort for local exposure/vulnerability inputs, distinct from climate hazard computation. The aerosol-forecasting account identifies an observation-to-state ambiguity: assimilated total AOD does not uniquely constrain individual aerosol types. Candidate scientific-quality demand field: species/size observability, observational uncertainty and assumptions in allocating aggregate measurements across state variables. GROMACS2026.4 removes host-timer load-imbalance reporting when halo communication is on GPU because those values were meaningless. It also fixes missing PME contributions in written forces and stale shift vectors in GPU non-local interactions. Preserve release/configuration identity when interpreting old timings and force checks; this establishes fixes, not validated speedups. The DEFAIR tutorial fixture manifest records product paths, sizes and object ETags as of September28, while folder products have no single ETag. Its Dask-read example lists three40-file FCI scenes totaling3315.8MB; requested channels/regions read less. This supplies concrete input references for the pending preprocessing candidate, while package pinning, numerical tolerances and measured performance remain open. mpWYQR uses fp32 for two Householder norm evaluations with other reflector work governed by fp16. Its deterministic accuracy remains at low-precision level. Authors evaluate QR residual and orthogonality on synthetic matrices using MKL on an Emerald Rapids CPU; GPU implementation is future work. This adds a concrete norm-range/accumulation failure boundary, not fp32-equivalent scientific accuracy.",
       "source_ids": [
         "SRC-WORK007",
         "SRC-WORK008",
         "SRC-WORK009",
         "SRC-WORK013",
         "SRC-WORK014",
-        "SRC-WORK015"
+        "SRC-WORK015",
+        "SRC-D31-APP001-01-01",
+        "SRC-D31-APP001-01-02",
+        "SRC-D31-APP001-02-01",
+        "SRC-D31-APP002-01-01",
+        "SRC-D31-APP002-01-02",
+        "SRC-D31-APP002-02-01",
+        "SRC-D31-APP002-02-02",
+        "SRC-D31-APP002-02-03",
+        "SRC-D31-APP002-02-04",
+        "SRC-D31-APP016-01-01",
+        "SRC-D31-APP016-01-02"
       ]
     },
     {
@@ -2145,6 +2165,111 @@
       "url": "https://diasjp.net/information/dataset/20260120-telemeter/",
       "source_class": "project-official",
       "published_at": "2026-01-20"
+    },
+    {
+      "source_id": "SRC-D31-APP013-01-01",
+      "title": "Agentic-code context scaling issue",
+      "publisher": "AIPerf contributors",
+      "url": "https://github.com/ai-dynamo/aiperf/issues/1603",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-D31-APP013-01-02",
+      "title": "Preserve agentic delay bounds after context scaling",
+      "publisher": "AIPerf contributors",
+      "url": "https://github.com/ai-dynamo/aiperf/pull/1613",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-D31-APP013-02-01",
+      "title": "Test Your Own AI Against Real-World Risks and Attacks with AILuminate Safety1.2.1 and Jailbreak1.1",
+      "publisher": "MLCommons / Isaac Holeman",
+      "url": "https://mlcommons.org/2026/10/ailuminate-safety-1-2-1-and-jailbreak-1-1/",
+      "source_class": "project-official",
+      "published_at": "2026-10-29"
+    },
+    {
+      "source_id": "SRC-D31-APP002-01-01",
+      "title": "Release notes - GROMACS 2026.4 documentation",
+      "publisher": "GROMACS developers",
+      "url": "https://manual.gromacs.org/current/release-notes/index.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-D31-APP002-01-02",
+      "title": "GROMACS 2026.4 release notes",
+      "publisher": "GROMACS developers",
+      "url": "https://manual.gromacs.org/current/release-notes/2026/2026.4.html",
+      "source_class": "project-official",
+      "published_at": "2026-10-02"
+    },
+    {
+      "source_id": "SRC-D31-APP002-02-01",
+      "title": "Introducing DEFAIR: Destination Earth Framework for Preparing AI-Ready Data",
+      "publisher": "DestinE Platform / EUMETSAT implementation",
+      "url": "https://platform.destine.eu/general/introducing-defair-destination-earth-framework-for-preparing-ai-ready-data/",
+      "source_class": "project-official",
+      "published_at": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-D31-APP002-02-02",
+      "title": "DEFAIR — Destination Earth Data Lake documentation",
+      "publisher": "DestinE Data Lake",
+      "url": "https://destine-data-lake-docs.data.destination-earth.eu/en/latest/working_with_ai_in_the_data_lake/ai_ready_data_preparation/defair.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-D31-APP002-02-03",
+      "title": "Fixture manifest",
+      "publisher": "DestinE Data Lake",
+      "url": "https://destine-data-lake-docs.data.destination-earth.eu/en/latest/working_with_ai_in_the_data_lake/ai_ready_data_preparation/tutorials/fixture-manifest/fixture-manifest.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-D31-APP002-02-04",
+      "title": "Check your setup",
+      "publisher": "DestinE Data Lake",
+      "url": "https://destine-data-lake-docs.data.destination-earth.eu/en/latest/working_with_ai_in_the_data_lake/ai_ready_data_preparation/check-your-setup/check-your-setup.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-D31-APP001-01-01",
+      "title": "From VALORADA to practice: new Jupyter books for climate risk assessments",
+      "publisher": "ECMWF",
+      "url": "https://www.ecmwf.int/en/about/media-centre/science-blog/2026/valorada-jupyter-books-climate-risk-assessments",
+      "source_class": "project-official",
+      "published_at": "2026-10-30"
+    },
+    {
+      "source_id": "SRC-D31-APP001-01-02",
+      "title": "Towards regions resilient to extreme precipitation",
+      "publisher": "ECMWF",
+      "url": "https://ecmwf-training.github.io/extreme-precipitation-exposure/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-D31-APP001-02-01",
+      "title": "State of suspense: how ECMWF is advancing aerosol forecasting",
+      "publisher": "ECMWF",
+      "url": "https://www.ecmwf.int/en/about/media-centre/focus/2026/ecmwf-aerosol-forecasting",
+      "source_class": "project-official",
+      "published_at": "2026-10-30"
+    },
+    {
+      "source_id": "SRC-D31-APP016-01-01",
+      "title": "Reduced and Mixed-Precision Block Householder QR Factorization",
+      "publisher": "Authors via arXiv",
+      "url": "https://arxiv.org/abs/2610.38537",
+      "source_class": "academic-primary",
+      "published_at": "2026-10-28"
+    },
+    {
+      "source_id": "SRC-D31-APP016-01-02",
+      "title": "Reduced and Mixed-Precision Block Householder QR Factorization",
+      "publisher": "Authors via arXiv",
+      "url": "https://arxiv.org/html/2610.38537v1",
+      "source_class": "academic-primary",
+      "published_at": "2026-10-28"
     }
   ],
   "coverage_gaps": [
@@ -2253,7 +2378,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-OCT05-CATALOG41-20261005",
-    "human_approval_directive_id": "DIR-900144"
+    "publication_decision_id": "PUBDEC-DAILY41-BOUNDED-PUBLIC-20261031",
+    "human_approval_directive_id": "DIR-900167"
   }
 }

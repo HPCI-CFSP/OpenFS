@@ -41,8 +41,8 @@
       "summary_en": "Track specifications, implementations, and GPU/NIC support separately.",
       "current_state_ja": "MPI 5.0資料、MPICH 5.0、UCX/UCCの公開資料を基準にします。 2026-10-03再確認では、Open MPI 5.0.11、MPICH 5.0.2、UCX 1.22.0、UCC 1.9.0、libfabric 2.7.0とNCCL/RCCLの版別条件を追加した。標準ABIの言語差、device APIのprovider対応、配布版とdevelop、実験経路を区別する。 今回の限定的な追補：NCCLのB100 PCIe MLoPartのCUDA error 101条件の既知問題とvendor workaround NCCL_CUMEM_ENABLE=0を限定して追記する。nccl4py実験bindingとlib/device IR整合、barrier終了・event全rank一致・CUDA条件を分ける。upstream issue closedはAuroraのwrong-result適合確認ではない。Open MPI5.0.11 download rowの9月16日と8月changelogを区別し、2月source日付を現行release日へ誤用しない。NCCL表示release stampの年・timezone不明を保持。",
       "current_state_en": "MPI 5.0 documents, MPICH 5.0, and UCX/UCC public materials form the baseline. The 2026-10-03 recheck adds Open MPI 5.0.11, MPICH 5.0.2, UCX 1.22.0, UCC 1.9.0, libfabric 2.7.0 and version-specific NCCL/RCCL conditions. Distinguish language-specific standard ABI, provider implementation of device APIs, packaged versus development code, and experimental paths. Scoped additions in this batch: Add the configuration-scoped B100 PCIe MLoPart NCCL allocation issue with CUDA error 101 and vendor NCCL_CUMEM_ENABLE=0 workaround. Separate experimental nccl4py binding/lib/device-IR matching, barrier teardown, all-rank events and CUDA requirements. A closed upstream issue does not qualify Aurora wrong-result recovery. Distinguish Open MPI 5.0.11 download-row September 16 from August changelog and avoid using the old February source date for the current release. Retain unknown NCCL release-label year/timezone.",
-      "hpci_implications_ja": "候補ノードとファブリックの組合せごとに適合試験が必要です。 ABI、起動系、provider、GPU/NIC、実際の転送経路、build flagsを固定し、正確性・終了処理・障害回復と実アプリ性能を別に検証する。 評価案として、peer死亡後の終了・取消・再開を版固定で区別し、上流issueの提案と公開修正版・現地検証を別状態で記録する。",
-      "hpci_implications_en": "Each candidate node/fabric combination needs conformance testing. Pin ABI, launch stack, provider, GPU/NIC, actual transfer paths and build flags; separately qualify correctness, teardown, recovery and application performance. Proposed evaluation: distinguish pinned-version teardown, cancellation and restart after peer failure, and separately record issue proposals, released fixes and site validation.",
+      "hpci_implications_ja": "候補ノードとファブリックの組合せごとに適合試験が必要です。 ABI、起動系、provider、GPU/NIC、実際の転送経路、build flagsを固定し、正確性・終了処理・障害回復と実アプリ性能を別に検証する。 評価案として、peer死亡後の終了・取消・再開を版固定で区別し、上流issueの提案と公開修正版・現地検証を別状態で記録する。 UCXの公式releaseはv1.23.0-rc2を10月27日付のPre-releaseとして表示する。前回のRC1確認より後の候補版だが、10月30～31日の新規発表ではない。1.22.0の安定版境界を保持し、GA・修正内容・性能・施設適合を推定しない。",
+      "hpci_implications_en": "Each candidate node/fabric combination needs conformance testing. Pin ABI, launch stack, provider, GPU/NIC, actual transfer paths and build flags; separately qualify correctness, teardown, recovery and application performance. Proposed evaluation: distinguish pinned-version teardown, cancellation and restart after peer failure, and separately record issue proposals, released fixes and site validation. The official UCX release identifies v1.23.0-rc2 as an October27 prerelease, later than the previously checked RC1. This is a previously missed status update, not October30–31 news. Retain the1.22.0 stable boundary; GA, specific fixes, performance and site qualification are not established.",
       "source_ids": [
         "SRC-PORT014",
         "SRC-PORT026",
@@ -66,7 +66,8 @@
         "SRC-OCT05-SSW003-11",
         "SRC-OCT05-SSW003-14",
         "SRC-OCT05-SSW003-15",
-        "SRC-OCT23-SSW003-NCCL2506"
+        "SRC-OCT23-SSW003-NCCL2506",
+        "SRC-D31-SSW003-01-01"
       ]
     },
     {
@@ -78,8 +79,8 @@
       "summary_en": "Cover workload placement, accounting, and power constraints.",
       "current_state_ja": "Slurmはエネルギー会計設定を公開していますが、HPCI横断の共通実装を意味しません。 2026年10月3日の確認では、Slurmは25.05以降cgroup v1へ新機能を追加せず、ノード内のv1/v2混在は非対応だがノード別の異なる版は許容する。v2のno_file_cache設定ではMaxRSSがポーリング由来となり短いピークを取り逃し得る。AutoDetect=nvidiaはMIG/NVLinkを検出しない。Apptainer 1.5.4はsuid/CDIの権限境界とUbuntu 24.04以降のrootless build向けAppArmorを修正した。 今回の限定的な追補：9月のFlux core・scheduler・accountingの独立releaseを8月履歴に追加し、queue recovery・quota enforcement機能を統合配備済みとしない。親queue共有・policy override・実効設定を別に固定し、fairness・accounting・復旧を試験する。moving stable docs、Slurm26系列EOL矛盾、HPCI採用・共通SLA未確認を保持する。 EFPの既存9systemの運用文書とArrheniusの部分的integration、2027–2029提供者目標を区別し、10番目の全面受入とはしない。9月29日MEXT案を既存の6月根拠と併記するが採択済み共通要件へ昇格しない。Slurm federationのorigin failure・requeue・accounting viewを既存queue/SLA試験条件へ追加し、共通SLA・緊急締切達成・複数施設実験は未確認とする。",
       "current_state_en": "Slurm documents energy accounting, but this does not establish a common HPCI-wide implementation. The October 3, 2026 read confirms no new Slurm cgroup v1 features from 25.05; within-node hybrid controllers are unsupported, while node-wise version differences are allowed. With v2 no_file_cache, polling-based MaxRSS can miss short peaks. AutoDetect=nvidia does not detect MIG/NVLink. Apptainer 1.5.4 fixes a suid/CDI privilege boundary and AppArmor for rootless builds on Ubuntu 24.04 and later. Scoped additions in this batch: Append separate September Flux core/scheduler/accounting releases to August history without calling queue recovery/quota enforcement integrated deployment. Pin parent-queue sharing, policy overrides and effective configuration separately; test fairness/accounting/recovery. Retain moving-stable documentation, Slurm 26-series EOL dissent and unverified HPCI adoption/common SLAs. Distinguish nine-system EFP operational documentation from partial Arrhenius integration and provider 2027–2029 targets, not a fully accepted tenth system. Add September 29 MEXT draft context beside June history without adopted common requirements. Extend existing queue/SLA tests with Slurm origin failure, requeue and accounting views; common SLAs, urgent deadlines and multisite experiments remain unverified.",
-      "hpci_implications_ja": "資源記述、会計、優先度、緊急実行の意味をそろえる必要があります。 候補構成ではcgroup移行時の再起動、資源検出・隔離・会計の整合性、Slurm daemon/client/pluginの更新順序と旧ジョブ完了を検証する。daemon起動後の単純downgradeは非対応であり、状態・会計backupの復元可能性を確認する。26系支援終了表の年と18か月表記の不整合は未解決とし、確定終了日やHPCI移行日へ変換しない。 Apptainer1.5.5の公開修正について、Go版、suid/rootless・subuid/subgid・SIFとpull先条件を固定した現地試験を提案する。公開releaseは配備や隔離改善の実証ではない。",
-      "hpci_implications_en": "Resource descriptions, accounting, priority, and urgent execution semantics need alignment. Candidate-stack tests should cover cgroup-conversion reboot, resource discovery/isolation/accounting consistency, Slurm daemon/client/plugin upgrade order and completion of old jobs. Simple downgrade after daemon startup is unsupported; verify restoration of state and accounting backups. The 26-series support table has conflicting end years and 18-month labels; do not turn them into definite end dates or HPCI migration deadlines. For the Apptainer1.5.5 fixes, propose site tests pinning Go, suid/rootless, subuid/subgid, SIF and pull destinations. A public release is not proof of deployment or improved isolation.",
+      "hpci_implications_ja": "資源記述、会計、優先度、緊急実行の意味をそろえる必要があります。 候補構成ではcgroup移行時の再起動、資源検出・隔離・会計の整合性、Slurm daemon/client/pluginの更新順序と旧ジョブ完了を検証する。daemon起動後の単純downgradeは非対応であり、状態・会計backupの復元可能性を確認する。26系支援終了表の年と18か月表記の不整合は未解決とし、確定終了日やHPCI移行日へ変換しない。 Apptainer1.5.5の公開修正について、Go版、suid/rootless・subuid/subgid・SIFとpull先条件を固定した現地試験を提案する。公開releaseは配備や隔離改善の実証ではない。 EOSC EU NodeはEFPとの初期統合を公表。カタログ探索・Web遷移と共通MyAccessIDによるSSOを提供するが、EuroHPCの割当とEOSCクレジットは別途必要。認可情報共有、基盤横断オーケストレーション、高速転送は今後の項目。",
+      "hpci_implications_en": "Resource descriptions, accounting, priority, and urgent execution semantics need alignment. Candidate-stack tests should cover cgroup-conversion reboot, resource discovery/isolation/accounting consistency, Slurm daemon/client/plugin upgrade order and completion of old jobs. Simple downgrade after daemon startup is unsupported; verify restoration of state and accounting backups. The 26-series support table has conflicting end years and 18-month labels; do not turn them into definite end dates or HPCI migration deadlines. For the Apptainer1.5.5 fixes, propose site tests pinning Go, suid/rootless, subuid/subgid, SIF and pull destinations. A public release is not proof of deployment or improved isolation. EOSC EU Node reports an initial EFP integration: catalog discovery and web redirect, with shared MyAccessID SSO. Access still needs EuroHPC allocation and EOSC credits. Shared authorisation, cross-platform orchestration and high-throughput transfer are future work.",
       "source_ids": [
         "SRC-CDO055",
         "SRC-OCT03-SSW006-APPTAINER154",
@@ -101,7 +102,8 @@
         "SRC-OCT03-OPS003-PROJECT",
         "SRC-OCT03-OPS003-WORKFLOW",
         "SRC-OCT03-OPS003-QUICKSTART",
-        "SRC-OCT23-SSW006-APPTAINER155"
+        "SRC-OCT23-SSW006-APPTAINER155",
+        "SRC-D31-OPS007-01-01"
       ]
     }
   ],
@@ -694,6 +696,22 @@
       "url": "https://github.com/apptainer/apptainer/releases/tag/v1.5.5",
       "source_class": "project-official",
       "published_at": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-D31-SSW003-01-01",
+      "title": "Release v1.23.0-rc2",
+      "publisher": "OpenUCX project",
+      "url": "https://github.com/openucx/ucx/releases/tag/v1.23.0-rc2",
+      "source_class": "project-official",
+      "published_at": "2026-10-27"
+    },
+    {
+      "source_id": "SRC-D31-OPS007-01-01",
+      "title": "EOSC EU Node Connects to EuroHPC Federation Platform: Bridging European Research Data and Supercomputing Infrastructures",
+      "publisher": "European Commission / EOSC EU Node",
+      "url": "https://open-science-cloud.ec.europa.eu/news/eosc-eu-node-connects-eurohpc-federation-platform-bridging-european-research-data-and",
+      "source_class": "project-official",
+      "published_at": "2026-10-29"
     }
   ],
   "coverage_gaps": [
@@ -725,7 +743,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-APPTAINER155-20261030",
-    "human_approval_directive_id": "DIR-900152"
+    "publication_decision_id": "PUBDEC-DAILY41-BOUNDED-PUBLIC-20261031",
+    "human_approval_directive_id": "DIR-900167"
   }
 }

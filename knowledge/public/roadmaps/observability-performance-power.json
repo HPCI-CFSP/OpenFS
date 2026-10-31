@@ -41,8 +41,8 @@
       "summary_en": "Record performance, power, queueing, and failures for the same execution unit.",
       "current_state_ja": "既存資料は個別ツールやシステムの計測機能を示しますが、HPCI全体で共通の意味・粒度・保持期間は未確定です。 今回の限定的な追補：今回の公式Graph500読書記録で2026年6月BFSの富岳3位、204,068 GTEPS、scale 43、152,064ノードを確認した。10月の新計測ではなく、旧取得失敗は履歴として保持する。Benchpark文書の再実行時の出力上書き注意を踏まえ、各反復の別出力・設定・build identityを保存する評価条件を追加する。適合度は独立holdout誤差ではない。 AIPerfのper-chunk usage補正はoption・endpointの対応と先頭chunkのtoken情報に依存し、版更新だけで補正済みとはしない。moving mainのgoodputは適合requests/s、attainmentはvalidとerroredを含む分母の割合として区別し、guideの混同を残す。GPU-only energyはwarmupを除外し、energy/userのconfigured concurrency分母を、科学課題成功あたりのwhole-SUT energyと混同しない。mainの式をv0.13.0へ自動帰属せず、容量外挿は未検証。 author-hosted filesystem研究は平均予測と変動の差を示すが、placeholder出版識別子、PolarisのLustre/GPFS不一致、script/data未取得を保持し、再現済みとはしない。BP5の選択・切詰めreplayは元step/event identityを保持する必要があり、SST network復旧とは別である。queue step数とbyte high-water markを分け、held-out tail errorを評価する条件を追加する。 DarshanではMPI終了処理を欠くcrashでログが残らないことがあり、sacctの未対応仮想メモリ値の0、中断stepのCPU欠測、明示的truncateを利用実態と区別する。実効取得周期（0は終了時のみ）、collector版、window・timezone・月跨ぎ規則、job/step分母と完了条件別の観測率を保持する。missing・unsupported・suppressedを計測zeroにしない。公開制御を維持し、新たなHPCI利用値や需要傾向は作らない。",
       "current_state_en": "Existing material documents measurement capabilities for individual tools and systems, but common HPCI-wide semantics, granularity, and retention are unresolved. Scoped additions in this batch: The official Graph500 receipt verifies Fugaku third in June 2026 BFS: 204,068 GTEPS, scale 43, 152,064 nodes. This is not an October measurement; retain the prior failed-read history. Benchpark warns that reruns overwrite outputs, motivating separate result/configuration/build identities for repetitions. Fit quality is not independent holdout accuracy. AIPerf per-chunk usage correction depends on option/endpoint support and first-chunk token information; upgrading alone is insufficient. Moving-main goodput is compliant requests/s whereas attainment is a fraction over valid plus errored requests; preserve conflicting guide terminology. GPU-only energy excludes warmup and configured-concurrency energy/user differs from whole-SUT energy per successful scientific task. Main formulas are not automatically attributed to v0.13.0; capacity extrapolation remains unvalidated. The author-hosted filesystem study distinguishes mean prediction from variability; retain placeholder publication identifiers, Polaris Lustre/GPFS inconsistency and unavailable scripts/data, without reproduction claims. Selected/truncated BP5 replay must preserve original step/event identity, distinct from SST network recovery. Separate queue-step bounds from byte high-water marks and assess held-out tail error. Darshan crashes without MPI finalization can leave no logs; distinguish unsupported sacct virtual-memory zeros, interrupted-step CPU omissions and explicit truncation from usage. Retain effective cadence (zero means termination-only), collector versions, windows/timezones/month-crossing rules, job/step denominators and completion-conditioned coverage. Missing, unsupported and suppressed values are not measured zeros. Preserve disclosure controls; derive no new HPCI usage values or demand trends.",
-      "hpci_implications_ja": "候補構成を同じ入力、版、精度、計測境界で比較できる観測契約が必要です。",
-      "hpci_implications_en": "Candidate systems need an observability contract with identical inputs, versions, correctness, and measurement boundaries.",
+      "hpci_implications_ja": "候補構成を同じ入力、版、精度、計測境界で比較できる観測契約が必要です。 GROMACS2026.4はGPU halo通信時のhost timerによるload imbalance表示を無意味として削除し、出力forceのPME寄与欠落とGPU非局所相互作用の古いshift vector使用を修正。旧計時・force確認は版と構成を固定して解釈する。修正公表であり速度向上やHPCI妥当性の検証ではない。 DEFAIR tutorialのfixture manifestは9月28日時点のproduct path・容量・object ETagを記録し、folder productには単一ETagがない。Dask読込例は40ファイルのFCI scene3組・合計3315.8MBだが、実読込量はchannel/region指定で減る。既存前処理候補の入力同定を具体化する一方、package版固定・数値許容差・性能実測は未解決。 10月28日のdraftレビューは、保留中の遅延変換報告へ分布上の差を追加する。変換後の下限clampは下限への確率集中を生み、棄却再標本化と同じ分布ではない。既定値と負荷モデルの根拠は未合意で、採択済み修正・修正版releaseではない。 DCGM4.7.1は旧診断run messageを拒否し、run API版10/11・response版12を要求するため、診断clientとhostengineの同時整合が必要とする。未対応health watch指定時の既存watch維持、不正YAML入力時のpolicy維持も記載。 Cold UTES改訂報告は冷熱蓄熱の具体的比較を示す。系統modelは一定IT負荷とdispatchを考慮した充電、施設modelは可変負荷と異なる充電logicを用いる。冷却電力の余裕をIT容量増加へ使う場合、電気料金・系統利益を同時に得られない可能性を明記する。model上の代替であり、稼働hyperscaleの設計・運用データは未取得。 Intelはifx2026.2の公開日を10月30日と記載。Fortran2023のTYPEOF/CLASSOF、OpenMPのtask・device mapping関連の選択的機能、fast浮動小数点モデル時だけ有効な再結合最適化抑止optionを追加した。OpenMP6.1自体はpublic-comment draftのまま。規格全体への対応、数値妥当性、性能、HPCI配備は未検証。 凍結baselineにない10月22日公開のDPC++2026.2.0はSYCLのprecompiled headerとhost/device compile traceに対応。host memory登録はLevel ZeroかつBattlemage以降のIntel GPUに限定。Toolkit2026.2の日付は別の10月23日であり、HPCIでの利用可能性や実測改善は未確認。",
+      "hpci_implications_en": "Candidate systems need an observability contract with identical inputs, versions, correctness, and measurement boundaries. GROMACS2026.4 removes host-timer load-imbalance reporting when halo communication is on GPU because those values were meaningless. It also fixes missing PME contributions in written forces and stale shift vectors in GPU non-local interactions. Preserve release/configuration identity when interpreting old timings and force checks; this establishes fixes, not validated speedups. The DEFAIR tutorial fixture manifest records product paths, sizes and object ETags as of September28, while folder products have no single ETag. Its Dask-read example lists three40-file FCI scenes totaling3315.8MB; requested channels/regions read less. This supplies concrete input references for the pending preprocessing candidate, while package pinning, numerical tolerances and measured performance remain open. The October28 draft review adds a distribution-level tradeoff to the pending delay-transform report: enforcing a post-scaling floor by clamping creates mass at the floor rather than preserving rejection-sampling semantics. The proposed default and workload rationale remain unresolved; this is neither accepted remediation nor a released fix. DCGM4.7.1 requires diagnostic clients and hostengine to move together: older run messages are rejected, with run API versions10/11 and response12 required. It also rejects unsupported health-watch bits without replacing watches and preserves policies on invalid YAML imports. The revised Cold UTES report adds a concrete cooling-storage comparison: its grid model uses constant IT load and dispatch-aware charging, while its facility model uses variable load and different charging logic. Its clarification says using freed cooling power for more IT capacity may preclude electricity-cost or grid benefits. These are modeled alternatives; the report lacks operating hyperscale design/operation data. Intel dates ifx2026.2 to October30. Notes add Fortran2023 TYPEOF/CLASSOF, selected OpenMP task and device-mapping controls, and a reassociation-disable option effective only with the fast floating-point model. OpenMP6.1 itself remains a public-comment draft. This does not establish complete standards support, numerical correctness, performance or HPCI deployment. The October22 DPC++2026.2.0 release, absent from the frozen baseline, adds SYCL precompiled headers and host/device compile traces. Host-memory registration is restricted to Level Zero on Battlemage-or-newer Intel GPUs. Toolkit2026.2 is separately dated October23; neither component nor suite dates demonstrate HPCI availability or measured gains.",
       "source_ids": [
         "SRC-OPENFS-REMAINING-PLAN",
         "SRC-CDO055",
@@ -56,7 +56,22 @@
         "SRC-OCT05-APP015-02",
         "SRC-OCT05-CROSS005-01",
         "SRC-OCT05-CROSS005-02",
-        "SRC-OCT05-CROSS005-03"
+        "SRC-OCT05-CROSS005-03",
+        "SRC-D31-APP002-01-01",
+        "SRC-D31-APP002-01-02",
+        "SRC-D31-APP002-02-01",
+        "SRC-D31-APP002-02-02",
+        "SRC-D31-APP002-02-03",
+        "SRC-D31-APP002-02-04",
+        "SRC-D31-APP013-01-01",
+        "SRC-D31-APP013-01-02",
+        "SRC-D31-OPS002-01-01",
+        "SRC-D31-OPS002-01-02",
+        "SRC-D31-OPS006-01-01",
+        "SRC-CDS281",
+        "SRC-CDS085",
+        "SRC-CDS084",
+        "SRC-CDS006"
       ]
     },
     {
@@ -68,14 +83,15 @@
       "summary_en": "Treat performance, energy, and deadlines by workload.",
       "current_state_ja": "ORNLのGH200研究はタスク別の電力上限の有効性を示しますが、全負荷・全候補機・本番運用への一般化はできません。OCPの800 VDC資料は施設側の標準化活動です。 今回の限定的な追補：NVIDIAのGPU board-average powerは前1秒・AmpereのGA100例外、instantaneousは直近、moduleは対応CPU等を含むHopper以降datacenter条件で、poll周期だけから範囲・積分窓を決めない。冷却モデルv2は欠けた係数を手調整し、1秒simulationを15分比較、約520日profileを評価するが独立holdout分割は不明で高変動を過小評価する。公開codeを実行・data変換をauditしておらず、閉ループsimulationを施設省エネ実測としない。",
       "current_state_en": "ORNL's GH200 study shows task-specific power-cap effects, but cannot be generalized to every workload, platform, or production service. OCP's 800 VDC material concerns facility-side standardization. Scoped additions in this batch: NVIDIA board-average power covers the preceding second with the GA100 exception in Ampere support; instantaneous is latest and module includes supported CPU/components for Hopper-and-newer datacenter products. Poll cadence alone does not fix boundary/integration windows. Cooling-model v2 manually tunes unavailable coefficients, reduces one-second simulation to 15-minute comparison over about 520 daily profiles, lacks a stated independent holdout split and underestimates variability. Available code/data transforms were not reproduced/audited; closed-loop simulation is not measured facility savings.",
-      "hpci_implications_ja": "電力上限の安全性、性能劣化、復旧、施設負荷追従をアプリケーション別に検証します。",
-      "hpci_implications_en": "Validate power-cap safety, performance impact, recovery, and facility-load following per application.",
+      "hpci_implications_ja": "電力上限の安全性、性能劣化、復旧、施設負荷追従をアプリケーション別に検証します。 Cold UTES改訂報告は冷熱蓄熱の具体的比較を示す。系統modelは一定IT負荷とdispatchを考慮した充電、施設modelは可変負荷と異なる充電logicを用いる。冷却電力の余裕をIT容量増加へ使う場合、電気料金・系統利益を同時に得られない可能性を明記する。model上の代替であり、稼働hyperscaleの設計・運用データは未取得。",
+      "hpci_implications_en": "Validate power-cap safety, performance impact, recovery, and facility-load following per application. The revised Cold UTES report adds a concrete cooling-storage comparison: its grid model uses constant IT load and dispatch-aware charging, while its facility model uses variable load and different charging logic. Its clarification says using freed cooling power for more IT capacity may preclude electricity-cost or grid benefits. These are modeled alternatives; the report lacks operating hyperscale design/operation data.",
       "source_ids": [
         "SRC-CDS376",
         "SRC-CDS426",
         "SRC-OCT05-OPS006-01",
         "SRC-OCT05-OPS006-02",
-        "SRC-OCT05-OPS006-03"
+        "SRC-OCT05-OPS006-03",
+        "SRC-D31-OPS006-01-01"
       ]
     }
   ],
@@ -450,6 +466,113 @@
       "publisher": "cletuzz00 / study authors",
       "url": "https://github.com/cletuzz00/dc-cooling-thermal-model",
       "source_class": "academic-primary"
+    },
+    {
+      "source_id": "SRC-D31-APP002-01-01",
+      "title": "Release notes - GROMACS 2026.4 documentation",
+      "publisher": "GROMACS developers",
+      "url": "https://manual.gromacs.org/current/release-notes/index.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-D31-APP002-01-02",
+      "title": "GROMACS 2026.4 release notes",
+      "publisher": "GROMACS developers",
+      "url": "https://manual.gromacs.org/current/release-notes/2026/2026.4.html",
+      "source_class": "project-official",
+      "published_at": "2026-10-02"
+    },
+    {
+      "source_id": "SRC-D31-APP002-02-01",
+      "title": "Introducing DEFAIR: Destination Earth Framework for Preparing AI-Ready Data",
+      "publisher": "DestinE Platform / EUMETSAT implementation",
+      "url": "https://platform.destine.eu/general/introducing-defair-destination-earth-framework-for-preparing-ai-ready-data/",
+      "source_class": "project-official",
+      "published_at": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-D31-APP002-02-02",
+      "title": "DEFAIR — Destination Earth Data Lake documentation",
+      "publisher": "DestinE Data Lake",
+      "url": "https://destine-data-lake-docs.data.destination-earth.eu/en/latest/working_with_ai_in_the_data_lake/ai_ready_data_preparation/defair.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-D31-APP002-02-03",
+      "title": "Fixture manifest",
+      "publisher": "DestinE Data Lake",
+      "url": "https://destine-data-lake-docs.data.destination-earth.eu/en/latest/working_with_ai_in_the_data_lake/ai_ready_data_preparation/tutorials/fixture-manifest/fixture-manifest.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-D31-APP002-02-04",
+      "title": "Check your setup",
+      "publisher": "DestinE Data Lake",
+      "url": "https://destine-data-lake-docs.data.destination-earth.eu/en/latest/working_with_ai_in_the_data_lake/ai_ready_data_preparation/check-your-setup/check-your-setup.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-D31-APP013-01-01",
+      "title": "Agentic-code context scaling issue",
+      "publisher": "AIPerf contributors",
+      "url": "https://github.com/ai-dynamo/aiperf/issues/1603",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-D31-APP013-01-02",
+      "title": "Preserve agentic delay bounds after context scaling",
+      "publisher": "AIPerf contributors",
+      "url": "https://github.com/ai-dynamo/aiperf/pull/1613",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-D31-OPS002-01-01",
+      "title": "DCGM Release Notes",
+      "publisher": "NVIDIA",
+      "url": "https://docs.nvidia.com/datacenter/dcgm/latest/release-notes/changelog.html",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-D31-OPS002-01-02",
+      "title": "DCGM NGC container tags",
+      "publisher": "NVIDIA",
+      "url": "https://catalog.ngc.nvidia.com/orgs/nvidia/cloud-native/containers/dcgm/4.7.1-ubi10/tags",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-D31-OPS006-01-01",
+      "title": "Project Phase 1 Report: Reducing Data Center Peak Cooling Demand and Energy Costs With Cold UTES",
+      "publisher": "National Laboratory of the Rockies",
+      "url": "https://docs.nlr.gov/docs/fy26osti/100780.pdf",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-CDS281",
+      "title": "OpenMP Specifications",
+      "publisher": "OpenMP Architecture Review Board",
+      "url": "https://www.openmp.org/specifications/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-CDS085",
+      "title": "Intel Fortran Compiler 2026 release notes",
+      "publisher": "Intel",
+      "url": "https://www.intel.com/content/www/us/en/developer/articles/release-notes/fortran-compiler/2026.html",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-CDS084",
+      "title": "Intel oneAPI Toolkit 2026 release notes and component versions",
+      "publisher": "Intel",
+      "url": "https://www.intel.com/content/www/us/en/developer/articles/release-notes/oneapi-toolkit/2026.html",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-CDS006",
+      "title": "Intel oneAPI DPC++/C++ Compiler 2026 release notes",
+      "publisher": "Intel",
+      "url": "https://www.intel.com/content/www/us/en/developer/articles/release-notes/oneapi-dpcpp/2026.html",
+      "source_class": "vendor-official"
     }
   ],
   "coverage_gaps": [
@@ -481,7 +604,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-OCT05-CATALOG41-20261005",
-    "human_approval_directive_id": "DIR-900144"
+    "publication_decision_id": "PUBDEC-DAILY41-BOUNDED-PUBLIC-20261031",
+    "human_approval_directive_id": "DIR-900167"
   }
 }
