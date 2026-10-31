@@ -71,8 +71,8 @@
       "summary_en": "Cover service continuity during system transitions and incidents.",
       "current_state_ja": "HPCI Helpdeskと共通化方針の公開資料はありますが、全サービスの共通SLAは未確認です。 今回の限定的な追補：2026年の富岳障害記録は記載された範囲に限定し、全系停止・AFR・故障率を推測しない。NVRx 0.7.0のhealth enforcementと構成条件は過去0.6記録と分け、表示release stampの年・timezone不明を残す。Slurm major版のDB変換とminor保守のrollbackを区別し、26系列EOL表の矛盾を解消済みとしない。checkpoint互換・版・復旧を試験条件に加えるが復旧実測は未実施。 同一資源の正式継続指定と本文だけの継続記述を区別する。最大1年の共用storage保存は終了1か月前までの相談・容量調整付き。CMS専用の終了時までexportと終了詳細の1か月猶予の矛盾はhelpdesk確認事項。参加者変更には代表者等の申請・再審議と通常終了1か月前の期限、所属変更の再確認・一時失効と富岳FAASの別手順がある。即時全国取消や無条件保存を証明しない。 Workflow Run RO-Crate0.6（9月7日）はRO-Crate1.3/Workflow1.1へ整合し、旧0.1–0.5の1.1/1.0とIRIが異なる。旧0.5確認は履歴で、適合は全失敗・取消・cache・retry試行の完全性やlossless再実行を保証しない。不老・弐の大学報告による10月1日9時開始と希望home staging・利用者copy責任を反映し、3MIG queue復旧・ACL/checksum受入は未確認。Roihu文書のidentity assurance・24時間SSH certificate・CPU/GPU再build条件は実移行実績ではなく、Allas無制限容量も仮定しない。",
       "current_state_en": "Public HPCI Helpdesk and commonization-policy materials exist, but a common SLA across services is unverified. Scoped additions in this batch: Limit 2026 Fugaku incident observations to their stated scope; infer no whole-system outage, AFR or failure rate. Keep NVRx 0.7.0 health enforcement/configuration separate from historical 0.6 and retain unknown release-stamp year/timezone. Distinguish Slurm major database conversion from minor-maintenance rollback; unresolved 26-series EOL dissent remains. Add checkpoint/version/recovery tests without measured recovery claims. Separate formally designated same-resource continuation from prose-only continuation. Up-to-one-year shared-storage preservation requires consultation/capacity discussion one month before closure. Retain CMS export-by-end versus closure-detail one-month-window dissent for helpdesk confirmation. Membership changes require representative application/review and ordinary one-month-before-end deadlines; affiliation re-verification/temporary expiry and Fugaku FAAS routing are separate. Neither immediate nationwide revocation nor unconditional retention is proven. Workflow Run RO-Crate 0.6 (September 7) aligns with RO-Crate 1.3/Workflow 1.1 and changes IRIs from legacy 0.1–0.5 at 1.1/1.0. Keep historical 0.5; conformance does not assure all failed/cancelled/cached/retry attempts or lossless replay. Reflect Nagoya-reported October 1 09:00 start, requested-home staging and user copy responsibilities without MIG recovery/ACL/checksum acceptance. Roihu identity assurance, 24-hour SSH certificates and CPU/GPU rebuild requirements are documented prerequisites, not migration results or unlimited Allas capacity.",
-      "hpci_implications_ja": "責任分担、通知、データ移行、復旧時間を明文化します。 DCGM4.7.1は旧診断run messageを拒否し、run API版10/11・response版12を要求するため、診断clientとhostengineの同時整合が必要とする。未対応health watch指定時の既存watch維持、不正YAML入力時のpolicy維持も記載。 EOSC EU NodeはEFPとの初期統合を公表。カタログ探索・Web遷移と共通MyAccessIDによるSSOを提供するが、EuroHPCの割当とEOSCクレジットは別途必要。認可情報共有、基盤横断オーケストレーション、高速転送は今後の項目。",
-      "hpci_implications_en": "Document ownership, notifications, data migration, and recovery time. DCGM4.7.1 requires diagnostic clients and hostengine to move together: older run messages are rejected, with run API versions10/11 and response12 required. It also rejects unsupported health-watch bits without replacing watches and preserves policies on invalid YAML imports. EOSC EU Node reports an initial EFP integration: catalog discovery and web redirect, with shared MyAccessID SSO. Access still needs EuroHPC allocation and EOSC credits. Shared authorisation, cross-platform orchestration and high-throughput transfer are future work.",
+      "hpci_implications_ja": "責任分担、通知、データ移行、復旧時間を明文化します。 DCGM4.7.1は旧診断run messageを拒否し、run API版10/11・response版12を要求するため、診断clientとhostengineの同時整合が必要とする。未対応health watch指定時の既存watch維持、不正YAML入力時のpolicy維持も記載。 EOSC EU NodeはEFPとの初期統合を公表。カタログ探索・Web遷移と共通MyAccessIDによるSSOを提供するが、EuroHPCの割当とEOSCクレジットは別途必要。認可情報共有、基盤横断オーケストレーション、高速転送は今後の項目。 過去の限定確認記録に基づく追補（現在状態の再確認ではない）： R580.196.07はAttestation SDK2026.10.02未満とattestation ABI非互換で非CCには影響しない。EUD580.126.12以前は非互換。DCGM4.3.x以降、Hopper subrevision3のVBIOS96.00.68.00.xx以降を条件別に確認する。 GB300 HBM3e12Hの同一pseudochannelで2UCE後のrepair指定は修理完了ではない。NVIDIAは監視toolのPCI照会が特定条件でGPU脱落を起こし得た経路の修正も記す。 R595.112.07はSEC fault処理の再帰によるpanic修正と、Blackwellで指定TMA API・backing allocation128KB未満・dense non-overlappingでないtensorの残存問題を併記する。R580と混合せず、全修正完了とはしない。 host外のagent検査では、強制deviceを通る経路、TLS平文へのアクセス、選択memoryの可視性、telemetry送付先・保持、管理者権限、失効、障害時動作を評価する。NVIDIAはBlueField-4上のSentryにTLS検査とmemory introspectionを説明し、提供予定は2027年初めで既存DOCA libraryとは区別する。封じ込め速度と互換性は検証を要するベンダー主張とし、attested記録を内容の真実性やprivacy保証としない。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。 上流修正版の存在、実依存・設定の適用性、施設適用、service再開、残存注意を別状態で記録する。PHPの10月21日修正版だけでは、設定上のphp_binary／php_serializeを実行時にphpへ変更しupload progressが有効な構成に限る10月23日注意を解消したとしない。HPCI影響やCSC再開による全設定の解決を推定せず、対応優先度は実依存確認後に判断する。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+      "hpci_implications_en": "Document ownership, notifications, data migration, and recovery time. DCGM4.7.1 requires diagnostic clients and hostengine to move together: older run messages are rejected, with run API versions10/11 and response12 required. It also rejects unsupported health-watch bits without replacing watches and preserves policies on invalid YAML imports. EOSC EU Node reports an initial EFP integration: catalog discovery and web redirect, with shared MyAccessID SSO. Access still needs EuroHPC allocation and EOSC credits. Shared authorisation, cross-platform orchestration and high-throughput transfer are future work. Retained bounded earlier observations, without fresh current-status verification: R580.196.07 has an attestation-ABI incompatibility below SDK2026.10.02, with no non-CC effect. EUD580.126.12 and earlier are incompatible. Qualify DCGM4.3.x+ and, for Hopper subrevision3, VBIOS96.00.68.00.xx+ separately. GB300 HBM3e12H repair marking after two UCEs in one pseudochannel is not completed repair. NVIDIA also records a fix for a monitoring PCI-query path that could itself provoke GPU bus loss under particular conditions. R595.112.07 records a SEC-fault recursion panic fix alongside a residual Blackwell TMA issue for listed APIs, backing allocations below128KB and tensors that are not dense non-overlapping. Keep this branch separate; the fix does not resolve every issue. For host-external agent inspection, evaluate the path through the enforcement device, TLS plaintext access, selected-memory visibility, telemetry destinations/retention, administrator authority, revocation and failure behavior. NVIDIA describes Sentry on BlueField-4 with TLS inspection and memory introspection; planned availability is early2027, distinct from existing DOCA libraries. Treat containment speed and compatibility as vendor claims requiring testing; attested records do not establish content truth or privacy. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation. Track upstream fix availability, local dependency/configuration applicability, site deployment, service reopening and residual notices separately. PHP’s October21 fixes do not settle its October23 upload-progress warning, which requires a configured php_binary/php_serialize handler changed to php at runtime with upload progress enabled. Do not infer HPCI exposure or that CSC reopening resolved every configuration; assess actual dependencies before prioritizing action. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
       "source_ids": [
         "SRC-CDO066",
         "SRC-BLUE042",
@@ -93,7 +93,11 @@
         "SRC-OCT05-CROSS002-07",
         "SRC-D31-OPS002-01-01",
         "SRC-D31-OPS002-01-02",
-        "SRC-D31-OPS007-01-01"
+        "SRC-D31-OPS007-01-01",
+        "SRC-OCT23-OPS002-1-1",
+        "SRC-OCT23-OPS002-3-1",
+        "SRC-OCT23-OPS005-1-1",
+        "SRC-OCT23-OPS005-2-1"
       ]
     }
   ],
@@ -677,6 +681,38 @@
       "publisher": "NVIDIA",
       "url": "https://catalog.ngc.nvidia.com/orgs/nvidia/cloud-native/containers/dcgm/4.7.1-ubi10/tags",
       "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-OCT23-OPS002-1-1",
+      "title": "Version580.196.07(Linux)/582.99(Windows) release notes",
+      "publisher": "NVIDIA",
+      "url": "https://docs.nvidia.com/datacenter/tesla/tesla-release-notes-580-196-07/index.html",
+      "source_class": "vendor-official",
+      "published_at": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-OCT23-OPS002-3-1",
+      "title": "Version595.112.07(Linux)/597.30(Windows) release notes",
+      "publisher": "NVIDIA",
+      "url": "https://docs.nvidia.com/datacenter/tesla/tesla-release-notes-595-112-07/index.html",
+      "source_class": "vendor-official",
+      "published_at": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-OPS005-1-1",
+      "title": "Public evidence: ?p=123898",
+      "publisher": "NVIDIA",
+      "url": "https://developer.nvidia.com/blog/?p=123898",
+      "source_class": "vendor-official",
+      "published_at": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-OCT23-OPS005-2-1",
+      "title": "Public evidence: 2026.php",
+      "publisher": "PHP project",
+      "url": "https://www.php.net/archive/2026.php",
+      "source_class": "project-official",
+      "published_at": "2026-10-21"
     }
   ],
   "coverage_gaps": [
@@ -708,7 +744,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-DAILY41-BOUNDED-PUBLIC-20261031",
-    "human_approval_directive_id": "DIR-900167"
+    "publication_decision_id": "PUBDEC-LEGACY25-BOUNDED-20261031",
+    "human_approval_directive_id": "DIR-900168"
   }
 }

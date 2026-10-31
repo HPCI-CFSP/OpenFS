@@ -18140,6 +18140,80 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-L31-SSW003-01",
+          "title_ja": "Socket queue再利用と終了処理を分ける",
+          "title_en": "Separate Socket queue reuse from communicator teardown",
+          "summary_ja": "原資料の適用範囲と未検証事項を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source limits and unverified outcomes.",
+          "items": [
+            {
+              "item_id": "TDI-L31-SSW003-01",
+              "name_ja": "Socket queue再利用と終了処理を分ける",
+              "name_en": "Separate Socket queue reuse from communicator teardown",
+              "stage": "research",
+              "maturity": "prototype",
+              "timing_ja": "2026年10月の原資料・版・記載範囲に限定した評価案。実適用は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Bounded to the October2026 source versions and stated scope; actual deployment unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "10月30日19:36UTCの確認記録では、NCCL #2499について上流担当者が10月26日に再現と候補PR2507による自己reproducerの解消を報告する。PRは確認時点でopenであり、merge・release・元GB10環境再現・施設受入は未確認。Socket helperのqueue順序と、別issue2506のpeer故障時終了を同じ原因にしない。",
+              "statement_en": "The retained October30 19:36UTC review records an October26 upstream reproduction of NCCL #2499 and a report that candidate PR2507 fixes that contributor’s reproducer. The PR was open at that check; merge, release, original GB10 reproduction and site acceptance were unverified. Do not equate Socket-helper queue ordering with the separate #2506 dead-peer teardown issue.",
+              "hpci_relevance_ja": "版・入力・操作範囲と観測量を固定して既存のHPCI評価条件へ接続する案。",
+              "hpci_relevance_en": "Propose pinned versions, inputs, operations and observables for the existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "rank/helper/socketとqueue再利用条件を版付きで固定し、正確性・正常終了・故障時終了を別に検証する案。",
+                "issueとPRは同じ上流調査の来歴であり、独立OpenFS実証や修正展開・throughput改善ではない。patchは取得・適用・実行しない。"
+              ],
+              "adoption_conditions_en": [
+                "Propose pinning versions, ranks, helpers, sockets and queue reuse, qualifying correctness, healthy shutdown and failed-peer shutdown separately.",
+                "Issue and PR are one upstream lineage, not independent OpenFS testing, deployed remediation or throughput improvement. No patch is retrieved, applied or executed."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-SSW003-1-1",
+                "SRC-OCT23-SSW003-1-2"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-L31-SSW003-02",
+          "title_ja": "security modeのsupport範囲を性能評価と分ける",
+          "title_en": "Separate security-mode support from transport performance",
+          "summary_ja": "原資料の適用範囲と未検証事項を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source limits and unverified outcomes.",
+          "items": [
+            {
+              "item_id": "TDI-L31-SSW003-02",
+              "name_ja": "security modeのsupport範囲を性能評価と分ける",
+              "name_en": "Separate security-mode support from transport performance",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "2026年10月の原資料・版・記載範囲に限定した評価案。実適用は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Bounded to the October2026 source versions and stated scope; actual deployment unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "10月30日19:36UTCの確認記録では、NCCL #2503の上流担当者が10月27日にHopper multi-node Confidential Computingは未supportと記す。reporterのhost-staging PR2511と構成限定試験は確認時点で提案段階で、vendor platform support・一般修正・他issueとの共通原因を確定しない。性能評価の前に版・topology・security modeのsupport境界を確認する案。",
+              "statement_en": "The retained October30 19:36UTC review records an October27 contributor statement that multi-node NCCL on Hopper in Confidential Computing mode is unsupported. Reporter host-staging PR2511 and configuration-scoped tests remained proposed at that check; they establish neither vendor platform support, a general fix nor a shared cause with other issues. Propose a version/topology/security-mode support gate before transport performance qualification.",
+              "hpci_relevance_ja": "版・入力・操作範囲と観測量を固定して既存のHPCI評価条件へ接続する案。",
+              "hpci_relevance_en": "Propose pinned versions, inputs, operations and observables for the existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "reporter試験の構成と公式support範囲を区別し、将来の公式supportと対象stackでの検証を別途確認する。",
+                "CC・認証・driver・ネットワークの条件解除、patch導入やsecurity設定変更を行わず、当研究jobの障害原因にも転用しない。"
+              ],
+              "adoption_conditions_en": [
+                "Separate reporter test configuration from official support; qualify future official support and the target stack separately.",
+                "No relaxation of CC/authentication/driver/network requirements, patch adoption or security-setting change; infer no cause of our scientific-job failures."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-SSW003-2-1",
+                "SRC-OCT23-SSW003-2-2"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -18357,6 +18431,16 @@
           ],
           "created_at": "2026-10-31T15:44:17.139610+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000634",
+          "bundle_sha256": "3866688ef304b14f98e549eddd6453a1d625aef843cfc74a0725cb992de663f5",
+          "base_commit": "0be1c893d50c0cdd7fffddc90de794a5be3025b5",
+          "unit_ids": [
+            "SSW-03-U01"
+          ],
+          "created_at": "2026-10-31T17:14:44.487655+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -18392,7 +18476,9 @@
               "TDS-OCT03-SSW003-RELEASE-QUALIFICATION",
               "TDS-OCT05-SSW003-INTEGRATED-READABLE",
               "TDS-OCT23-SSW003-DEAD-PEER-TEARDOWN",
-              "TDS-D31-SSW003-01"
+              "TDS-D31-SSW003-01",
+              "TDS-L31-SSW003-01",
+              "TDS-L31-SSW003-02"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -28622,6 +28708,82 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-L31-APP002-01",
+          "title_ja": "共有TIGGEの比較条件を参照する",
+          "title_en": "Reference shared TIGGE comparison conditions",
+          "summary_ja": "出典の来歴と適用範囲を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source lineage and applicability.",
+          "items": [
+            {
+              "item_id": "TDI-L31-APP002-01",
+              "name_ja": "共有TIGGEの比較条件を参照する",
+              "name_en": "Reference shared TIGGE comparison conditions",
+              "stage": "near-term",
+              "maturity": "announced",
+              "timing_ja": "保存済み確認時点の原資料・版・記載範囲に限定する評価案。実適用と現在状態は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Evaluation proposal bounded to retained source versions and check scope; actual deployment and current status unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "同じTIGGE根拠をU01/U03比較条件へ関連付け、モデル世代・格子・予報対象/期間・ensemble構成を記録する。科学的・確率予測品質とruntime model誤差を分離し、準備段階と比較詳細未確認を保持する。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+              "statement_en": "Link the same TIGGE evidence to U01/U03 comparison contracts: record model generation, grid, forecast target/period and ensemble configuration; separate scientific/probabilistic quality from runtime-model error. Retain preparation-only maturity and unverified comparison details. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
+              "hpci_relevance_ja": "既存HPCI評価条件へ観測・対象・検証境界を接続する限定案。",
+              "hpci_relevance_en": "Bounded observation, population and verification distinctions for existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "原資料の版・構成・観測範囲と確認時点を固定し、公表日・事象日・後続更新を区別する。",
+                "既存の科学品質・失敗/欠測・対象母集団・責任境界を保持し、合格閾値・日程・gapを変更しない。",
+                "共有出典の再利用は新規独立所見へ数えず、実行・対応済み・利益実測へ格上げしない。"
+              ],
+              "adoption_conditions_en": [
+                "Pin source versions, configurations, observed scope and check time; separate publication, event and later-update dates.",
+                "Retain scientific quality, failures/missing data, populations and responsibility boundaries; change no threshold, milestone or gap.",
+                "Reusing a shared source is not a new independent finding; infer no execution, deployed remediation or measured benefit."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-APP001-1-1"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-L31-APP002-02",
+          "title_ja": "共有DEFAIRの前処理条件を参照する",
+          "title_en": "Reference shared DEFAIR preprocessing conditions",
+          "summary_ja": "出典の来歴と適用範囲を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source lineage and applicability.",
+          "items": [
+            {
+              "item_id": "TDI-L31-APP002-02",
+              "name_ja": "共有DEFAIRの前処理条件を参照する",
+              "name_en": "Reference shared DEFAIR preprocessing conditions",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "保存済み確認時点の原資料・版・記載範囲に限定する評価案。実適用と現在状態は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Evaluation proposal bounded to retained source versions and check scope; actual deployment and current status unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "前処理をcore suite外の候補workloadとして関連付ける。U02/U03では読込・変換・再投影・出力を後段学習/推論/シミュレーションと分離し、必要な版・入力・数値確認・資源実測は未確認として保持する。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+              "statement_en": "Link preprocessing as a candidate workload outside the core suite; for U02/U03 separate read, transform, reprojection and output from subsequent learning/inference/simulation. Version, input, numerical checks and measured resource costs remain required and unverified. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
+              "hpci_relevance_ja": "既存HPCI評価条件へ観測・対象・検証境界を接続する限定案。",
+              "hpci_relevance_en": "Bounded observation, population and verification distinctions for existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "原資料の版・構成・観測範囲と確認時点を固定し、公表日・事象日・後続更新を区別する。",
+                "既存の科学品質・失敗/欠測・対象母集団・責任境界を保持し、合格閾値・日程・gapを変更しない。",
+                "共有出典の再利用は新規独立所見へ数えず、実行・対応済み・利益実測へ格上げしない。"
+              ],
+              "adoption_conditions_en": [
+                "Pin source versions, configurations, observed scope and check time; separate publication, event and later-update dates.",
+                "Retain scientific quality, failures/missing data, populations and responsibility boundaries; change no threshold, milestone or gap.",
+                "Reusing a shared source is not a new independent finding; infer no execution, deployed remediation or measured benefit."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-D31-APP002-02-01"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -28922,6 +29084,18 @@
           ],
           "created_at": "2026-10-31T15:44:17.139610+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000648",
+          "bundle_sha256": "f56ec9a441ed6fd381d86e4859d65d0a2d31754e7057f72844115ae1df08258c",
+          "base_commit": "0be1c893d50c0cdd7fffddc90de794a5be3025b5",
+          "unit_ids": [
+            "APP-02-U01",
+            "APP-02-U02",
+            "APP-02-U03"
+          ],
+          "created_at": "2026-10-31T17:14:44.487655+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -28953,7 +29127,8 @@
               "TDS-OCT05-APP002-INTEGRATED-READABLE",
               "TDS-NEC26-PERFORMANCE",
               "TDS-D31-APP002-01",
-              "TDS-D31-APP002-02"
+              "TDS-D31-APP002-02",
+              "TDS-L31-APP002-01"
             ],
             "comparison_refs": [
               {
@@ -29007,7 +29182,8 @@
               "TDS-WC376-APP-02-01",
               "TDS-WC376-APP-02-02",
               "TDS-PW-APP-02-01",
-              "TDS-OCT03-APP002-MODELING"
+              "TDS-OCT03-APP002-MODELING",
+              "TDS-L31-APP002-02"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -32742,6 +32918,114 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-L31-SSW009-01",
+          "title_ja": "Store操作全体でnamespace境界を検証",
+          "title_en": "Qualify namespace boundaries across Store operations",
+          "summary_ja": "原資料の適用範囲と未検証事項を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source limits and unverified outcomes.",
+          "items": [
+            {
+              "item_id": "TDI-L31-SSW009-01",
+              "name_ja": "Store操作全体でnamespace境界を検証",
+              "name_en": "Qualify namespace boundaries across Store operations",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "2026年10月の原資料・版・記載範囲に限定した評価案。実適用は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Bounded to the October2026 source versions and stated scope; actual deployment unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "LangGraphの10月21日advisoryはPythonのPostgres/SQLite Storeでドット入りlabelによるnamespace衝突を報告する。InMemoryStoreは対象外。修正版packageとAgent Server/Cloud revisionの境界を分け、実施設の影響・修復完了は認定しない。",
+              "statement_en": "The October21 LangGraph advisory reports dot-label namespace collisions in Python Postgres/SQLite Stores; InMemoryStore is excluded. Keep patched-package and Agent Server/Cloud revision boundaries separate. This establishes neither site exposure nor completed remediation.",
+              "hpci_relevance_ja": "版・入力・操作範囲と観測量を固定して既存のHPCI評価条件へ接続する案。",
+              "hpci_relevance_en": "Propose pinned versions, inputs, operations and observables for the existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "get/search/delete/list_namespacesとasync、batch/abatch内のPutOpを含む全opを確認し、graph内部からのアクセスも検証する。",
+                "postgres3.1.3／sqlite3.1.2とcheckpoint4.3.0を固定し、Agent Server0.15.5／0.16.2と既存Cloudの次revision反映を別確認する。"
+              ],
+              "adoption_conditions_en": [
+                "Check get/search/delete/list_namespaces, async methods and every batch/abatch op including PutOp, also from graph code.",
+                "Pin postgres3.1.3/sqlite3.1.2 with checkpoint4.3.0; separately verify Agent Server0.15.5/0.16.2 and existing Cloud next-revision deployment."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-SSW009-1-1"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-L31-SSW009-02",
+          "title_ja": "trainerとgeneratorの数値経路を条件付きで照合",
+          "title_en": "Qualify trainer and generator numerical paths",
+          "summary_ja": "原資料の適用範囲と未検証事項を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source limits and unverified outcomes.",
+          "items": [
+            {
+              "item_id": "TDI-L31-SSW009-02",
+              "name_ja": "trainerとgeneratorの数値経路を条件付きで照合",
+              "name_en": "Qualify trainer and generator numerical paths",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "2026年10月の原資料・版・記載範囲に限定した評価案。実適用は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Bounded to the October2026 source versions and stated scope; actual deployment unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "TitanRLは学習と生成でmodelコードを共有し、対応on-policy・batch-invariant構成でlog probabilityのbitwise一致を報告する。この条件を任意backend、off-policy、障害再開へ一般化しない。内部clusterの開発者測定はMLCommons審査済み提出やHPCI受入ではない。",
+              "statement_en": "TitanRL reports shared training/generation model code and bitwise log-probability agreement in supported on-policy batch-invariant configurations. This does not establish arbitrary-backend, off-policy or restart equivalence. Developer internal-cluster measurements are not adjudicated MLCommons submissions or HPCI acceptance.",
+              "hpci_relevance_ja": "版・入力・操作範囲と観測量を固定して既存のHPCI評価条件へ接続する案。",
+              "hpci_relevance_en": "Propose pinned versions, inputs, operations and observables for the existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "model実装・数値型・trainer/generator経路・parallel構成を固定して一致を検証する。",
+                "既存checkpoint再開・科学品質試験を保持し、記事日を各機能の初実装日や新しい高速化実証にしない。"
+              ],
+              "adoption_conditions_en": [
+                "Pin model implementation, numerical types, trainer/generator paths and parallel configuration for equivalence tests.",
+                "Retain checkpoint-restart and scientific-quality checks; the article date is not every feature’s first implementation or a new speedup measurement."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-SSW009-2-1"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-L31-SSW009-03",
+          "title_ja": "RCのKV経路変更と取消・応答終了を検証",
+          "title_en": "Qualify the RC KV path, cancellation and bounded completion",
+          "summary_ja": "原資料の適用範囲と未検証事項を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source limits and unverified outcomes.",
+          "items": [
+            {
+              "item_id": "TDI-L31-SSW009-03",
+              "name_ja": "RCのKV経路変更と取消・応答終了を検証",
+              "name_en": "Qualify the RC KV path, cancellation and bounded completion",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "2026年10月の原資料・版・記載範囲に限定した評価案。実適用は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Bounded to the October2026 source versions and stated scope; actual deployment unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "1.4.0rc1はKV cache manager V2とPython KV transceiverを既定にする。release notesにはA100のstream取消後KV転送失敗とQwen3 JSON-schema例の無制限応答が既知問題として残る。RC・未解決範囲を保持し、GAや全修正完了としない。",
+              "statement_en": "Version1.4.0rc1 defaults to KV cache manager V2 and the Python KV transceiver. Release notes retain an A100 post-stream-cancellation KV-transfer failure and a Qwen3 JSON-schema unbounded-response example. Preserve RC status and unresolved scope rather than claiming GA or all fixes complete.",
+              "hpci_relevance_ja": "版・入力・操作範囲と観測量を固定して既存のHPCI評価条件へ接続する案。",
+              "hpci_relevance_en": "Propose pinned versions, inputs, operations and observables for the existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "版・model・既定/明示選択したKV経路を固定し、取消後の転送復旧・資源回収を試験する。",
+                "schema応答の終了上限・timeout・再接続を検証し、release内の他fixを残る既知問題の解消証拠にしない。"
+              ],
+              "adoption_conditions_en": [
+                "Pin version, model and default/explicit KV path; test transfer recovery and resource reclamation after cancellation.",
+                "Check schema-completion bounds, timeouts and reconnect behavior; unrelated fixes do not resolve retained known issues."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-SSW009-3-1"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -33028,6 +33312,18 @@
           ],
           "created_at": "2026-10-31T15:44:17.139610+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000627",
+          "bundle_sha256": "60dc35b1ef0357c891284582c51682ccb24ef3acccb2d18e1acf9c256f021575",
+          "base_commit": "0be1c893d50c0cdd7fffddc90de794a5be3025b5",
+          "unit_ids": [
+            "SSW-09-U01",
+            "SSW-09-U02",
+            "SSW-09-U03"
+          ],
+          "created_at": "2026-10-31T17:14:44.487655+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -33053,7 +33349,8 @@
               "TDS-UPD-SSW-09-20260916",
               "TDS-OCT03-SSW009-U01",
               "TDS-OCT05-SSW009-INTEGRATED-READABLE",
-              "TDS-D31-SSW009-02"
+              "TDS-D31-SSW009-02",
+              "TDS-L31-SSW009-02"
             ],
             "comparison_refs": [
               {
@@ -33098,7 +33395,8 @@
               "TDS-WC378-SSW-09-01",
               "TDS-P30-424-SSW-09-U02",
               "TDS-OCT03-SSW009-U02",
-              "TDS-D31-SSW009-03"
+              "TDS-D31-SSW009-03",
+              "TDS-L31-SSW009-03"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -33116,7 +33414,8 @@
               "TDS-CD6-SSW-09-U03",
               "TDS-CD48-SSW-09-ALCF-AGENT-OPERATIONS",
               "TDS-OCT03-SSW009-U03",
-              "TDS-D31-SSW009-01"
+              "TDS-D31-SSW009-01",
+              "TDS-L31-SSW009-01"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -35008,6 +35307,82 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-L31-APP001-01",
+          "title_ja": "モデル世代・格子・アンサンブル条件を揃える",
+          "title_en": "Align model generation, grid and ensemble conditions",
+          "summary_ja": "原資料の適用範囲と未検証事項を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source limits and unverified outcomes.",
+          "items": [
+            {
+              "item_id": "TDI-L31-APP001-01",
+              "name_ja": "モデル世代・格子・アンサンブル条件を揃える",
+              "name_en": "Align model generation, grid and ensemble conditions",
+              "stage": "near-term",
+              "maturity": "announced",
+              "timing_ja": "2026年10月の原資料・版・記載範囲に限定した評価案。実適用は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Bounded to the October2026 source versions and stated scope; actual deployment unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "ECMWFの10月22日TIGGE記事は共通格子の合意とデータ駆動型アンサンブルの受入準備を説明する。モデル世代、入力生成、格子、ensemble構成、科学的・確率予測の評価条件を分けて記録するOpenFS評価案。準備を拡張稼働・科学的検証完了とせず、科学品質とruntime予測誤差を別に扱う。",
+              "statement_en": "ECMWF’s October22 TIGGE article describes common-grid agreement and preparation for data-driven ensembles. Propose recording model generation, input preparation, grid, ensemble configuration and scientific/probabilistic evaluation conditions separately. Preparation is not operational expansion or completed validation; scientific quality and runtime-prediction error remain distinct.",
+              "hpci_relevance_ja": "版・入力・操作範囲と観測量を固定して既存のHPCI評価条件へ接続する案。",
+              "hpci_relevance_en": "Propose pinned versions, inputs, operations and observables for the existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "従来型・データ駆動型モデルの版、入力生成・評価対象、格子・ensemble条件を固定する。",
+                "共通格子の詳細、受入開始日、対象model、必要容量・帯域、検証済みskillは未確認のまま残す。",
+                "独立入力による科学品質・確率予測の確認を、runtime予測の絶対相対誤差と混同しない。"
+              ],
+              "adoption_conditions_en": [
+                "Pin conventional/data-driven model versions, input preparation/evaluation population, grid and ensemble conditions.",
+                "Keep grid details, admission date, model list, capacity/bandwidth and validated skill unverified.",
+                "Separate independent scientific/probabilistic quality checks from absolute relative runtime-prediction error."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-APP001-1-1"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-L31-APP001-02",
+          "title_ja": "観測入力・前処理・再投影・出力の需要を分ける",
+          "title_en": "Separate observation preprocessing, reprojection and output demand",
+          "summary_ja": "原資料の適用範囲と未検証事項を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source limits and unverified outcomes.",
+          "items": [
+            {
+              "item_id": "TDI-L31-APP001-02",
+              "name_ja": "観測入力・前処理・再投影・出力の需要を分ける",
+              "name_en": "Separate observation preprocessing, reprojection and output demand",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "2026年10月の原資料・版・記載範囲に限定した評価案。実適用は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Bounded to the October2026 source versions and stated scope; actual deployment unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "DEFAIR紹介はxarray/Dask API、地理座標・HEALPixへの再投影、NetCDF・GeoTIFF・Zarr出力を説明する。観測入力からAI利用までの変換・前処理・再投影・書出しを別工程として、入力・版・数値確認と対応付ける評価案。形式対応は科学的認証、runtime・memory・I/O実測や新しいClimateDTシミュレーション公開ではない。",
+              "statement_en": "The DEFAIR introduction describes xarray/Dask APIs, geographic/HEALPix reprojection and NetCDF/GeoTIFF/Zarr output. Propose separating observation transformation, preprocessing, reprojection and writing into demand stages tied to pinned inputs, versions and numerical checks. Format support is not scientific certification, measured runtime/memory/I/O or a new ClimateDT simulation release.",
+              "hpci_relevance_ja": "版・入力・操作範囲と観測量を固定して既存のHPCI評価条件へ接続する案。",
+              "hpci_relevance_en": "Propose pinned versions, inputs, operations and observables for the existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "観測入力の出所・規模、model入力生成、座標・格子・変換・出力形式を版付きで記録する。",
+                "学習・推論だけに集約せず、各工程の数値確認と代表性を性能評価前に固定する。",
+                "未確認の変換精度、全機器対応、資源需要を空欄のまま保持し、実測や科学結果を推定しない。"
+              ],
+              "adoption_conditions_en": [
+                "Record observation provenance/scale, model-input preparation, coordinates/grid, transformations and output formats with versions.",
+                "Keep stages distinct from training/inference and fix numerical/representativeness checks before performance assessment.",
+                "Leave unknown transformation accuracy, all-instrument coverage and resource demand unfilled."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-D31-APP002-02-01"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -35247,6 +35622,17 @@
           ],
           "created_at": "2026-10-31T15:44:17.139610+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000629",
+          "bundle_sha256": "01d1217b9c00b9dca2a5ca8f857692b71384fd4f8b96a82a3b89a3d3b0e6abaf",
+          "base_commit": "0be1c893d50c0cdd7fffddc90de794a5be3025b5",
+          "unit_ids": [
+            "APP-01-U01",
+            "APP-01-U02"
+          ],
+          "created_at": "2026-10-31T17:14:44.487655+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -35281,7 +35667,8 @@
               "TDS-WC379-APP-01-01",
               "TDS-OCT03-APP001-U01",
               "TDS-OCT05-APP001-INTEGRATED-READABLE",
-              "TDS-D31-APP001-01"
+              "TDS-D31-APP001-01",
+              "TDS-L31-APP001-01"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -35297,7 +35684,8 @@
               "TDS-CD3-APP-01-U02",
               "TDS-CD56-APP-01-HETEROGENEOUS-COUPLED-WORKLOADS",
               "TDS-OCT03-APP001-U02",
-              "TDS-D31-APP001-02"
+              "TDS-D31-APP001-02",
+              "TDS-L31-APP001-02"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -36863,6 +37251,44 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-L31-APP012-01",
+          "title_ja": "文脈寿命と物理資源占有を分ける",
+          "title_en": "Separate context lifetime and physical resource residency",
+          "summary_ja": "出典の来歴と適用範囲を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source lineage and applicability.",
+          "items": [
+            {
+              "item_id": "TDI-L31-APP012-01",
+              "name_ja": "文脈寿命と物理資源占有を分ける",
+              "name_en": "Separate context lifetime and physical resource residency",
+              "stage": "research",
+              "maturity": "prototype",
+              "timing_ja": "保存済み確認時点の原資料・版・記載範囲に限定する評価案。実適用と現在状態は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Evaluation proposal bounded to retained source versions and check scope; actual deployment and current status unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "文脈の寿命とCPU/GPU・メモリ実占有時間を分け、active・model待機・tool待機・offload・restoreと復元費用・同一成果確認を記録する。pVisorの各条件1回の予備静的試験を、実需要分布のcapacity・電力・全国需要削減へ外挿しない。科学showcaseはsimulation・歴史replayに限る。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+              "statement_en": "Separate context lifetime from physical CPU/GPU/memory residency. Record active, model-wait, tool-wait, offload and restore phases plus restoration cost and same-result integrity. Sage pVisor reports preliminary one-run-per-condition static memory savings, not workload-distribution capacity, energy or nationwide demand savings. Scientific showcases remain simulations or historical replays. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
+              "hpci_relevance_ja": "既存HPCI評価条件へ観測・対象・検証境界を接続する限定案。",
+              "hpci_relevance_en": "Bounded observation, population and verification distinctions for existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "原資料の版・構成・観測範囲と確認時点を固定し、公表日・事象日・後続更新を区別する。",
+                "既存の科学品質・失敗/欠測・対象母集団・責任境界を保持し、合格閾値・日程・gapを変更しない。",
+                "共有出典の再利用は新規独立所見へ数えず、実行・対応済み・利益実測へ格上げしない。"
+              ],
+              "adoption_conditions_en": [
+                "Pin source versions, configurations, observed scope and check time; separate publication, event and later-update dates.",
+                "Retain scientific quality, failures/missing data, populations and responsibility boundaries; change no threshold, milestone or gap.",
+                "Reusing a shared source is not a new independent finding; infer no execution, deployed remediation or measured benefit."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-APP012-1-1"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -37108,6 +37534,17 @@
           ],
           "created_at": "2026-10-31T15:44:17.139610+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000641",
+          "bundle_sha256": "1eb60f546070fa9edd5c5657978c29a446d69eab24be4086e26a4e15a0a7007d",
+          "base_commit": "0be1c893d50c0cdd7fffddc90de794a5be3025b5",
+          "unit_ids": [
+            "APP-12-U01",
+            "APP-12-U02"
+          ],
+          "created_at": "2026-10-31T17:14:44.487655+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -37141,7 +37578,8 @@
               "TDS-CD80-APP-12-ECMWF-AIFS-OPERATIONS",
               "TDS-CD81-APP-12-PRIMARY-MODEL-RECONCILIATION",
               "TDS-OCT05-APP012-INTEGRATED-READABLE",
-              "TDS-D31-APP012-01"
+              "TDS-D31-APP012-01",
+              "TDS-L31-APP012-01"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -40294,6 +40732,120 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-L31-APP013-01",
+          "title_ja": "識別子の認識・検索・構造採点を分ける",
+          "title_en": "Separate identifier recognition, retrieval and structure scoring",
+          "summary_ja": "出典の来歴と適用範囲を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source lineage and applicability.",
+          "items": [
+            {
+              "item_id": "TDI-L31-APP013-01",
+              "name_ja": "識別子の認識・検索・構造採点を分ける",
+              "name_en": "Separate identifier recognition, retrieval and structure scoring",
+              "stage": "research",
+              "maturity": "prototype",
+              "timing_ja": "保存済み確認時点の原資料・版・記載範囲に限定する評価案。実適用と現在状態は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Evaluation proposal bounded to retained source versions and check scope; actual deployment and current status unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "同じ実体を示す識別子ごとに、実体認識・知識検索・構造から計算する正しさを別採点し、正規化・decode・許容回答を固定する。v1のself-distillationを厳密なrelation-held-out汎化や科学workflow完遂へ拡張しない。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+              "statement_en": "Test co-referring identifiers separately: entity recognition, knowledge retrieval and structure-computable correctness need distinct scoring. Pin normalization, decoding and accepted answers. ChemIDBench v1 supports this bounded evaluation axis; its self-distillation is cross-prompt transfer, not strictly relation-held-out generalization or scientific-workflow success. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
+              "hpci_relevance_ja": "既存HPCI評価条件へ観測・対象・検証境界を接続する限定案。",
+              "hpci_relevance_en": "Bounded observation, population and verification distinctions for existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "原資料の版・構成・観測範囲と確認時点を固定し、公表日・事象日・後続更新を区別する。",
+                "既存の科学品質・失敗/欠測・対象母集団・責任境界を保持し、合格閾値・日程・gapを変更しない。",
+                "共有出典の再利用は新規独立所見へ数えず、実行・対応済み・利益実測へ格上げしない。"
+              ],
+              "adoption_conditions_en": [
+                "Pin source versions, configurations, observed scope and check time; separate publication, event and later-update dates.",
+                "Retain scientific quality, failures/missing data, populations and responsibility boundaries; change no threshold, milestone or gap.",
+                "Reusing a shared source is not a new independent finding; infer no execution, deployed remediation or measured benefit."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-APP013-1-1"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-L31-APP013-02",
+          "title_ja": "設定容量と実token母集団を分ける",
+          "title_en": "Separate configured capacity and actual token populations",
+          "summary_ja": "出典の来歴と適用範囲を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source lineage and applicability.",
+          "items": [
+            {
+              "item_id": "TDI-L31-APP013-02",
+              "name_ja": "設定容量と実token母集団を分ける",
+              "name_en": "Separate configured capacity and actual token populations",
+              "stage": "research",
+              "maturity": "prototype",
+              "timing_ja": "保存済み確認時点の原資料・版・記載範囲に限定する評価案。実適用と現在状態は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Evaluation proposal bounded to retained source versions and check scope; actual deployment and current status unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "設定context容量・概算prompt目標・実tokenを分け、cache・並行数・反復境界を併記する。単一GPUの日時付きraw記録を最大容量試験・信頼区間・品質同等性・機種やruntimeの因果順位にしない。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+              "statement_en": "Record configured context capacity, estimated prompt target and actual token count separately, alongside cache, concurrency and repetition boundaries. This dated single-GPU snapshot is not a full-capacity test, confidence interval, quality comparison or causal hardware/runtime ranking. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
+              "hpci_relevance_ja": "既存HPCI評価条件へ観測・対象・検証境界を接続する限定案。",
+              "hpci_relevance_en": "Bounded observation, population and verification distinctions for existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "原資料の版・構成・観測範囲と確認時点を固定し、公表日・事象日・後続更新を区別する。",
+                "既存の科学品質・失敗/欠測・対象母集団・責任境界を保持し、合格閾値・日程・gapを変更しない。",
+                "共有出典の再利用は新規独立所見へ数えず、実行・対応済み・利益実測へ格上げしない。"
+              ],
+              "adoption_conditions_en": [
+                "Pin source versions, configurations, observed scope and check time; separate publication, event and later-update dates.",
+                "Retain scientific quality, failures/missing data, populations and responsibility boundaries; change no threshold, milestone or gap.",
+                "Reusing a shared source is not a new independent finding; infer no execution, deployed remediation or measured benefit."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-APP013-2-1"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-L31-APP013-03",
+          "title_ja": "潜在設定・変換・生成・replayを分ける",
+          "title_en": "Separate latent settings, transforms, generation and replay",
+          "summary_ja": "出典の来歴と適用範囲を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source lineage and applicability.",
+          "items": [
+            {
+              "item_id": "TDI-L31-APP013-03",
+              "name_ja": "潜在設定・変換・生成・replayを分ける",
+              "name_en": "Separate latent settings, transforms, generation and replay",
+              "stage": "research",
+              "maturity": "prototype",
+              "timing_ja": "保存済み確認時点の原資料・版・記載範囲に限定する評価案。実適用と現在状態は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Evaluation proposal bounded to retained source versions and check scope; actual deployment and current status unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "潜在分布設定・context依存変換・生成後delay・実replay時刻を分離照合し、component/global境界の優先順位・seed/版fingerprintを保持する。issueと後日のcontributor再現申告をmaintainer確認・採択patch・修正版releaseとしない。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+              "statement_en": "Check latent parameters, context-dependent transforms, final generated delays and actual replay timing separately. Preserve component/global bound precedence and seed/version fingerprints. The issue and later contributor reproduction report motivate a test; they do not establish maintainer confirmation, an accepted patch or released remediation. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
+              "hpci_relevance_ja": "既存HPCI評価条件へ観測・対象・検証境界を接続する限定案。",
+              "hpci_relevance_en": "Bounded observation, population and verification distinctions for existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "原資料の版・構成・観測範囲と確認時点を固定し、公表日・事象日・後続更新を区別する。",
+                "既存の科学品質・失敗/欠測・対象母集団・責任境界を保持し、合格閾値・日程・gapを変更しない。",
+                "共有出典の再利用は新規独立所見へ数えず、実行・対応済み・利益実測へ格上げしない。"
+              ],
+              "adoption_conditions_en": [
+                "Pin source versions, configurations, observed scope and check time; separate publication, event and later-update dates.",
+                "Retain scientific quality, failures/missing data, populations and responsibility boundaries; change no threshold, milestone or gap.",
+                "Reusing a shared source is not a new independent finding; infer no execution, deployed remediation or measured benefit."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-D31-APP013-01-01"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -40600,6 +41152,18 @@
           ],
           "created_at": "2026-10-31T15:47:43.863416+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000642",
+          "bundle_sha256": "fa5c041ccaf960e2c642b9cc402f053000222b2f809f412d36621470a81741bf",
+          "base_commit": "0be1c893d50c0cdd7fffddc90de794a5be3025b5",
+          "unit_ids": [
+            "APP-13-U01",
+            "APP-13-U02",
+            "APP-13-U03"
+          ],
+          "created_at": "2026-10-31T17:14:44.487655+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -40630,7 +41194,8 @@
               "TDS-CD57-APP-13-LLM-INFERENCE-BENCH",
               "TDS-OCT03-APP013-INFERENCE61-POWER",
               "TDS-OCT03-APP013-POSTTRAIN-CONTRACT",
-              "TDS-OCT05-APP013-INTEGRATED-READABLE"
+              "TDS-OCT05-APP013-INTEGRATED-READABLE",
+              "TDS-L31-APP013-02"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -40657,7 +41222,9 @@
               "TDS-CD27-APP-13-SCIENTIFIC-AGENT-BENCHMARKS-2026",
               "TDS-CD28-APP-13-SGI-ASTABENCH-CONTRACTS",
               "TDS-D31-APP013-02",
-              "TDS-D31-APP013-01-MATURITY"
+              "TDS-D31-APP013-01-MATURITY",
+              "TDS-L31-APP013-01",
+              "TDS-L31-APP013-03"
             ],
             "comparison_refs": [
               {
@@ -41791,6 +42358,80 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-L31-APP005-01",
+          "title_ja": "要件一致と生成契約への適合を分ける",
+          "title_en": "Separate requirement alignment from generated-contract proof",
+          "summary_ja": "原資料の適用範囲と未検証事項を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source limits and unverified outcomes.",
+          "items": [
+            {
+              "item_id": "TDI-L31-APP005-01",
+              "name_ja": "要件一致と生成契約への適合を分ける",
+              "name_en": "Separate requirement alignment from generated-contract proof",
+              "stage": "research",
+              "maturity": "prototype",
+              "timing_ja": "2026年10月の原資料・版・記載範囲に限定した評価案。実適用は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Bounded to the October2026 source versions and stated scope; actual deployment unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "VeriGen-C v1のC→ACSL生成・修復では、実装の生成契約への適合と自然言語要件の完全性は別である。slice/core/fullの受理を完全仕様の合格へ合算せず、要件→契約→実装の各検証境界を記録する評価案。LLM照合や単一専門家監査を形式同値証明・科学品質・工数改善としない。",
+              "statement_en": "For VeriGen-C v1, C implementation conformance to generated ACSL contracts is separate from complete natural-language requirements. Propose recording requirement-to-contract-to-implementation boundaries rather than counting accepted slices/cores as complete specifications. LLM alignment and one expert auditor establish neither formal equivalence, scientific quality nor effort savings.",
+              "hpci_relevance_ja": "版・入力・操作範囲と観測量を固定して既存のHPCI評価条件へ接続する案。",
+              "hpci_relevance_en": "Propose pinned versions, inputs, operations and observables for the existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "model、Typed+real構成、証明義務ごとの8秒budget、保持taskの選別とalignment監査を固定する。",
+                "除外されたI/O・数値許容差と、未検証の大規模C・浮動小数点・並行kernelを区別する。科学妥当性は別検証。",
+                "著者preprintの課題条件をHPCI合格率・生産性倍率へ転用せず、既存の独立入力と総review費用の条件を保持する。"
+              ],
+              "adoption_conditions_en": [
+                "Pin model, Typed+real configuration, eight-second per-obligation budget, retained-task filters and alignment audit.",
+                "Separate excluded I/O/tolerance tasks and unqualified large C, floating-point and concurrent kernels; assess scientific validity separately.",
+                "Do not convert author-preprint task results into HPCI acceptance rates or productivity multipliers; retain independent inputs and total review effort."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-APP005-1-1"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-L31-APP005-02",
+          "title_ja": "mock境界と実環境・専門家評価費用を分ける",
+          "title_en": "Separate mocked boundaries, real environments and expert effort",
+          "summary_ja": "原資料の適用範囲と未検証事項を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source limits and unverified outcomes.",
+          "items": [
+            {
+              "item_id": "TDI-L31-APP005-02",
+              "name_ja": "mock境界と実環境・専門家評価費用を分ける",
+              "name_en": "Separate mocked boundaries, real environments and expert effort",
+              "stage": "research",
+              "maturity": "prototype",
+              "timing_ja": "2026年10月の原資料・版・記載範囲に限定した評価案。実適用は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Bounded to the October2026 source versions and stated scope; actual deployment unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "When Code Gets Cheap, Evaluation Gets Scarceの経験報告を補助に、browser/API/runtimeのmock境界と実環境で検証した境界、専門家評価・統合診断・手戻りを生成時間と別記する評価案。開発者・利用者・専門家が同一の自己報告は、因果的生産性倍率・独立HPC試験・科学コード保証ではない。",
+              "statement_en": "Use the experience report When Code Gets Cheap, Evaluation Gets Scarce to motivate distinguishing mocked browser/API/runtime boundaries from target-environment checks, and expert evaluation, integration diagnosis and rework from generation time. A self-report by one developer/user/expert provides neither causal productivity multipliers, independent HPC trials nor scientific-code guarantees.",
+              "hpci_relevance_ja": "版・入力・操作範囲と観測量を固定して既存のHPCI評価条件へ接続する案。",
+              "hpci_relevance_en": "Propose pinned versions, inputs, operations and observables for the existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "同一開発者の追加projectも独立再現へ数えず、対照実験の不在を保持する。",
+                "test合格と実利用時の統合・科学的受入を分離し、未実施の人評価や環境試験を成功扱いしない。"
+              ],
+              "adoption_conditions_en": [
+                "Additional projects by the same developer are not independent replications; retain the lack of controlled comparison.",
+                "Separate passing tests from real-environment integration/scientific acceptance; do not claim unperformed human or environment validation."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-APP005-2-1"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -41926,6 +42567,16 @@
           ],
           "created_at": "2026-10-31T15:44:17.139610+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000633",
+          "bundle_sha256": "a9da3ef55c06009c024d0fce08737e34d436a6320118a79bbeb8463355d02b8b",
+          "base_commit": "0be1c893d50c0cdd7fffddc90de794a5be3025b5",
+          "unit_ids": [
+            "APP-05-U01"
+          ],
+          "created_at": "2026-10-31T17:14:44.487655+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -41954,7 +42605,9 @@
               "TDS-OCT05-APP005-INTEGRATED-READABLE",
               "TDS-OCT23-APP005-PROOF-BOUNDARIES",
               "TDS-D31-APP005-01",
-              "TDS-D31-APP005-02"
+              "TDS-D31-APP005-02",
+              "TDS-L31-APP005-01",
+              "TDS-L31-APP005-02"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -43338,6 +43991,45 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-L31-APP014-01",
+          "title_ja": "event時刻・clock領域・処理工程を分ける",
+          "title_en": "Separate event times, clock domains and processing stages",
+          "summary_ja": "出典の来歴と適用範囲を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source lineage and applicability.",
+          "items": [
+            {
+              "item_id": "TDI-L31-APP014-01",
+              "name_ja": "event時刻・clock領域・処理工程を分ける",
+              "name_en": "Separate event times, clock domains and processing stages",
+              "stage": "research",
+              "maturity": "prototype",
+              "timing_ja": "保存済み確認時点の原資料・版・記載範囲に限定する評価案。実適用と現在状態は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Evaluation proposal bounded to retained source versions and check scope; actual deployment and current status unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "event時刻・trigger照合window・server監視/形式変換・offline再構成を別工程・成果物で記録する。Run9施設内実装を広域HPC応答期限・無欠損保証・現行service認定にしない。 clock参照と計時点を明記し、平均同期差・tail/最大時間・機械安定性に制約される動作を分離する。安定性と安全な手動fallbackを保持し、CRIS試運転をremote制御期限・予約・一般提供としない。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+              "statement_en": "Record event timestamps, trigger-matching windows, server monitoring/formatting and offline reconstruction as separate stages and artifacts. BM@N Run9 is a facility-local implementation example, not a cross-site HPC deadline, losslessness guarantee or current service certificate. Name clock references and measurement endpoints; distinguish average synchronization offsets, tail/max timing and mechanically constrained actions. Preserve stability and safe human fallback. CRIS commissioning does not establish remote-control deadlines, resource reservations or general-service availability. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
+              "hpci_relevance_ja": "既存HPCI評価条件へ観測・対象・検証境界を接続する限定案。",
+              "hpci_relevance_en": "Bounded observation, population and verification distinctions for existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "原資料の版・構成・観測範囲と確認時点を固定し、公表日・事象日・後続更新を区別する。",
+                "既存の科学品質・失敗/欠測・対象母集団・責任境界を保持し、合格閾値・日程・gapを変更しない。",
+                "共有出典の再利用は新規独立所見へ数えず、実行・対応済み・利益実測へ格上げしない。"
+              ],
+              "adoption_conditions_en": [
+                "Pin source versions, configurations, observed scope and check time; separate publication, event and later-update dates.",
+                "Retain scientific quality, failures/missing data, populations and responsibility boundaries; change no threshold, milestone or gap.",
+                "Reusing a shared source is not a new independent finding; infer no execution, deployed remediation or measured benefit."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-APP014-1-1",
+                "SRC-OCT23-APP014-1-2"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -43525,6 +44217,16 @@
           ],
           "created_at": "2026-10-31T15:44:17.139610+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000643",
+          "bundle_sha256": "40381b386e58767916e47b82a3d390216f935cd5550a34d6498f979d72eeb747",
+          "base_commit": "0be1c893d50c0cdd7fffddc90de794a5be3025b5",
+          "unit_ids": [
+            "APP-14-U01"
+          ],
+          "created_at": "2026-10-31T17:14:44.487655+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -43555,7 +44257,8 @@
               "TDS-CD40-APP-14-NANOTERASU-AOBA",
               "TDS-WC383-APP-14-01",
               "TDS-OCT03-APP014-LOOP-BOUNDARIES",
-              "TDS-D31-APP014-01"
+              "TDS-D31-APP014-01",
+              "TDS-L31-APP014-01"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -52393,6 +53096,48 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-L31-CROSS002-01",
+          "title_ja": "サービス成分・通信経路・復旧記載を分ける",
+          "title_en": "Separate components, communication paths and restoration evidence",
+          "summary_ja": "出典の来歴と適用範囲を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source lineage and applicability.",
+          "items": [
+            {
+              "item_id": "TDI-L31-CROSS002-01",
+              "name_ja": "サービス成分・通信経路・復旧記載を分ける",
+              "name_en": "Separate components, communication paths and restoration evidence",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "保存済み確認時点の原資料・版・記載範囲に限定する評価案。実適用と現在状態は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Evaluation proposal bounded to retained source versions and check scope; actual deployment and current status unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "compute・login・OOD session・申請/予約portal・研究dataサービスを分け、告知日、予定影響、最後に確認した運用者の復旧記載、代替入口/窓口、復旧検証責任を記録する案。TSUBAMEの10/27 OOD完了追記を10/23予定と区別し、玄界Nextcloud再開から他portal再開を推定しない。東北の過去通知を現在の停止継続としない。共通CVE・漏洩・施設検証完了・全国停止時間を推定しない。 可用性票にlogin/portal、jobの外向き通信、計算node間通信を区別する影響欄を追加する案。TSUBAMEの10/23 network通知は予定の具体例で、別の通常OOD通知にあるjob無影響をnetworkや緊急保守へ転用しない。運用者予定と実復旧検証を区別する。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+              "statement_en": "Record compute, login, OOD sessions, application/reservation portals and research-data services separately, with notice date, planned impact, last verified operator restoration statement, alternative entry/contact and recovery-verification owner. TSUBAME emergency OOD completion reported Oct27 is distinct from its Oct23 plan; Genkai Nextcloud resumption does not restore other portals, and a dated Tohoku notice does not establish a continuing current outage. Verify component dependencies and responsibilities without inferring shared CVEs, data exposure, completed site validation or national downtime. Add a communication-path impact field to component availability: distinguish login/portal access, external job communication and inter-node traffic. TSUBAME Oct23 network notice supplies a planned example; the separate ordinary OOD notice does not authorize transferring its no-job-impact statement to network or emergency maintenance. Retain operator/planned scope and require actual recovery verification. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
+              "hpci_relevance_ja": "既存HPCI評価条件へ観測・対象・検証境界を接続する限定案。",
+              "hpci_relevance_en": "Bounded observation, population and verification distinctions for existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "原資料の版・構成・観測範囲と確認時点を固定し、公表日・事象日・後続更新を区別する。",
+                "既存の科学品質・失敗/欠測・対象母集団・責任境界を保持し、合格閾値・日程・gapを変更しない。",
+                "共有出典の再利用は新規独立所見へ数えず、実行・対応済み・利益実測へ格上げしない。"
+              ],
+              "adoption_conditions_en": [
+                "Pin source versions, configurations, observed scope and check time; separate publication, event and later-update dates.",
+                "Retain scientific quality, failures/missing data, populations and responsibility boundaries; change no threshold, milestone or gap.",
+                "Reusing a shared source is not a new independent finding; infer no execution, deployed remediation or measured benefit."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-CROSS002-1-1",
+                "SRC-OCT23-CROSS002-1-2",
+                "SRC-OCT23-CROSS002-1-3",
+                "SRC-D31-CROSS002-01-01",
+                "SRC-OCT23-CROSS002-1-5"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -52700,6 +53445,17 @@
           ],
           "created_at": "2026-10-31T15:44:17.139610+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000636",
+          "bundle_sha256": "82bbf88df412407b768b99c83035dd95b63605686bb544c420a792b62a043dc1",
+          "base_commit": "0be1c893d50c0cdd7fffddc90de794a5be3025b5",
+          "unit_ids": [
+            "CROSS-08-U01",
+            "CROSS-08-U02"
+          ],
+          "created_at": "2026-10-31T17:14:44.487655+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -52736,7 +53492,8 @@
               "TDS-WC387-CROSS-08-03",
               "TDS-OCT03-CROSS002-U01",
               "TDS-OCT05-CROSS002-INTEGRATED-READABLE",
-              "TDS-D31-CROSS002-01"
+              "TDS-D31-CROSS002-01",
+              "TDS-L31-CROSS002-01"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -53195,6 +53952,44 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-L31-SSW010-01",
+          "title_ja": "探索経路の多様性と評価可能性を分ける",
+          "title_en": "Separate search-route diversity and assessability",
+          "summary_ja": "出典の来歴と適用範囲を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source lineage and applicability.",
+          "items": [
+            {
+              "item_id": "TDI-L31-SSW010-01",
+              "name_ja": "探索経路の多様性と評価可能性を分ける",
+              "name_en": "Separate search-route diversity and assessability",
+              "stage": "research",
+              "maturity": "prototype",
+              "timing_ja": "保存済み確認時点の原資料・版・記載範囲に限定する評価案。実適用と現在状態は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Evaluation proposal bounded to retained source versions and check scope; actual deployment and current status unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "候補計上に探索経路・方針と評価可能性を加え、source表現多様性のみで広い探索としない。保持候補・停滞/参照条件・評価不能runを分離する。著者診断は課題依存proxyであり、普遍的失敗閾値、数学的最適性、HPCI改善、因果的費用削減を認定しない。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+              "statement_en": "Add route/strategy identity and assessability to candidate accounting: source-code variety alone does not establish broad search. Record retained alternatives, plateau/reference context and unassessable runs separately. Author diagnostics are task-specific proxies; no universal failure threshold, mathematical optimum, HPCI improvement or causal cost saving follows. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
+              "hpci_relevance_ja": "既存HPCI評価条件へ観測・対象・検証境界を接続する限定案。",
+              "hpci_relevance_en": "Bounded observation, population and verification distinctions for existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "原資料の版・構成・観測範囲と確認時点を固定し、公表日・事象日・後続更新を区別する。",
+                "既存の科学品質・失敗/欠測・対象母集団・責任境界を保持し、合格閾値・日程・gapを変更しない。",
+                "共有出典の再利用は新規独立所見へ数えず、実行・対応済み・利益実測へ格上げしない。"
+              ],
+              "adoption_conditions_en": [
+                "Pin source versions, configurations, observed scope and check time; separate publication, event and later-update dates.",
+                "Retain scientific quality, failures/missing data, populations and responsibility boundaries; change no threshold, milestone or gap.",
+                "Reusing a shared source is not a new independent finding; infer no execution, deployed remediation or measured benefit."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-SSW010-1-1"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -53289,6 +54084,16 @@
           ],
           "created_at": "2026-10-04T17:52:27.680443+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000644",
+          "bundle_sha256": "a52875e34410a85101ae3fe2dbdf90cc7c34389e982ebb2d59bc8c3b370f1cf5",
+          "base_commit": "0be1c893d50c0cdd7fffddc90de794a5be3025b5",
+          "unit_ids": [
+            "SSW-10-U01"
+          ],
+          "created_at": "2026-10-31T17:14:44.487655+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -53312,7 +54117,8 @@
               "TDS-CD2-SSW-10-U01",
               "TDS-CD8-SSW-10-TOPOLOGY-AUTOTUNING",
               "TDS-OCT03-SSW010-U01",
-              "TDS-OCT05-SSW010-INTEGRATED-READABLE"
+              "TDS-OCT05-SSW010-INTEGRATED-READABLE",
+              "TDS-L31-SSW010-01"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -54054,6 +54860,47 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-L31-SSW012-01",
+          "title_ja": "監査の識別情報を残す秘密値マスクの検証",
+          "title_en": "Qualify secret masking while retaining audit identity",
+          "summary_ja": "原資料の適用範囲と未検証事項を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source limits and unverified outcomes.",
+          "items": [
+            {
+              "item_id": "TDI-L31-SSW012-01",
+              "name_ja": "監査の識別情報を残す秘密値マスクの検証",
+              "name_en": "Qualify secret masking while retaining audit identity",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "2026年10月の原資料・版・記載範囲に限定した評価案。実適用は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Bounded to the October2026 source versions and stated scope; actual deployment unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "Nextflow26.04.9とmerge済みPR7879は、投入失敗・再試行・設定・trace・lineage等に関する秘密値マスク改善の一系統である。合成の秘密値を使い、非機密のattempt IDと実行contextを保持して各経路を確認する評価案。完全mask、過去log消去、全plugin対応、全CI成功、施設適用の証拠ではない。",
+              "statement_en": "Nextflow26.04.9 and merged PR7879 form one secret-redaction improvement lineage. Propose synthetic-secret checks across failure/retry, configuration, trace and lineage paths while retaining non-sensitive attempt IDs and execution context. They do not prove complete masking, retroactive log removal, all-plugin coverage, all-CI success or site deployment.",
+              "hpci_relevance_ja": "版・入力・操作範囲と観測量を固定して既存のHPCI評価条件へ接続する案。",
+              "hpci_relevance_en": "Propose pinned versions, inputs, operations and observables for the existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "local/grid投入失敗、retry、log・error report、trace・config・lineage/exportを版・plugin経路ごとに区別する。",
+                "合成値だけを対象とする評価案で、実資格情報・私的logの試験は別途扱う。今回試験は実行しない。",
+                "失敗・中断・cached task等の監査欠落は既存のまま保持し、mask改善を全attempt来歴の完成へ読み替えない。",
+                "自由文URL passwordのfollow-up、master/backportでの範囲差と未検証経路を残す。"
+              ],
+              "adoption_conditions_en": [
+                "Pin release/plugin paths for local/grid submission failure, retries, logs/error reports, trace/config and lineage/export.",
+                "This is a synthetic-value evaluation proposal; no real-credential or private-log test is performed.",
+                "Retain existing failed/aborted/cached-attempt audit gaps; masking improvements do not complete provenance coverage.",
+                "Keep unresolved free-text URL-password follow-ups, master/backport differences and unverified paths."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-SSW012-1-1",
+                "SRC-OCT23-SSW012-1-2"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -54186,6 +55033,16 @@
           ],
           "created_at": "2026-10-31T15:44:17.139610+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000628",
+          "bundle_sha256": "241dcba054a45167e4e978b4ab86cf7e7ebb4eb1a7c3e6838af42682d5afc9cf",
+          "base_commit": "0be1c893d50c0cdd7fffddc90de794a5be3025b5",
+          "unit_ids": [
+            "SSW-16-U01"
+          ],
+          "created_at": "2026-10-31T17:14:44.487655+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -54213,7 +55070,8 @@
               "TDS-CD14-SSW-16-QCSC-OBSERVABILITY",
               "TDS-OCT03-SSW012-U01",
               "TDS-OCT05-SSW012-INTEGRATED-READABLE",
-              "TDS-D31-SSW012-01"
+              "TDS-D31-SSW012-01",
+              "TDS-L31-SSW012-01"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -54986,6 +55844,82 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-L31-APP010-01",
+          "title_ja": "最適解到達と標本分布品質を分ける",
+          "title_en": "Separate optimization hits from sampling quality",
+          "summary_ja": "出典の来歴と適用範囲を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source lineage and applicability.",
+          "items": [
+            {
+              "item_id": "TDI-L31-APP010-01",
+              "name_ja": "最適解到達と標本分布品質を分ける",
+              "name_en": "Separate optimization hits from sampling quality",
+              "stage": "research",
+              "maturity": "prototype",
+              "timing_ja": "保存済み確認時点の原資料・版・記載範囲に限定する評価案。実適用と現在状態は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Evaluation proposal bounded to retained source versions and check scope; actual deployment and current status unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "最適解到達と、到達を条件とする状態・sector標本分布の品質を分け、参照分布・support・有限標本の限界を残す。指定Ising研究の区別を一般的な古典困難性・総費用優位へ外挿しない。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+              "statement_en": "Record optimization-hit success separately from conditional state/sector sampling quality, with reference distribution, support and finite-sample limits. The specified Ising study demonstrates this distinction; its SA protocols do not establish general classical hardness or total-cost advantage. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
+              "hpci_relevance_ja": "既存HPCI評価条件へ観測・対象・検証境界を接続する限定案。",
+              "hpci_relevance_en": "Bounded observation, population and verification distinctions for existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "原資料の版・構成・観測範囲と確認時点を固定し、公表日・事象日・後続更新を区別する。",
+                "既存の科学品質・失敗/欠測・対象母集団・責任境界を保持し、合格閾値・日程・gapを変更しない。",
+                "共有出典の再利用は新規独立所見へ数えず、実行・対応済み・利益実測へ格上げしない。"
+              ],
+              "adoption_conditions_en": [
+                "Pin source versions, configurations, observed scope and check time; separate publication, event and later-update dates.",
+                "Retain scientific quality, failures/missing data, populations and responsibility boundaries; change no threshold, milestone or gap.",
+                "Reusing a shared source is not a new independent finding; infer no execution, deployed remediation or measured benefit."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-APP010-1-1"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-L31-APP010-02",
+          "title_ja": "定式化とsolver寄与を分ける",
+          "title_en": "Separate formulation from solver attribution",
+          "summary_ja": "出典の来歴と適用範囲を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source lineage and applicability.",
+          "items": [
+            {
+              "item_id": "TDI-L31-APP010-02",
+              "name_ja": "定式化とsolver寄与を分ける",
+              "name_en": "Separate formulation from solver attribution",
+              "stage": "research",
+              "maturity": "prototype",
+              "timing_ja": "保存済み確認時点の原資料・版・記載範囲に限定する評価案。実適用と現在状態は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Evaluation proposal bounded to retained source versions and check scope; actual deployment and current status unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "定式化を含む全workflow比較と候補固定solver置換を区別し、候補集合・占有率符号化・可行集合の同値性・科学指標を固定する。本研究の複数成分変更、API往復時間と全workflow時間、量子寄与未分離を保持する。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+              "statement_en": "Distinguish end-to-end formulation comparisons from fixed-candidate solver substitution: pin candidate pools, occupancy encoding, feasible-set equivalence and scientific metrics. This ligand study changes multiple components; call-to-return timing is not full workflow time, and quantum-hardware contribution remains unisolated. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
+              "hpci_relevance_ja": "既存HPCI評価条件へ観測・対象・検証境界を接続する限定案。",
+              "hpci_relevance_en": "Bounded observation, population and verification distinctions for existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "原資料の版・構成・観測範囲と確認時点を固定し、公表日・事象日・後続更新を区別する。",
+                "既存の科学品質・失敗/欠測・対象母集団・責任境界を保持し、合格閾値・日程・gapを変更しない。",
+                "共有出典の再利用は新規独立所見へ数えず、実行・対応済み・利益実測へ格上げしない。"
+              ],
+              "adoption_conditions_en": [
+                "Pin source versions, configurations, observed scope and check time; separate publication, event and later-update dates.",
+                "Retain scientific quality, failures/missing data, populations and responsibility boundaries; change no threshold, milestone or gap.",
+                "Reusing a shared source is not a new independent finding; infer no execution, deployed remediation or measured benefit."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-APP010-2-1"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -55108,6 +56042,16 @@
           ],
           "created_at": "2026-10-31T15:44:17.139610+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000635",
+          "bundle_sha256": "6ad131f9a1036d1ce19537eaf3a5db2e2d779cb45c0b4f018b4b98ba9c101e55",
+          "base_commit": "0be1c893d50c0cdd7fffddc90de794a5be3025b5",
+          "unit_ids": [
+            "APP-11-U01"
+          ],
+          "created_at": "2026-10-31T17:14:44.487655+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -55136,7 +56080,9 @@
               "TDS-OCT13-JHPC",
               "TDS-OCT13-FUJITSU-NM",
               "TDS-D31-APP010-01",
-              "TDS-D31-APP010-02"
+              "TDS-D31-APP010-02",
+              "TDS-L31-APP010-01",
+              "TDS-L31-APP010-02"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -55756,6 +56702,86 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-L31-APP016-01",
+          "title_ja": "遅延する停止判定と追加cycle費用を分ける",
+          "title_en": "Separate lagged stopping evidence and extra-cycle cost",
+          "summary_ja": "原資料の適用範囲と未検証事項を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source limits and unverified outcomes.",
+          "items": [
+            {
+              "item_id": "TDI-L31-APP016-01",
+              "name_ja": "遅延する停止判定と追加cycle費用を分ける",
+              "name_en": "Separate lagged stopping evidence and extra-cycle cost",
+              "stage": "research",
+              "maturity": "prototype",
+              "timing_ja": "2026年10月の原資料・版・記載範囲に限定した評価案。実適用は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Bounded to the October2026 source versions and stated scope; actual deployment unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "単一A100・Poisson問題の著者preprintは、先行測定に基づく固定4cycleを計時する一方、前反復を評価する遅延monitorで停止すると5cycleを要すると記す。外挿monitorは上界ではなく推定である。判定対象の反復、実測/固定/外挿の別、追加cycleとmonitor費用を記録し、固定cycle性能を同じ品質までのtime-to-solutionとしない評価案。",
+              "statement_en": "The single-A100 Poisson preprint times four fixed cycles based on prior runs; stopping with its lagged monitor requires five. Extrapolation is an estimate, not a bound. Propose recording the evaluated iterate, measured/fixed/extrapolated stopping evidence, extra cycles and monitor cost rather than equating fixed-cycle throughput with matched-quality time to solution.",
+              "hpci_relevance_ja": "版・入力・操作範囲と観測量を固定して既存のHPCI評価条件へ接続する案。",
+              "hpci_relevance_en": "Propose pinned versions, inputs, operations and observables for the existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "monitorのnorm・許容差・評価反復番号・計時最終反復を分け、残反復と停止判定cycleを計上する。",
+                "前測定由来の固定cycle数と、当該runで停止条件を確認した実測を区別する。",
+                "setup・warmup・cast/rebalancing等の含有/除外を固定し、同一科学品質までの全費用と比較可能性を示す。",
+                "Cartesian mesh・3次Poisson・製造解・単一A100という範囲を残し、他GPU/実科学holdoutへ外挿しない。"
+              ],
+              "adoption_conditions_en": [
+                "Separate monitor norm/tolerance, evaluated iterate and final timed iterate; account for remaining iterations and stopping-test cycles.",
+                "Distinguish prior-run fixed counts from stopping evidence measured in the timed run.",
+                "Pin setup/warmup/cast/rebalancing inclusions and exclusions before comparing total matched-quality cost.",
+                "Retain cubic Poisson/manufactured-solution/single-A100 scope; do not extrapolate to other GPUs or scientific holdouts."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-APP016-1-1"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-L31-APP016-02",
+          "title_ja": "POD因子格納量と実encoding費用を分ける",
+          "title_en": "Separate POD factor storage from encoded-file cost",
+          "summary_ja": "原資料の適用範囲と未検証事項を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source limits and unverified outcomes.",
+          "items": [
+            {
+              "item_id": "TDI-L31-APP016-02",
+              "name_ja": "POD因子格納量と実encoding費用を分ける",
+              "name_en": "Separate POD factor storage from encoded-file cost",
+              "stage": "research",
+              "maturity": "prototype",
+              "timing_ja": "2026年10月の原資料・版・記載範囲に限定した評価案。実適用は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Bounded to the October2026 source versions and stated scope; actual deployment unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "局所POD preprintの格納量は低rank因子を数え、partition/index metadata・header・encoding費用を除く。greedy分割は全体最小格納量を保証しない。係数空間NRMSEの条件付き範囲を保存則・再開・下流観測量と分け、実encoded bytes、圧縮/展開/転送の全費用を確認してからsystem利得を判断する評価案。",
+              "statement_en": "The local-POD preprint counts low-rank factor storage, excluding partition/index metadata, headers and encoding overhead. Greedy partitioning does not guarantee global minimum storage. Propose separating its conditional coefficient-space NRMSE scope from conservation, restart and downstream observables, and assessing actual encoded bytes plus compression/decompression/transfer cost before system-benefit claims.",
+              "hpci_relevance_ja": "版・入力・操作範囲と観測量を固定して既存のHPCI評価条件へ接続する案。",
+              "hpci_relevance_en": "Propose pinned versions, inputs, operations and observables for the existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "因子数とmetadata/header込みfile bytesを別列にし、encoding版、partition条件、圧縮・展開・転送時間/費用を固定する。",
+                "NRMSEのnorm・正規化・正のdata範囲、Gram/分割仮定を保持し、点ごとの相対誤差保証へ読み替えない。",
+                "synthetic data・流れの密度snapshotと実再開data、数学的境界と実装の浮動小数点挙動を区別する。",
+                "保存則・下流科学観測量・独立入力での検証は既存条件として残し、圧縮率だけで合格にしない。"
+              ],
+              "adoption_conditions_en": [
+                "Keep factor count and metadata/header-inclusive bytes separate; pin encoding, partition and full encode/decode/transfer costs.",
+                "Retain coefficient-space NRMSE normalization, positive range and Gram/partition assumptions; infer no pointwise relative-error guarantee.",
+                "Distinguish synthetic/density snapshots from restart data, and mathematical bounds from floating-point implementation behavior.",
+                "Retain independent scientific-observable/conservation checks; compression ratio alone does not establish acceptance."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-APP016-2-1"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -55862,6 +56888,17 @@
           ],
           "created_at": "2026-10-31T15:44:17.139610+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000631",
+          "bundle_sha256": "e1c8e2de7a927fb198b96b7718cd613428e0d3b8e9cb1394ddbf112e80251e04",
+          "base_commit": "0be1c893d50c0cdd7fffddc90de794a5be3025b5",
+          "unit_ids": [
+            "ARCH-13-U01",
+            "ARCH-13-U02"
+          ],
+          "created_at": "2026-10-31T17:14:44.487655+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -55884,7 +56921,9 @@
               "TDS-CD1-ARCH-13-U01",
               "TDS-OCT03-APP016-LSIR",
               "TDS-OCT05-APP016-INTEGRATED-READABLE",
-              "TDS-D31-APP016-01"
+              "TDS-D31-APP016-01",
+              "TDS-L31-APP016-01",
+              "TDS-L31-APP016-02"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -57037,6 +58076,84 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-L31-APP015-01",
+          "title_ja": "共有event・clock工程を参照する",
+          "title_en": "Reference shared event and clock stages",
+          "summary_ja": "出典の来歴と適用範囲を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source lineage and applicability.",
+          "items": [
+            {
+              "item_id": "TDI-L31-APP015-01",
+              "name_ja": "共有event・clock工程を参照する",
+              "name_en": "Reference shared event and clock stages",
+              "stage": "research",
+              "maturity": "prototype",
+              "timing_ja": "保存済み確認時点の原資料・版・記載範囲に限定する評価案。実適用と現在状態は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Evaluation proposal bounded to retained source versions and check scope; actual deployment and current status unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "APP014のevent/clock工程追補をAPP015評価条件から共有参照し、既存の科学品質分母・欠損・tail・復旧契約を保持する。同一roadmap追補を二重適用せず、機器時間をservice期限へ転用しない。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+              "statement_en": "Reference the APP014 event/clock-stage refinement in APP015 evaluation conditions while retaining the existing scientific-quality denominator, loss, tail and recovery contract. One shared roadmap change may serve both catalogs; do not duplicate it or introduce device timing as a service deadline. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
+              "hpci_relevance_ja": "既存HPCI評価条件へ観測・対象・検証境界を接続する限定案。",
+              "hpci_relevance_en": "Bounded observation, population and verification distinctions for existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "原資料の版・構成・観測範囲と確認時点を固定し、公表日・事象日・後続更新を区別する。",
+                "既存の科学品質・失敗/欠測・対象母集団・責任境界を保持し、合格閾値・日程・gapを変更しない。",
+                "共有出典の再利用は新規独立所見へ数えず、実行・対応済み・利益実測へ格上げしない。"
+              ],
+              "adoption_conditions_en": [
+                "Pin source versions, configurations, observed scope and check time; separate publication, event and later-update dates.",
+                "Retain scientific quality, failures/missing data, populations and responsibility boundaries; change no threshold, milestone or gap.",
+                "Reusing a shared source is not a new independent finding; infer no execution, deployed remediation or measured benefit."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-APP014-1-1",
+                "SRC-OCT23-APP014-1-2"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-L31-APP015-02",
+          "title_ja": "共有の生成負荷・proxy条件を参照する",
+          "title_en": "Reference shared generated-load and proxy conditions",
+          "summary_ja": "出典の来歴と適用範囲を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source lineage and applicability.",
+          "items": [
+            {
+              "item_id": "TDI-L31-APP015-02",
+              "name_ja": "共有の生成負荷・proxy条件を参照する",
+              "name_en": "Reference shared generated-load and proxy conditions",
+              "stage": "research",
+              "maturity": "prototype",
+              "timing_ja": "保存済み確認時点の原資料・版・記載範囲に限定する評価案。実適用と現在状態は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Evaluation proposal bounded to retained source versions and check scope; actual deployment and current status unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "APP013の潜在設定・変換・生成後・replay区別をproxy忠実度へ共有接続し、burst・依存構造・原event IDを保持する。AI issueから科学stream実装の不具合は推定しない。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+              "statement_en": "Link the APP013 latent/transform/generated/replay distinction to proxy fidelity, preserving bursts, dependency structure and original event identity. No inference that the cited AI issue affects scientific stream software. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
+              "hpci_relevance_ja": "既存HPCI評価条件へ観測・対象・検証境界を接続する限定案。",
+              "hpci_relevance_en": "Bounded observation, population and verification distinctions for existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "原資料の版・構成・観測範囲と確認時点を固定し、公表日・事象日・後続更新を区別する。",
+                "既存の科学品質・失敗/欠測・対象母集団・責任境界を保持し、合格閾値・日程・gapを変更しない。",
+                "共有出典の再利用は新規独立所見へ数えず、実行・対応済み・利益実測へ格上げしない。"
+              ],
+              "adoption_conditions_en": [
+                "Pin source versions, configurations, observed scope and check time; separate publication, event and later-update dates.",
+                "Retain scientific quality, failures/missing data, populations and responsibility boundaries; change no threshold, milestone or gap.",
+                "Reusing a shared source is not a new independent finding; infer no execution, deployed remediation or measured benefit."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-APP013-2-1",
+                "SRC-D31-APP013-01-01"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -57198,6 +58315,17 @@
           ],
           "created_at": "2026-10-04T17:52:27.680443+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000649",
+          "bundle_sha256": "49cc75de93492bb0d4c333e74221d8bbf29842925eb47cf4f7970ca9daab8664",
+          "base_commit": "0be1c893d50c0cdd7fffddc90de794a5be3025b5",
+          "unit_ids": [
+            "APP-15-U01",
+            "APP-15-U02"
+          ],
+          "created_at": "2026-10-31T17:14:44.487655+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -57222,7 +58350,9 @@
               "TDS-CD9-APP-15-SPRING8-OPERATED-PIPELINE",
               "TDS-CD38-APP-15-APS-SYNAPSI-EXPERIMENT-TIME",
               "TDS-OCT03-APP015-U01",
-              "TDS-OCT05-APP015-INTEGRATED-READABLE"
+              "TDS-OCT05-APP015-INTEGRATED-READABLE",
+              "TDS-L31-APP015-01",
+              "TDS-L31-APP015-02"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -58405,6 +59535,114 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-L31-OPS002-01",
+          "title_ja": "R580固有の保守適合表",
+          "title_en": "R580-specific maintenance compatibility",
+          "summary_ja": "原資料の適用範囲と未検証事項を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source limits and unverified outcomes.",
+          "items": [
+            {
+              "item_id": "TDI-L31-OPS002-01",
+              "name_ja": "R580固有の保守適合表",
+              "name_en": "R580-specific maintenance compatibility",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "2026年10月の原資料・版・記載範囲に限定した評価案。実適用は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Bounded to the October2026 source versions and stated scope; actual deployment unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "R580.196.07はAttestation SDK2026.10.02未満とattestation ABI非互換で非CCには影響しない。EUD580.126.12以前は非互換。DCGM4.3.x以降、Hopper subrevision3のVBIOS96.00.68.00.xx以降を条件別に確認する。",
+              "statement_en": "R580.196.07 has an attestation-ABI incompatibility below SDK2026.10.02, with no non-CC effect. EUD580.126.12 and earlier are incompatible. Qualify DCGM4.3.x+ and, for Hopper subrevision3, VBIOS96.00.68.00.xx+ separately.",
+              "hpci_relevance_ja": "版・入力・操作範囲と観測量を固定して既存のHPCI評価条件へ接続する案。",
+              "hpci_relevance_en": "Propose pinned versions, inputs, operations and observables for the existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "driver/Fabric Manager・SDK・EUD・DCGM・該当VBIOS・CC利用を版付きで照合する。",
+                "互換確認を更新実行やattestation省略の指示にしない。"
+              ],
+              "adoption_conditions_en": [
+                "Inventory branch, Fabric Manager, SDK, EUD, DCGM, applicable VBIOS and CC use.",
+                "Compatibility review neither executes upgrades nor authorizes omitting attestation."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-OPS002-1-1"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-L31-OPS002-02",
+          "title_ja": "repair指定・監視副作用・検証済み復旧を分離",
+          "title_en": "Separate repair marking, collector effects and validated recovery",
+          "summary_ja": "原資料の適用範囲と未検証事項を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source limits and unverified outcomes.",
+          "items": [
+            {
+              "item_id": "TDI-L31-OPS002-02",
+              "name_ja": "repair指定・監視副作用・検証済み復旧を分離",
+              "name_en": "Separate repair marking, collector effects and validated recovery",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "2026年10月の原資料・版・記載範囲に限定した評価案。実適用は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Bounded to the October2026 source versions and stated scope; actual deployment unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "GB300 HBM3e12Hの同一pseudochannelで2UCE後のrepair指定は修理完了ではない。NVIDIAは監視toolのPCI照会が特定条件でGPU脱落を起こし得た経路の修正も記す。",
+              "statement_en": "GB300 HBM3e12H repair marking after two UCEs in one pseudochannel is not completed repair. NVIDIA also records a fix for a monitoring PCI-query path that could itself provoke GPU bus loss under particular conditions.",
+              "hpci_relevance_ja": "版・入力・操作範囲と観測量を固定して既存のHPCI評価条件へ接続する案。",
+              "hpci_relevance_en": "Propose pinned versions, inputs, operations and observables for the existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "collector版/頻度・検知・指定・隔離・失われた仕事・科学状態復旧を別記録する。",
+                "ARM checkpoint機能や修正公表を回復成功・故障率改善としない。"
+              ],
+              "adoption_conditions_en": [
+                "Record collector version/frequency, detection, marking, isolation, lost work and scientific recovery separately.",
+                "Checkpoint capability and published fixes do not establish recovered state or improved failure rates."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-OPS002-1-1"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-L31-OPS002-03",
+          "title_ja": "R595の修正済み事象と残る構成制約",
+          "title_en": "R595 fixed issues and residual configuration limits",
+          "summary_ja": "原資料の適用範囲と未検証事項を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source limits and unverified outcomes.",
+          "items": [
+            {
+              "item_id": "TDI-L31-OPS002-03",
+              "name_ja": "R595の修正済み事象と残る構成制約",
+              "name_en": "R595 fixed issues and residual configuration limits",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "2026年10月の原資料・版・記載範囲に限定した評価案。実適用は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Bounded to the October2026 source versions and stated scope; actual deployment unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "R595.112.07はSEC fault処理の再帰によるpanic修正と、Blackwellで指定TMA API・backing allocation128KB未満・dense non-overlappingでないtensorの残存問題を併記する。R580と混合せず、全修正完了とはしない。",
+              "statement_en": "R595.112.07 records a SEC-fault recursion panic fix alongside a residual Blackwell TMA issue for listed APIs, backing allocations below128KB and tensors that are not dense non-overlapping. Keep this branch separate; the fix does not resolve every issue.",
+              "hpci_relevance_ja": "版・入力・操作範囲と観測量を固定して既存のHPCI評価条件へ接続する案。",
+              "hpci_relevance_en": "Propose pinned versions, inputs, operations and observables for the existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "cuTensorMapEncodeTiled()/cuTensorMapEncodeIm2col*()と該当tensor条件を固定して適合性を確認する。",
+                "CC SDK・Hopper VBIOS・DCGM境界をR595本文で別照合し、R580のEUD条件を転載しない。"
+              ],
+              "adoption_conditions_en": [
+                "Qualify cuTensorMapEncodeTiled()/cuTensorMapEncodeIm2col*() only under the stated tensor conditions.",
+                "Verify R595 CC SDK, Hopper VBIOS and DCGM bounds separately; do not copy the R580 EUD condition."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-OPS002-3-1"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -58579,6 +59817,16 @@
           ],
           "created_at": "2026-10-31T15:44:17.139610+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000632",
+          "bundle_sha256": "d4bb3a414c31e4c2919f38f15ddd15735e6bde1283f9e449e437b1f5260ac818",
+          "base_commit": "0be1c893d50c0cdd7fffddc90de794a5be3025b5",
+          "unit_ids": [
+            "ARCH-10-U01"
+          ],
+          "created_at": "2026-10-31T17:14:44.487655+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -58608,7 +59856,10 @@
               "TDS-CD71-ARCH-10-FUGAKU-MAINTENANCE-2025",
               "TDS-OCT03-OPS002-SUPPORT-RECOVERY",
               "TDS-OCT05-OPS002-INTEGRATED-READABLE",
-              "TDS-D31-OPS002-01"
+              "TDS-D31-OPS002-01",
+              "TDS-L31-OPS002-01",
+              "TDS-L31-OPS002-02",
+              "TDS-L31-OPS002-03"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -60375,6 +61626,82 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-L31-OPS004-01",
+          "title_ja": "認証成分と下流認可の復旧を分ける",
+          "title_en": "Separate identity components and downstream authorization",
+          "summary_ja": "出典の来歴と適用範囲を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source lineage and applicability.",
+          "items": [
+            {
+              "item_id": "TDI-L31-OPS004-01",
+              "name_ja": "認証成分と下流認可の復旧を分ける",
+              "name_en": "Separate identity components and downstream authorization",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "保存済み確認時点の原資料・版・記載範囲に限定する評価案。実適用と現在状態は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Evaluation proposal bounded to retained source versions and check scope; actual deployment and current status unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "DS・IdP・portal/SP・local account・project/backend認可を分離する依存/復旧確認を追加する。対象追加、新規loginと既存session、復旧後再評価を試験条件とし、告知から下流の実挙動を認定しない。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+              "statement_en": "Add a dependency/recovery check separating DS, IdP, portal/SP, local account and project/backend authorization. Record changed affected-service scope, new-login versus existing-session behavior, and recovery revalidation as tests; the notice does not establish those downstream behaviors. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
+              "hpci_relevance_ja": "既存HPCI評価条件へ観測・対象・検証境界を接続する限定案。",
+              "hpci_relevance_en": "Bounded observation, population and verification distinctions for existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "原資料の版・構成・観測範囲と確認時点を固定し、公表日・事象日・後続更新を区別する。",
+                "既存の科学品質・失敗/欠測・対象母集団・責任境界を保持し、合格閾値・日程・gapを変更しない。",
+                "共有出典の再利用は新規独立所見へ数えず、実行・対応済み・利益実測へ格上げしない。"
+              ],
+              "adoption_conditions_en": [
+                "Pin source versions, configurations, observed scope and check time; separate publication, event and later-update dates.",
+                "Retain scientific quality, failures/missing data, populations and responsibility boundaries; change no threshold, milestone or gap.",
+                "Reusing a shared source is not a new independent finding; infer no execution, deployed remediation or measured benefit."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-OPS004-1-1"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-L31-OPS004-02",
+          "title_ja": "共有tenant試験を操作別に参照する",
+          "title_en": "Reference the shared operation-specific tenant gate",
+          "summary_ja": "出典の来歴と適用範囲を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source lineage and applicability.",
+          "items": [
+            {
+              "item_id": "TDI-L31-OPS004-02",
+              "name_ja": "共有tenant試験を操作別に参照する",
+              "name_en": "Reference the shared operation-specific tenant gate",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "保存済み確認時点の原資料・版・記載範囲に限定する評価案。実適用と現在状態は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Evaluation proposal bounded to retained source versions and check scope; actual deployment and current status unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "tenant分離のnegative testをread・search・delete・namespace一覧・sync/async・batchへ追加する。store/版・展開済み修正を固定し、InMemoryStoreは本advisory対象外とする。OpenFS該当や修復済みを断定しない。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+              "statement_en": "Add tenant-isolation negative tests across read, search, delete, namespace listing, sync/async and batch operations. Pin affected store/revision and deployed fix; InMemoryStore is outside this advisory. Do not assert OpenFS uses affected packages or is remediated. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
+              "hpci_relevance_ja": "既存HPCI評価条件へ観測・対象・検証境界を接続する限定案。",
+              "hpci_relevance_en": "Bounded observation, population and verification distinctions for existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "原資料の版・構成・観測範囲と確認時点を固定し、公表日・事象日・後続更新を区別する。",
+                "既存の科学品質・失敗/欠測・対象母集団・責任境界を保持し、合格閾値・日程・gapを変更しない。",
+                "共有出典の再利用は新規独立所見へ数えず、実行・対応済み・利益実測へ格上げしない。"
+              ],
+              "adoption_conditions_en": [
+                "Pin source versions, configurations, observed scope and check time; separate publication, event and later-update dates.",
+                "Retain scientific quality, failures/missing data, populations and responsibility boundaries; change no threshold, milestone or gap.",
+                "Reusing a shared source is not a new independent finding; infer no execution, deployed remediation or measured benefit."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-SSW009-1-1"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -60508,6 +61835,16 @@
           ],
           "created_at": "2026-10-04T17:52:27.680443+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000637",
+          "bundle_sha256": "2be1aa1bdcf6ddc38a12d762ef537e73543d87cf06e2d69600c2dab68e60744c",
+          "base_commit": "0be1c893d50c0cdd7fffddc90de794a5be3025b5",
+          "unit_ids": [
+            "SSW-12-U01"
+          ],
+          "created_at": "2026-10-31T17:14:44.487655+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -60534,7 +61871,9 @@
               "TDS-CD19-SSW-12-HPCI-CONTROL-PLANE-SCALE",
               "TDS-CD25-SSW-12-OPENONDEMAND-42",
               "TDS-OCT03-OPS004-LIFECYCLE",
-              "TDS-OCT05-OPS004-INTEGRATED-READABLE"
+              "TDS-OCT05-OPS004-INTEGRATED-READABLE",
+              "TDS-L31-OPS004-01",
+              "TDS-L31-OPS004-02"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -61342,6 +62681,82 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-L31-OPS005-01",
+          "title_ja": "host外検査の平文・telemetry境界を確認する",
+          "title_en": "Qualify plaintext and telemetry boundaries of external inspection",
+          "summary_ja": "出典の来歴と適用範囲を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source lineage and applicability.",
+          "items": [
+            {
+              "item_id": "TDI-L31-OPS005-01",
+              "name_ja": "host外検査の平文・telemetry境界を確認する",
+              "name_en": "Qualify plaintext and telemetry boundaries of external inspection",
+              "stage": "near-term",
+              "maturity": "announced",
+              "timing_ja": "保存済み確認時点の原資料・版・記載範囲に限定する評価案。実適用と現在状態は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Evaluation proposal bounded to retained source versions and check scope; actual deployment and current status unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "host外のagent検査では、強制deviceを通る経路、TLS平文へのアクセス、選択memoryの可視性、telemetry送付先・保持、管理者権限、失効、障害時動作を評価する。NVIDIAはBlueField-4上のSentryにTLS検査とmemory introspectionを説明し、提供予定は2027年初めで既存DOCA libraryとは区別する。封じ込め速度と互換性は検証を要するベンダー主張とし、attested記録を内容の真実性やprivacy保証としない。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+              "statement_en": "For host-external agent inspection, evaluate the path through the enforcement device, TLS plaintext access, selected-memory visibility, telemetry destinations/retention, administrator authority, revocation and failure behavior. NVIDIA describes Sentry on BlueField-4 with TLS inspection and memory introspection; planned availability is early2027, distinct from existing DOCA libraries. Treat containment speed and compatibility as vendor claims requiring testing; attested records do not establish content truth or privacy. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
+              "hpci_relevance_ja": "既存HPCI評価条件へ観測・対象・検証境界を接続する限定案。",
+              "hpci_relevance_en": "Bounded observation, population and verification distinctions for existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "原資料の版・構成・観測範囲と確認時点を固定し、公表日・事象日・後続更新を区別する。",
+                "既存の科学品質・失敗/欠測・対象母集団・責任境界を保持し、合格閾値・日程・gapを変更しない。",
+                "共有出典の再利用は新規独立所見へ数えず、実行・対応済み・利益実測へ格上げしない。"
+              ],
+              "adoption_conditions_en": [
+                "Pin source versions, configurations, observed scope and check time; separate publication, event and later-update dates.",
+                "Retain scientific quality, failures/missing data, populations and responsibility boundaries; change no threshold, milestone or gap.",
+                "Reusing a shared source is not a new independent finding; infer no execution, deployed remediation or measured benefit."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-OPS005-1-1"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-L31-OPS005-02",
+          "title_ja": "修正版・適用・再開・残存注意を分ける",
+          "title_en": "Separate fixes, deployment, reopening and residual notices",
+          "summary_ja": "出典の来歴と適用範囲を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source lineage and applicability.",
+          "items": [
+            {
+              "item_id": "TDI-L31-OPS005-02",
+              "name_ja": "修正版・適用・再開・残存注意を分ける",
+              "name_en": "Separate fixes, deployment, reopening and residual notices",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "保存済み確認時点の原資料・版・記載範囲に限定する評価案。実適用と現在状態は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Evaluation proposal bounded to retained source versions and check scope; actual deployment and current status unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "上流修正版の存在、実依存・設定の適用性、施設適用、service再開、残存注意を別状態で記録する。PHPの10月21日修正版だけでは、設定上のphp_binary／php_serializeを実行時にphpへ変更しupload progressが有効な構成に限る10月23日注意を解消したとしない。HPCI影響やCSC再開による全設定の解決を推定せず、対応優先度は実依存確認後に判断する。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+              "statement_en": "Track upstream fix availability, local dependency/configuration applicability, site deployment, service reopening and residual notices separately. PHP’s October21 fixes do not settle its October23 upload-progress warning, which requires a configured php_binary/php_serialize handler changed to php at runtime with upload progress enabled. Do not infer HPCI exposure or that CSC reopening resolved every configuration; assess actual dependencies before prioritizing action. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
+              "hpci_relevance_ja": "既存HPCI評価条件へ観測・対象・検証境界を接続する限定案。",
+              "hpci_relevance_en": "Bounded observation, population and verification distinctions for existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "原資料の版・構成・観測範囲と確認時点を固定し、公表日・事象日・後続更新を区別する。",
+                "既存の科学品質・失敗/欠測・対象母集団・責任境界を保持し、合格閾値・日程・gapを変更しない。",
+                "共有出典の再利用は新規独立所見へ数えず、実行・対応済み・利益実測へ格上げしない。"
+              ],
+              "adoption_conditions_en": [
+                "Pin source versions, configurations, observed scope and check time; separate publication, event and later-update dates.",
+                "Retain scientific quality, failures/missing data, populations and responsibility boundaries; change no threshold, milestone or gap.",
+                "Reusing a shared source is not a new independent finding; infer no execution, deployed remediation or measured benefit."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-OPS005-2-1"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -61437,6 +62852,17 @@
           ],
           "created_at": "2026-10-04T17:52:27.680443+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000638",
+          "bundle_sha256": "1fa1126073b03d56d64afbded010bba37fc610eba4bd8ea3989e11bec72d82d5",
+          "base_commit": "0be1c893d50c0cdd7fffddc90de794a5be3025b5",
+          "unit_ids": [
+            "SSW-14-U01",
+            "SSW-14-U02"
+          ],
+          "created_at": "2026-10-31T17:14:44.487655+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -61458,7 +62884,9 @@
             "section_ids": [
               "TDS-CD1-SSW-14-U01",
               "TDS-CD2-SSW-14-NIST-HPC-AI-SECURITY",
-              "TDS-CD3-SSW-14-STORAGE-SECURITY"
+              "TDS-CD3-SSW-14-STORAGE-SECURITY",
+              "TDS-L31-OPS005-01",
+              "TDS-L31-OPS005-02"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -62258,6 +63686,82 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-L31-OPS006-01",
+          "title_ja": "気象・負荷・料金・energy境界を固定する",
+          "title_en": "Pin weather, workloads, tariffs and energy boundaries",
+          "summary_ja": "出典の来歴と適用範囲を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source lineage and applicability.",
+          "items": [
+            {
+              "item_id": "TDI-L31-OPS006-01",
+              "name_ja": "気象・負荷・料金・energy境界を固定する",
+              "name_en": "Pin weather, workloads, tariffs and energy boundaries",
+              "stage": "research",
+              "maturity": "research",
+              "timing_ja": "保存済み確認時点の原資料・版・記載範囲に限定する評価案。実適用と現在状態は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Evaluation proposal bounded to retained source versions and check scope; actual deployment and current status unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "model移植記録へ気象年、繰返し負荷、料金地域、劣化・保守・金融条件の除外を追記する。PUEと全energy収支で異なる電力伝送損失を分離し、年間太陽光余剰を常時自立、model費用順位を実測利益・設備推奨としない。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+              "statement_en": "Add weather year, repeated workload, tariff geography and excluded degradation/maintenance/financing assumptions to model-transfer records. Record power-transfer losses separately where PUE and whole-energy balance differ. Annual solar surplus does not imply continuous autonomy; modeled cost rankings are not measured benefits or equipment recommendations. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
+              "hpci_relevance_ja": "既存HPCI評価条件へ観測・対象・検証境界を接続する限定案。",
+              "hpci_relevance_en": "Bounded observation, population and verification distinctions for existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "原資料の版・構成・観測範囲と確認時点を固定し、公表日・事象日・後続更新を区別する。",
+                "既存の科学品質・失敗/欠測・対象母集団・責任境界を保持し、合格閾値・日程・gapを変更しない。",
+                "共有出典の再利用は新規独立所見へ数えず、実行・対応済み・利益実測へ格上げしない。"
+              ],
+              "adoption_conditions_en": [
+                "Pin source versions, configurations, observed scope and check time; separate publication, event and later-update dates.",
+                "Retain scientific quality, failures/missing data, populations and responsibility boundaries; change no threshold, milestone or gap.",
+                "Reusing a shared source is not a new independent finding; infer no execution, deployed remediation or measured benefit."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-OPS006-1-1"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-L31-OPS006-02",
+          "title_ja": "系統操作と計算負荷flexibilityを分ける",
+          "title_en": "Separate grid actions and computational flexibility",
+          "summary_ja": "出典の来歴と適用範囲を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source lineage and applicability.",
+          "items": [
+            {
+              "item_id": "TDI-L31-OPS006-02",
+              "name_ja": "系統操作と計算負荷flexibilityを分ける",
+              "name_en": "Separate grid actions and computational flexibility",
+              "stage": "research",
+              "maturity": "research",
+              "timing_ja": "保存済み確認時点の原資料・版・記載範囲に限定する評価案。実適用と現在状態は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Evaluation proposal bounded to retained source versions and check scope; actual deployment and current status unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "backup切替・切離しと計算負荷flexibilityを分離する操作境界確認を追加する。要求応答、適用操作、事象/連絡履歴、受電実測、応答後の仕事量・期限回復を記録する。PJMは研究・要件検討であり、応答性能実証や日本の運用権限としない。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+              "statement_en": "Add an action-boundary check separating backup transfer/disconnection from computational-load flexibility. Record requested response, applied action, incident/communication history, measured grid load and post-response work/deadline recovery. PJM describes ongoing/planned studies and requirements development, not proven response performance or Japanese operating authority. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
+              "hpci_relevance_ja": "既存HPCI評価条件へ観測・対象・検証境界を接続する限定案。",
+              "hpci_relevance_en": "Bounded observation, population and verification distinctions for existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "原資料の版・構成・観測範囲と確認時点を固定し、公表日・事象日・後続更新を区別する。",
+                "既存の科学品質・失敗/欠測・対象母集団・責任境界を保持し、合格閾値・日程・gapを変更しない。",
+                "共有出典の再利用は新規独立所見へ数えず、実行・対応済み・利益実測へ格上げしない。"
+              ],
+              "adoption_conditions_en": [
+                "Pin source versions, configurations, observed scope and check time; separate publication, event and later-update dates.",
+                "Retain scientific quality, failures/missing data, populations and responsibility boundaries; change no threshold, milestone or gap.",
+                "Reusing a shared source is not a new independent finding; infer no execution, deployed remediation or measured benefit."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-OPS006-2-1"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -62391,6 +63895,16 @@
           ],
           "created_at": "2026-10-31T15:47:43.863416+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000645",
+          "bundle_sha256": "eb2b9fc9474c7fcc2bcaa52bd6f62c7150e272fb9dd7d8029ec022fe8e199bc6",
+          "base_commit": "0be1c893d50c0cdd7fffddc90de794a5be3025b5",
+          "unit_ids": [
+            "SSW-15-U01"
+          ],
+          "created_at": "2026-10-31T17:14:44.487655+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -62417,7 +63931,9 @@
               "TDS-CD16-SSW-15-POWER-MANAGEMENT-EVIDENCE",
               "TDS-OCT03-OPS006-OPERATIONAL-BOUNDARIES",
               "TDS-OCT05-OPS006-INTEGRATED-READABLE",
-              "TDS-D31-OPS006-01-MATURITY"
+              "TDS-D31-OPS006-01-MATURITY",
+              "TDS-L31-OPS006-01",
+              "TDS-L31-OPS006-02"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -63337,6 +64853,78 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-L31-OPS009-01",
+          "title_ja": "共同資源確保と計量・取消の整合を検証",
+          "title_en": "Qualify paired allocation, metering and cancellation consistency",
+          "summary_ja": "原資料の適用範囲と未検証事項を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source limits and unverified outcomes.",
+          "items": [
+            {
+              "item_id": "TDI-L31-OPS009-01",
+              "name_ja": "共同資源確保と計量・取消の整合を検証",
+              "name_en": "Qualify paired allocation, metering and cancellation consistency",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "2026年10月の原資料・版・記載範囲に限定した評価案。実適用は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Bounded to the October2026 source versions and stated scope; actual deployment unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "qBraid OSはQPUとNVIDIA資源の共同scheduling、予約・計量・課金、operator権限内agentを掲げるearly-access運用software。機能表は共同確保の原子性・取消時解放・計上整合や本番SLAの実証ではない。",
+              "statement_en": "qBraid OS is early-access operator software claiming QPU/NVIDIA co-scheduling, reservation, metering, billing and operator-bounded agents. These capabilities do not establish atomic co-allocation, cancellation release, accounting consistency or a production SLA.",
+              "hpci_relevance_ja": "版・入力・操作範囲と観測量を固定して既存のHPCI評価条件へ接続する案。",
+              "hpci_relevance_en": "Propose pinned versions, inputs, operations and observables for the existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "片側確保成功/他方失敗、待機・timeout・取消・再試行で両資源の解放と二重確保・二重課金防止を確認する。",
+                "全試行・usage・予約/実行IDを照合し、既存の失効・権限取消・checkpoint・外部QPU経路条件を保持する。"
+              ],
+              "adoption_conditions_en": [
+                "Test partial co-allocation success/failure, waiting, timeouts, cancellation and retries for resource release and duplicate allocation/charging.",
+                "Reconcile all attempts, usage and reservation/execution IDs; retain expiry, revocation, checkpoint and external-QPU-path conditions."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-OPS009-1-1"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-L31-OPS009-02",
+          "title_ja": "保存回路のQPY版とreader互換性を固定",
+          "title_en": "Pin persisted-circuit QPY versions and reader compatibility",
+          "summary_ja": "原資料の適用範囲と未検証事項を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source limits and unverified outcomes.",
+          "items": [
+            {
+              "item_id": "TDI-L31-OPS009-02",
+              "name_ja": "保存回路のQPY版とreader互換性を固定",
+              "name_en": "Pin persisted-circuit QPY versions and reader compatibility",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "2026年10月の原資料・版・記載範囲に限定した評価案。実適用は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Bounded to the October2026 source versions and stated scope; actual deployment unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "Qiskit2.6はC APIの回路交換とQPY入出力を拡張し、既定保存formatをQPYv18にする。旧readerで読めない場合があり、C APIは未stable、Python installation不要化は未完了。SDK更新はschedulerやQPU供用の保証ではない。",
+              "statement_en": "Qiskit2.6 expands C-API circuit exchange and QPY I/O and defaults to QPYv18. Older readers may not load the new format. The C API is not declared stable, and eliminating Python installation remains unfinished. SDK changes do not establish scheduler or QPU-service availability.",
+              "hpci_relevance_ja": "版・入力・操作範囲と観測量を固定して既存のHPCI評価条件へ接続する案。",
+              "hpci_relevance_en": "Propose pinned versions, inputs, operations and observables for the existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "writer/reader・SDK・format版と依存を固定し、旧readerには対応formatを明示して保存・再読込・失敗処理を試験する。",
+                "回路交換・永続化の互換性を、C API安定性・Python依存・実QPUの実行/科学品質と別に受け入れる。"
+              ],
+              "adoption_conditions_en": [
+                "Pin writer/reader, SDK, format and dependencies; explicitly select a compatible format for older readers and test persistence, reload and errors.",
+                "Qualify circuit exchange/persistence separately from C-API stability, Python dependency and actual QPU execution/scientific quality."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-OPS009-2-1"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -63500,6 +65088,16 @@
           ],
           "created_at": "2026-10-31T15:44:17.139610+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000630",
+          "bundle_sha256": "703fa5c705037f2f85bce3775b75fab17571e128913044407a7e01620b81cdce",
+          "base_commit": "0be1c893d50c0cdd7fffddc90de794a5be3025b5",
+          "unit_ids": [
+            "CROSS-05-U01"
+          ],
+          "created_at": "2026-10-31T17:14:44.487655+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -63530,7 +65128,9 @@
               "TDS-OCT03-OPS009-RECOVERY",
               "TDS-OCT05-OPS009-INTEGRATED-READABLE",
               "TDS-D31-OPS009-01",
-              "TDS-D31-OPS009-02"
+              "TDS-D31-OPS009-02",
+              "TDS-L31-OPS009-01",
+              "TDS-L31-OPS009-02"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -64810,6 +66410,88 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-L31-OPS012-01",
+          "title_ja": "共有のmask・試行監査条件を参照する",
+          "title_en": "Reference shared masking and attempt-audit conditions",
+          "summary_ja": "出典の来歴と適用範囲を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source lineage and applicability.",
+          "items": [
+            {
+              "item_id": "TDI-L31-OPS012-01",
+              "name_ja": "共有のmask・試行監査条件を参照する",
+              "name_en": "Reference shared masking and attempt-audit conditions",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "保存済み確認時点の原資料・版・記載範囲に限定する評価案。実適用と現在状態は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Evaluation proposal bounded to retained source versions and check scope; actual deployment and current status unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "移行・retry監査でSSW012の合成secret試験gateを共有参照し、非機密attempt/実行IDを保持しつつ失敗・retry・trace/config・lineage/exportのmaskをrelease/plugin範囲固定で検証する案。release/PRを完全mask、全plugin対応、過去log消去、施設復旧とみなさない。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+              "statement_en": "Reference the SSW012 synthetic-secret audit gate when qualifying migration/retry records: retain non-sensitive attempt/execution identity while testing redaction on failure, retry, trace/config and lineage/export paths with pinned release/plugin scope. Do not treat release/merged PR as complete masking, all-plugin coverage, retroactive deletion or installed-site recovery. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
+              "hpci_relevance_ja": "既存HPCI評価条件へ観測・対象・検証境界を接続する限定案。",
+              "hpci_relevance_en": "Bounded observation, population and verification distinctions for existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "原資料の版・構成・観測範囲と確認時点を固定し、公表日・事象日・後続更新を区別する。",
+                "既存の科学品質・失敗/欠測・対象母集団・責任境界を保持し、合格閾値・日程・gapを変更しない。",
+                "共有出典の再利用は新規独立所見へ数えず、実行・対応済み・利益実測へ格上げしない。"
+              ],
+              "adoption_conditions_en": [
+                "Pin source versions, configurations, observed scope and check time; separate publication, event and later-update dates.",
+                "Retain scientific quality, failures/missing data, populations and responsibility boundaries; change no threshold, milestone or gap.",
+                "Reusing a shared source is not a new independent finding; infer no execution, deployed remediation or measured benefit."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-SSW012-1-1",
+                "SRC-OCT23-SSW012-1-2"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-L31-OPS012-02",
+          "title_ja": "共有の成分別移行・復旧責任を参照する",
+          "title_en": "Reference shared component cutover and recovery ownership",
+          "summary_ja": "出典の来歴と適用範囲を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source lineage and applicability.",
+          "items": [
+            {
+              "item_id": "TDI-L31-OPS012-02",
+              "name_ja": "共有の成分別移行・復旧責任を参照する",
+              "name_en": "Reference shared component cutover and recovery ownership",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "保存済み確認時点の原資料・版・記載範囲に限定する評価案。実適用と現在状態は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Evaluation proposal bounded to retained source versions and check scope; actual deployment and current status unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "移行切替では共有サービス別台帳を参照し、予定停止・実停止・運用者復旧報告・利用者再開検証を分け、転送/取消jobの再投入責任を記録する案。Web公開再開からdata・ACL・workflow・科学結果の復旧や停止率を推定しない。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+              "statement_en": "Reuse the shared service-component matrix for migration cutovers: record planned stop, observed interruption, operator restoration notice and user-side restart validation separately, including canceled transfer/job re-submission ownership. Do not aggregate notices into a failure rate or assume successful Web reopening restores data, ACLs, workflows or scientific outputs. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
+              "hpci_relevance_ja": "既存HPCI評価条件へ観測・対象・検証境界を接続する限定案。",
+              "hpci_relevance_en": "Bounded observation, population and verification distinctions for existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "原資料の版・構成・観測範囲と確認時点を固定し、公表日・事象日・後続更新を区別する。",
+                "既存の科学品質・失敗/欠測・対象母集団・責任境界を保持し、合格閾値・日程・gapを変更しない。",
+                "共有出典の再利用は新規独立所見へ数えず、実行・対応済み・利益実測へ格上げしない。"
+              ],
+              "adoption_conditions_en": [
+                "Pin source versions, configurations, observed scope and check time; separate publication, event and later-update dates.",
+                "Retain scientific quality, failures/missing data, populations and responsibility boundaries; change no threshold, milestone or gap.",
+                "Reusing a shared source is not a new independent finding; infer no execution, deployed remediation or measured benefit."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-CROSS002-1-1",
+                "SRC-OCT23-CROSS002-1-2",
+                "SRC-OCT23-CROSS002-1-3",
+                "SRC-D31-CROSS002-01-01",
+                "SRC-OCT23-CROSS002-1-5",
+                "SRC-OCT23-ARCH005-NAGOYA-MAINTENANCE"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -64964,6 +66646,16 @@
           ],
           "created_at": "2026-10-04T17:52:27.680443+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000650",
+          "bundle_sha256": "068d9133a73af16d522bcbc2a519b210536b4f0b3c8ee4b7d88a8bcb5abde7a3",
+          "base_commit": "0be1c893d50c0cdd7fffddc90de794a5be3025b5",
+          "unit_ids": [
+            "CROSS-14-U01"
+          ],
+          "created_at": "2026-10-31T17:14:44.487655+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -64992,7 +66684,9 @@
               "TDS-CD19-CROSS-14-JUPITER-EARLY-ACCESS-JOBS",
               "TDS-OCT03-OPS012-OSAKA-RETIREMENT",
               "TDS-OCT05-OPS012-INTEGRATED-RETAINED",
-              "TDS-OCT05-OPS012-INTEGRATED-READABLE"
+              "TDS-OCT05-OPS012-INTEGRATED-READABLE",
+              "TDS-L31-OPS012-01",
+              "TDS-L31-OPS012-02"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -65647,6 +67341,44 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-L31-OPS013-01",
+          "title_ja": "協定・用地・基盤・提供責任を分ける",
+          "title_en": "Separate agreements, land, infrastructure and service responsibilities",
+          "summary_ja": "出典の来歴と適用範囲を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source lineage and applicability.",
+          "items": [
+            {
+              "item_id": "TDI-L31-OPS013-01",
+              "name_ja": "協定・用地・基盤・提供責任を分ける",
+              "name_en": "Separate agreements, land, infrastructure and service responsibilities",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "保存済み確認時点の原資料・版・記載範囲に限定する評価案。実適用と現在状態は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Evaluation proposal bounded to retained source versions and check scope; actual deployment and current status unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "10月23日の千歳R&D協定を段階・責任の具体例として、市の全体企画、三菱地所のエリア開発企画、NTTのICT基盤企画を区別する。産総研・LSTC等への近接は立地理由であり、協定・用地権利・基盤設計・工事・受電・受入・提供を分ける。電力容量、実効転送、実験応答時間の実証ではない。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+              "statement_en": "Use the October23 Chitose R&D agreement as a stage-and-responsibility example: the city coordinates overall planning, Mitsubishi Estate plans area development and NTT DOCOMO BUSINESS plans ICT. Proximity to AIST/LSTC and semiconductor facilities is a stated siting rationale. Keep agreement, land rights, infrastructure design, construction, energization, acceptance and service availability distinct; no power capacity, network throughput or experiment turnaround is demonstrated. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
+              "hpci_relevance_ja": "既存HPCI評価条件へ観測・対象・検証境界を接続する限定案。",
+              "hpci_relevance_en": "Bounded observation, population and verification distinctions for existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "原資料の版・構成・観測範囲と確認時点を固定し、公表日・事象日・後続更新を区別する。",
+                "既存の科学品質・失敗/欠測・対象母集団・責任境界を保持し、合格閾値・日程・gapを変更しない。",
+                "共有出典の再利用は新規独立所見へ数えず、実行・対応済み・利益実測へ格上げしない。"
+              ],
+              "adoption_conditions_en": [
+                "Pin source versions, configurations, observed scope and check time; separate publication, event and later-update dates.",
+                "Retain scientific quality, failures/missing data, populations and responsibility boundaries; change no threshold, milestone or gap.",
+                "Reusing a shared source is not a new independent finding; infer no execution, deployed remediation or measured benefit."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-OPS013-1-1"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -65749,6 +67481,16 @@
           ],
           "created_at": "2026-10-04T17:52:27.680443+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000640",
+          "bundle_sha256": "d0df840b558d5d04aa4d8b0a79d72730993bff4b5f67fb7f06279ff7ac5f3a64",
+          "base_commit": "0be1c893d50c0cdd7fffddc90de794a5be3025b5",
+          "unit_ids": [
+            "CROSS-16-U01"
+          ],
+          "created_at": "2026-10-31T17:14:44.487655+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -65773,7 +67515,8 @@
               "TDS-CD3-CROSS-16-POWER-CONNECTION",
               "TDS-CD36-CROSS-16-APN-REMOTE-GPU-PLACEMENT",
               "TDS-OCT03-OPS013-REGIONAL-CONSTRAINTS",
-              "TDS-OCT05-OPS013-INTEGRATED-READABLE"
+              "TDS-OCT05-OPS013-INTEGRATED-READABLE",
+              "TDS-L31-OPS013-01"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -67568,6 +69311,44 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-L31-GOV002-01",
+          "title_ja": "共有通知と有償利用段階を分ける",
+          "title_en": "Separate shared notices and charged-use stages",
+          "summary_ja": "出典の来歴と適用範囲を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source lineage and applicability.",
+          "items": [
+            {
+              "item_id": "TDI-L31-GOV002-01",
+              "name_ja": "共有通知と有償利用段階を分ける",
+              "name_en": "Separate shared notices and charged-use stages",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "保存済み確認時点の原資料・版・記載範囲に限定する評価案。実適用と現在状態は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Evaluation proposal bounded to retained source versions and check scope; actual deployment and current status unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "名大の共有通知を有償段階移行の補助根拠として参照し、段階境界と実利用可能窓、取消・再投入責任、実再開確認を分ける。保守予定から新単価、停止補償、繰越、停止中課金、所有・費用負担比率を作らない。予算・配分・支払・サービス利用を分離する。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+              "statement_en": "Reference the shared Nagoya notice when qualifying charged-use transitions: record phase boundaries separately from actual usable service windows, cancellation/re-submission ownership and verified reopening. Planned maintenance supplies no new price, outage refund, rollover, charge-during-outage rule, ownership or cost-share percentage. Keep budget, allocation, payment and service-access stages separate. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
+              "hpci_relevance_ja": "既存HPCI評価条件へ観測・対象・検証境界を接続する限定案。",
+              "hpci_relevance_en": "Bounded observation, population and verification distinctions for existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "原資料の版・構成・観測範囲と確認時点を固定し、公表日・事象日・後続更新を区別する。",
+                "既存の科学品質・失敗/欠測・対象母集団・責任境界を保持し、合格閾値・日程・gapを変更しない。",
+                "共有出典の再利用は新規独立所見へ数えず、実行・対応済み・利益実測へ格上げしない。"
+              ],
+              "adoption_conditions_en": [
+                "Pin source versions, configurations, observed scope and check time; separate publication, event and later-update dates.",
+                "Retain scientific quality, failures/missing data, populations and responsibility boundaries; change no threshold, milestone or gap.",
+                "Reusing a shared source is not a new independent finding; infer no execution, deployed remediation or measured benefit."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-ARCH005-NAGOYA-MAINTENANCE"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -67821,6 +69602,16 @@
           ],
           "created_at": "2026-10-31T15:44:17.139610+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000651",
+          "bundle_sha256": "6bcf34463f507e56130c4a5c7a1e901522e8af45afe0a08aa9f4c695c0fe1e21",
+          "base_commit": "0be1c893d50c0cdd7fffddc90de794a5be3025b5",
+          "unit_ids": [
+            "CROSS-15-U01"
+          ],
+          "created_at": "2026-10-31T17:14:44.487655+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -67859,7 +69650,8 @@
               "TDS-WC392-CROSS-15-01",
               "TDS-OCT03-GOV002-U01",
               "TDS-OCT05-GOV002-INTEGRATED-READABLE",
-              "TDS-D31-GOV002-01"
+              "TDS-D31-GOV002-01",
+              "TDS-L31-GOV002-01"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -68428,6 +70220,47 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-L31-CROSS001-01",
+          "title_ja": "規則案の発表・刊行・意見期限と施行を分ける",
+          "title_en": "Separate proposal announcements, publication, comments and effectiveness",
+          "summary_ja": "出典の来歴と適用範囲を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source lineage and applicability.",
+          "items": [
+            {
+              "item_id": "TDI-L31-CROSS001-01",
+              "name_ja": "規則案の発表・刊行・意見期限と施行を分ける",
+              "name_en": "Separate proposal announcements, publication, comments and effectiveness",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "保存済み確認時点の原資料・版・記載範囲に限定する評価案。実適用と現在状態は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Evaluation proposal bounded to retained source versions and check scope; actual deployment and current status unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "10月22日財務省COINS/OISP規則案発表を政策シグナルとして追加し、対外投資の届出・禁止案を品目輸出許可と分離する。最終規則の時期、施行、個別案件適用は未確認とする。 fact sheetのHBM・photonic IC等の半導体カテゴリ追加案とinterconnect届出案を要約する。資本・共同事業側の依存条件として扱い、製品該当判定や日本の調達禁止としない。 2026年12月7日は意見提出期限として保持し、既存OISPや将来の施行日と分離する。 文書2026-21786/91FR67396の10月26日刊行済み規則案という後続metadataを追記し、10月23日の未刊行public-inspection観測を保持する。刊行を最終規則や施行日としない。 fact sheetは抽出textのみで、正式法令PDF・定義・閾値・例外の全確認や個別案件判断はしていない。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+              "statement_en": "Add the October22 Treasury COINS/OISP proposed-rule announcement as a policy signal, separating outbound-investment notification/prohibition proposals from item export licensing. Final-rule timing, enforcement and individual transaction applicability remain unverified. Summarize the fact sheet proposal for additional semiconductor categories including HBM and photonic ICs and interconnect notification. Treat it as a high-level capital/joint-venture dependency condition, not a product classification or Japanese procurement prohibition. Keep December7,2026 as a comment deadline, separate from the existing OISP and any future effective date. Append the later October26 published-proposal metadata for document2026-21786/91FR67396; preserve the original October23 unpublished/public-inspection observation. Publication is not a final rule or effective date. The fact sheet was text-extracted only; no official legal-PDF, full definition/threshold/exception audit or transaction judgment was performed. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
+              "hpci_relevance_ja": "既存HPCI評価条件へ観測・対象・検証境界を接続する限定案。",
+              "hpci_relevance_en": "Bounded observation, population and verification distinctions for existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "原資料の版・構成・観測範囲と確認時点を固定し、公表日・事象日・後続更新を区別する。",
+                "既存の科学品質・失敗/欠測・対象母集団・責任境界を保持し、合格閾値・日程・gapを変更しない。",
+                "共有出典の再利用は新規独立所見へ数えず、実行・対応済み・利益実測へ格上げしない。"
+              ],
+              "adoption_conditions_en": [
+                "Pin source versions, configurations, observed scope and check time; separate publication, event and later-update dates.",
+                "Retain scientific quality, failures/missing data, populations and responsibility boundaries; change no threshold, milestone or gap.",
+                "Reusing a shared source is not a new independent finding; infer no execution, deployed remediation or measured benefit."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-CROSS001-1-1",
+                "SRC-OCT23-CROSS001-1-2",
+                "SRC-OCT23-CROSS001-1-3",
+                "SRC-OCT23-CROSS001-1-4"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -68510,6 +70343,16 @@
           ],
           "created_at": "2026-10-04T17:52:27.680443+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000646",
+          "bundle_sha256": "d0efb5fe55d9d6b8af03eb3fe970407cd78913f8ea11d8d8c3732d9906606f7b",
+          "base_commit": "0be1c893d50c0cdd7fffddc90de794a5be3025b5",
+          "unit_ids": [
+            "ARCH-07-U01"
+          ],
+          "created_at": "2026-10-31T17:14:44.487655+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -68532,7 +70375,8 @@
               "TDS-CD1-ARCH-07-U01",
               "TDS-CD2-ARCH-07-SUPPLIER-DUE-DILIGENCE",
               "TDS-OCT03-CROSS001-POLICY-SUPPLY",
-              "TDS-OCT05-CROSS001-INTEGRATED-READABLE"
+              "TDS-OCT05-CROSS001-INTEGRATED-READABLE",
+              "TDS-L31-CROSS001-01"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -69242,6 +71086,82 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-L31-CROSS003-01",
+          "title_ja": "供給者報告の実装と人の承認を分ける",
+          "title_en": "Separate supplier implementation reports and human approval",
+          "summary_ja": "出典の来歴と適用範囲を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source lineage and applicability.",
+          "items": [
+            {
+              "item_id": "TDI-L31-CROSS003-01",
+              "name_ja": "供給者報告の実装と人の承認を分ける",
+              "name_en": "Separate supplier implementation reports and human approval",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "保存済み確認時点の原資料・版・記載範囲に限定する評価案。実適用と現在状態は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Evaluation proposal bounded to retained source versions and check scope; actual deployment and current status unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "富士通はMISUMI商品情報workflowで役割別agentと人の確認・承認を組み合わせた10月運用を報告。供給者による顧客実装報告、将来拡張、独立検収済み品質/費用、国内完結供給を分離し、PaaS一般説明を顧客BOMとしない。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+              "statement_en": "Fujitsu reports October operation of a MISUMI product-information workflow combining role-specific agents and human confirmation/approval. Distinguish the supplier-reported customer implementation from future expansion, independently accepted quality/cost results and wholly domestic supply. Generic PaaS components are not the customer BOM. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
+              "hpci_relevance_ja": "既存HPCI評価条件へ観測・対象・検証境界を接続する限定案。",
+              "hpci_relevance_en": "Bounded observation, population and verification distinctions for existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "原資料の版・構成・観測範囲と確認時点を固定し、公表日・事象日・後続更新を区別する。",
+                "既存の科学品質・失敗/欠測・対象母集団・責任境界を保持し、合格閾値・日程・gapを変更しない。",
+                "共有出典の再利用は新規独立所見へ数えず、実行・対応済み・利益実測へ格上げしない。"
+              ],
+              "adoption_conditions_en": [
+                "Pin source versions, configurations, observed scope and check time; separate publication, event and later-update dates.",
+                "Retain scientific quality, failures/missing data, populations and responsibility boundaries; change no threshold, milestone or gap.",
+                "Reusing a shared source is not a new independent finding; infer no execution, deployed remediation or measured benefit."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-CROSS003-1-1"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-L31-CROSS003-02",
+          "title_ja": "協業計画と主権・部材の層を分ける",
+          "title_en": "Separate cooperation plans and sovereignty layers",
+          "summary_ja": "出典の来歴と適用範囲を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source lineage and applicability.",
+          "items": [
+            {
+              "item_id": "TDI-L31-CROSS003-02",
+              "name_ja": "協業計画と主権・部材の層を分ける",
+              "name_en": "Separate cooperation plans and sovereignty layers",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "保存済み確認時点の原資料・版・記載範囲に限定する評価案。実適用と現在状態は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Evaluation proposal bounded to retained source versions and check scope; actual deployment and current status unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "Fujitsu/Fsas/Schwarz Digits協業は共同governance・PoC・統合・capacity投資計画として扱う。欧州data/cloud主権をCPU設計・製造・実装・部材自立性と分け、MONAKA言及を出荷済みやSTACKIT機器一般提供としない。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+              "statement_en": "Treat Fujitsu/Fsas/Schwarz Digits cooperation as joint governance, PoC, integration and capacity-investment planning. European data/cloud sovereignty is distinct from CPU design, fabrication, packaging and component independence. MONAKA references do not establish shipped processors or generally available STACKIT hardware. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
+              "hpci_relevance_ja": "既存HPCI評価条件へ観測・対象・検証境界を接続する限定案。",
+              "hpci_relevance_en": "Bounded observation, population and verification distinctions for existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "原資料の版・構成・観測範囲と確認時点を固定し、公表日・事象日・後続更新を区別する。",
+                "既存の科学品質・失敗/欠測・対象母集団・責任境界を保持し、合格閾値・日程・gapを変更しない。",
+                "共有出典の再利用は新規独立所見へ数えず、実行・対応済み・利益実測へ格上げしない。"
+              ],
+              "adoption_conditions_en": [
+                "Pin source versions, configurations, observed scope and check time; separate publication, event and later-update dates.",
+                "Retain scientific quality, failures/missing data, populations and responsibility boundaries; change no threshold, milestone or gap.",
+                "Reusing a shared source is not a new independent finding; infer no execution, deployed remediation or measured benefit."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-CROSS003-2-1"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -69360,6 +71280,17 @@
           ],
           "created_at": "2026-10-04T17:52:27.680443+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000639",
+          "bundle_sha256": "05a15aa915eff3ca61100b39ccf520c7b07759468e13210689b4c9c11322e637",
+          "base_commit": "0be1c893d50c0cdd7fffddc90de794a5be3025b5",
+          "unit_ids": [
+            "CROSS-11-U01",
+            "CROSS-11-U02"
+          ],
+          "created_at": "2026-10-31T17:14:44.487655+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -69385,7 +71316,9 @@
               "TDS-P30-429-CROSS-11-U01",
               "TDS-OCT03-CROSS003-DEPLOYMENT",
               "TDS-OCT05-CROSS003-INTEGRATED-RETAINED",
-              "TDS-OCT05-CROSS003-INTEGRATED-READABLE"
+              "TDS-OCT05-CROSS003-INTEGRATED-READABLE",
+              "TDS-L31-CROSS003-01",
+              "TDS-L31-CROSS003-02"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -69664,6 +71597,44 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-L31-CROSS005-01",
+          "title_ja": "診断graphと時刻付き仕事対応を分ける",
+          "title_en": "Separate diagnostic graphs and time-bound workload mapping",
+          "summary_ja": "出典の来歴と適用範囲を残す限定追補。",
+          "summary_en": "Scoped follow-up retaining source lineage and applicability.",
+          "items": [
+            {
+              "item_id": "TDI-L31-CROSS005-01",
+              "name_ja": "診断graphと時刻付き仕事対応を分ける",
+              "name_en": "Separate diagnostic graphs and time-bound workload mapping",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "保存済み確認時点の原資料・版・記載範囲に限定する評価案。実適用と現在状態は未確認。 過去の読取記録（2026-10-30以前）に基づく追補であり、新規公表や再取得による確認日更新ではない。",
+              "timing_en": "Evaluation proposal bounded to retained source versions and check scope; actual deployment and current status unverified. Addition from retained source-read records through 2026-10-30; not a new publication, fresh retrieval or refreshed verification date.",
+              "statement_ja": "vendorの診断graphと、時刻付き機器→allocation→job/step対応の検証を分ける案。対応手法/版、観測窓、時刻整合、未対応・曖昧record、対象母集団を保持してから月次需要・障害・energy変化へ帰属する。Minervaは機能説明例で、公開実運用dataset、HPCI観測率、独立した改善実績ではない。私的IDの開示制御と欠測/ゼロ区別を維持する。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+              "statement_en": "Qualify time-bound equipment→allocation→job/step correspondence separately from a vendor diagnostic graph. Record mapping method/version, observation window, clock alignment, unmatched/ambiguous records and covered population before attributing monthly demand, failure or energy changes. Minerva is a vendor capability example, not a public operational dataset, measured HPCI coverage or independently demonstrated improvement. Retain private-identifier disclosure controls and missing-versus-zero distinctions. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
+              "hpci_relevance_ja": "既存HPCI評価条件へ観測・対象・検証境界を接続する限定案。",
+              "hpci_relevance_en": "Bounded observation, population and verification distinctions for existing HPCI evaluation conditions.",
+              "adoption_conditions_ja": [
+                "原資料の版・構成・観測範囲と確認時点を固定し、公表日・事象日・後続更新を区別する。",
+                "既存の科学品質・失敗/欠測・対象母集団・責任境界を保持し、合格閾値・日程・gapを変更しない。",
+                "共有出典の再利用は新規独立所見へ数えず、実行・対応済み・利益実測へ格上げしない。"
+              ],
+              "adoption_conditions_en": [
+                "Pin source versions, configurations, observed scope and check time; separate publication, event and later-update dates.",
+                "Retain scientific quality, failures/missing data, populations and responsibility boundaries; change no threshold, milestone or gap.",
+                "Reusing a shared source is not a new independent finding; infer no execution, deployed remediation or measured benefit."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OCT23-CROSS005-1-1"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -69717,7 +71688,8 @@
             "section_ids": [
               "TDS-OPS-CROSS-19-U01",
               "TDS-OCT03-CROSS005-METHOD",
-              "TDS-OCT05-CROSS005-INTEGRATED-READABLE"
+              "TDS-OCT05-CROSS005-INTEGRATED-READABLE",
+              "TDS-L31-CROSS005-01"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -69769,6 +71741,16 @@
             "CROSS-19-U01"
           ],
           "created_at": "2026-10-04T17:52:27.680443+00:00",
+          "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000647",
+          "bundle_sha256": "2f9aba44327d9ee56d20b8de0566e870ca3e5c5518a5a677a198bd71d8505558",
+          "base_commit": "0be1c893d50c0cdd7fffddc90de794a5be3025b5",
+          "unit_ids": [
+            "CROSS-19-U01"
+          ],
+          "created_at": "2026-10-31T17:14:44.487655+00:00",
           "consensus_status": "incomplete"
         }
       ]
@@ -84850,6 +86832,350 @@
       "url": "https://github.com/nextflow-io/nextflow/pull/7887",
       "source_class": "official-project",
       "published_or_updated": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-OCT23-SSW009-1-1",
+      "title": "Namespace labels containing dots reach other namespaces in Postgres and SQLite stores",
+      "publisher": "LangGraph maintainers",
+      "url": "https://github.com/langchain-ai/langgraph/security/advisories/GHSA-6hmw-9432-67qq",
+      "source_class": "official-project",
+      "published_or_updated": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-OCT23-SSW009-2-1",
+      "title": "TorchTitan Update: New SOTA Models, Performance at Scale, TitanRL",
+      "publisher": "The PyTorch Team at Meta",
+      "url": "https://pytorch.org/blog/torchtitan-update-new-sota-models-performance-at-scale-titanrl/",
+      "source_class": "official-project",
+      "published_or_updated": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-OCT23-SSW009-3-1",
+      "title": "TensorRT-LLM v1.4.0rc1 release",
+      "publisher": "NVIDIA TensorRT-LLM maintainers",
+      "url": "https://github.com/NVIDIA/TensorRT-LLM/releases/tag/v1.4.0rc1",
+      "source_class": "official-project",
+      "published_or_updated": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-SSW012-1-1",
+      "title": "Nextflow v26.04.9 release",
+      "publisher": "Nextflow project",
+      "url": "https://github.com/nextflow-io/nextflow/releases/tag/v26.04.9",
+      "source_class": "official-project",
+      "published_or_updated": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-SSW012-1-2",
+      "title": "Nextflow PR #7879: secret-redaction improvements",
+      "publisher": "Nextflow project contributors",
+      "url": "https://github.com/nextflow-io/nextflow/pull/7879",
+      "source_class": "official-project",
+      "published_or_updated": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-OCT23-APP001-1-1",
+      "title": "TIGGE at 20 – celebrating two decades of global ensemble forecast data",
+      "publisher": "ECMWF",
+      "url": "https://www.ecmwf.int/en/about/media-centre/focus/2026/tigge-20-celebrating-two-decades-global-ensemble-forecast-data",
+      "source_class": "official-project",
+      "published_or_updated": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-OPS009-1-1",
+      "title": "qBraid Announces qBraid OS for Operating Quantum Computing Services",
+      "publisher": "qBraid",
+      "url": "https://qbraid.com/press/qbraid-os-press-release",
+      "source_class": "official-project",
+      "published_or_updated": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-OCT23-OPS009-2-1",
+      "title": "Qiskit SDK v2.6 release summary",
+      "publisher": "IBM / Qiskit Team",
+      "url": "https://www.ibm.com/quantum/blog/qiskit-2-6-release-summary",
+      "source_class": "official-project",
+      "published_or_updated": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-APP016-1-1",
+      "title": "Mixed-Precision Coalesced Matrix-Free Multigrid with Vertex-Patch Smoothing",
+      "publisher": "Michał Wichrowski; author preprint on arXiv",
+      "url": "https://arxiv.org/html/2610.31496v1",
+      "source_class": "research-artifact",
+      "published_or_updated": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-APP016-2-1",
+      "title": "Adaptive Local Proper Orthogonal Decomposition via Graph Partitioning and Provable Error-Bounded Lossy Compression for Parametric Series in Finite-Dimensional Function Spaces",
+      "publisher": "Roberto Nuca, Matteo Parsani, Lisandro Dalcin; author preprint on arXiv",
+      "url": "https://arxiv.org/html/2610.31375v1",
+      "source_class": "research-artifact",
+      "published_or_updated": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-OPS002-1-1",
+      "title": "Version580.196.07(Linux)/582.99(Windows) release notes",
+      "publisher": "NVIDIA",
+      "url": "https://docs.nvidia.com/datacenter/tesla/tesla-release-notes-580-196-07/index.html",
+      "source_class": "official-vendor",
+      "published_or_updated": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-OCT23-OPS002-3-1",
+      "title": "Version595.112.07(Linux)/597.30(Windows) release notes",
+      "publisher": "NVIDIA",
+      "url": "https://docs.nvidia.com/datacenter/tesla/tesla-release-notes-595-112-07/index.html",
+      "source_class": "official-vendor",
+      "published_or_updated": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-APP005-1-1",
+      "title": "VeriGen-C (arXiv2610.30725v1)",
+      "publisher": "Zian Wang et al.; author preprint",
+      "url": "https://arxiv.org/html/2610.30725v1",
+      "source_class": "research-artifact",
+      "published_or_updated": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-APP005-2-1",
+      "title": "When Code Gets Cheap, Evaluation Gets Scarce (v1)",
+      "publisher": "Barbara Weber, Olaf Zimmermann, Marco Franceschetti; author report",
+      "url": "https://arxiv.org/html/2610.30916v1",
+      "source_class": "research-artifact",
+      "published_or_updated": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-SSW003-1-1",
+      "title": "NCCL issue #2499: Socket queue investigation",
+      "publisher": "NVIDIA/nccl contributors",
+      "url": "https://github.com/NVIDIA/nccl/issues/2499",
+      "source_class": "official-project",
+      "published_or_updated": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-OCT23-SSW003-1-2",
+      "title": "NCCL candidate PR #2507",
+      "publisher": "NVIDIA/nccl contributors",
+      "url": "https://github.com/NVIDIA/nccl/pull/2507",
+      "source_class": "official-project",
+      "published_or_updated": "2026-10-25"
+    },
+    {
+      "source_id": "SRC-OCT23-SSW003-2-1",
+      "title": "NCCL issue #2503: topology and CC support discussion",
+      "publisher": "NVIDIA/nccl contributors",
+      "url": "https://github.com/NVIDIA/nccl/issues/2503",
+      "source_class": "official-project",
+      "published_or_updated": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-SSW003-2-2",
+      "title": "NCCL candidate PR #2511",
+      "publisher": "NVIDIA/nccl contributors",
+      "url": "https://github.com/NVIDIA/nccl/pull/2511",
+      "source_class": "official-project",
+      "published_or_updated": "2026-10-26"
+    },
+    {
+      "source_id": "SRC-OCT23-APP010-1-1",
+      "title": "Author preprint 2610.29035v1",
+      "publisher": "Preprint authors on arXiv",
+      "url": "https://arxiv.org/html/2610.29035v1",
+      "source_class": "research-artifact",
+      "published_or_updated": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-OCT23-APP010-2-1",
+      "title": "Author preprint 2610.29058v1",
+      "publisher": "Preprint authors on arXiv",
+      "url": "https://arxiv.org/html/2610.29058v1",
+      "source_class": "research-artifact",
+      "published_or_updated": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-OCT23-CROSS002-1-1",
+      "title": "Public evidence: 309",
+      "publisher": "Institute of Science Tokyo / TSUBAME4",
+      "url": "https://www.t4.cii.isct.ac.jp/node/309",
+      "source_class": "official-project",
+      "published_or_updated": "2026-10-23"
+    },
+    {
+      "source_id": "SRC-OCT23-CROSS002-1-2",
+      "title": "Public evidence: ",
+      "publisher": "Kyushu University",
+      "url": "https://www.cc.kyushu-u.ac.jp/scp/notice/ops-info/2026/20261022/",
+      "source_class": "official-project",
+      "published_or_updated": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-CROSS002-1-3",
+      "title": "Public evidence: ",
+      "publisher": "Kyushu University",
+      "url": "https://www.cc.kyushu-u.ac.jp/scp/notice/ops-info/2026/20261022-2/",
+      "source_class": "official-project",
+      "published_or_updated": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-CROSS002-1-5",
+      "title": "Public evidence: 308",
+      "publisher": "Institute of Science Tokyo / TSUBAME4",
+      "url": "https://www.t4.cii.isct.ac.jp/node/308",
+      "source_class": "official-project",
+      "published_or_updated": "2026-10-23"
+    },
+    {
+      "source_id": "SRC-OCT23-OPS004-1-1",
+      "title": "Public evidence: 20261021",
+      "publisher": "National Institute of Informatics / GakuNin",
+      "url": "https://www.gakunin.jp/news/20261021",
+      "source_class": "official-project",
+      "published_or_updated": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-OCT23-OPS005-1-1",
+      "title": "Public evidence: ?p=123898",
+      "publisher": "NVIDIA",
+      "url": "https://developer.nvidia.com/blog/?p=123898",
+      "source_class": "official-vendor",
+      "published_or_updated": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-OCT23-OPS005-2-1",
+      "title": "Public evidence: 2026.php",
+      "publisher": "PHP project",
+      "url": "https://www.php.net/archive/2026.php",
+      "source_class": "official-project",
+      "published_or_updated": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-OCT23-CROSS003-1-1",
+      "title": "Public evidence: 22-01",
+      "publisher": "Fujitsu",
+      "url": "https://global.fujitsu/ja-JP/pr/news/2026/10/22-01",
+      "source_class": "official-vendor",
+      "published_or_updated": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-CROSS003-2-1",
+      "title": "Public evidence: 22-10",
+      "publisher": "Fujitsu",
+      "url": "https://global.fujitsu/en-global/newsroom/europe/2026/22-10",
+      "source_class": "official-vendor",
+      "published_or_updated": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-OPS013-1-1",
+      "title": "Public evidence: 1023.html",
+      "publisher": "NTT DOCOMO BUSINESS; @Press company-issued distribution of same release",
+      "url": "https://www.ntt.com/about-us/press-releases/news/article/2026/1023.html",
+      "source_class": "official-vendor",
+      "published_or_updated": "2026-10-23"
+    },
+    {
+      "source_id": "SRC-OCT23-APP012-1-1",
+      "title": "Author preprint 2610.28578v1",
+      "publisher": "Preprint authors on arXiv",
+      "url": "https://arxiv.org/html/2610.28578v1",
+      "source_class": "research-artifact",
+      "published_or_updated": "2026-10-20"
+    },
+    {
+      "source_id": "SRC-OCT23-APP013-1-1",
+      "title": "Author preprint 2610.30903v1",
+      "publisher": "Preprint authors on arXiv",
+      "url": "https://arxiv.org/html/2610.30903v1",
+      "source_class": "research-artifact",
+      "published_or_updated": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-APP013-2-1",
+      "title": "Public evidence: gemma-4-5090-context-2026-10-22.json",
+      "publisher": "Measurement author (llm-speed.com)",
+      "url": "https://llm-speed.com/data/gemma-4-5090-context-2026-10-22.json",
+      "source_class": "research-artifact",
+      "published_or_updated": "dated measurement2026-10-22; exact timezone/publication second unavailable"
+    },
+    {
+      "source_id": "SRC-OCT23-APP014-1-1",
+      "title": "Author preprint 2610.31077v1",
+      "publisher": "Preprint authors on arXiv",
+      "url": "https://arxiv.org/html/2610.31077v1",
+      "source_class": "research-artifact",
+      "published_or_updated": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-APP014-1-2",
+      "title": "Author preprint 2610.29627v1",
+      "publisher": "Preprint authors on arXiv",
+      "url": "https://arxiv.org/html/2610.29627v1",
+      "source_class": "research-artifact",
+      "published_or_updated": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-OCT23-SSW010-1-1",
+      "title": "Author preprint 2610.24291v2",
+      "publisher": "Preprint authors on arXiv",
+      "url": "https://arxiv.org/html/2610.24291v2",
+      "source_class": "research-artifact",
+      "published_or_updated": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-OCT23-OPS006-1-1",
+      "title": "Public evidence: ",
+      "publisher": "Siemens",
+      "url": "https://blogs.sw.siemens.com/simcenter/ai-data-center-liquid-cooling-simulation/",
+      "source_class": "official-vendor",
+      "published_or_updated": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-OPS006-2-1",
+      "title": "Public evidence: ",
+      "publisher": "PJM Interconnection",
+      "url": "https://insidelines.pjm.com/pjm-ferc-focus-on-large-load-challenges-at-tech-conference/",
+      "source_class": "official-project",
+      "published_or_updated": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-CROSS001-1-1",
+      "title": "Public evidence: ",
+      "publisher": "U.S. Department of the Treasury",
+      "url": "https://home.treasury.gov/news/press-releases/sb0667/",
+      "source_class": "official-project",
+      "published_or_updated": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-CROSS001-1-2",
+      "title": "Public evidence: Fact-Sheet-FAQs-COINS-Act-NPRM.pdf",
+      "publisher": "U.S. Department of the Treasury",
+      "url": "https://home.treasury.gov/system/files/206/Fact-Sheet-FAQs-COINS-Act-NPRM.pdf",
+      "source_class": "official-project",
+      "published_or_updated": "separate file publication time unknown; document identifies October22 NPRM"
+    },
+    {
+      "source_id": "SRC-OCT23-CROSS001-1-3",
+      "title": "Public evidence: outbound-investment-program",
+      "publisher": "U.S. Department of the Treasury",
+      "url": "https://home.treasury.gov/policy-issues/international/outbound-investment-program",
+      "source_class": "official-project",
+      "published_or_updated": "page update unknown; dated paragraph October22"
+    },
+    {
+      "source_id": "SRC-OCT23-CROSS001-1-4",
+      "title": "Public evidence: outbound-investment-security-program-regulations",
+      "publisher": "FederalRegister.gov informational rendition",
+      "url": "https://www.federalregister.gov/documents/2026/10/26/2026-21786/outbound-investment-security-program-regulations",
+      "source_class": "official-project",
+      "published_or_updated": "2026-10-26"
+    },
+    {
+      "source_id": "SRC-OCT23-CROSS005-1-1",
+      "title": "Public evidence: ",
+      "publisher": "NVIDIA",
+      "url": "https://blogs.nvidia.com/blog/minerva-platform-infrastructure/",
+      "source_class": "official-vendor",
+      "published_or_updated": "2026-10-22"
     }
   ],
   "coverage_gaps": [
@@ -86034,7 +88360,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-DAILY41-BOUNDED-PUBLIC-20261031",
-    "human_approval_directive_id": "DIR-900167"
+    "publication_decision_id": "PUBDEC-LEGACY25-BOUNDED-20261031",
+    "human_approval_directive_id": "DIR-900168"
   }
 }

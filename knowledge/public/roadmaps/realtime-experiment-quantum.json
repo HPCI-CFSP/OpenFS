@@ -41,8 +41,8 @@
       "summary_en": "Cover acquisition, compression, transfer, analysis, decision deadlines, and failures.",
       "current_state_ja": "理研の圧縮技術、SPring-8とGakuNin RDMの試行、APSのAI画像処理実証が公表されています。対象データと測定条件は異なります。 DIII-Dのショット間HPC解析と施設内FPGA推論は異なる測定境界を持ち、共通の全制御SLAを意味しません。 今回の限定的な追補：DIASのapplication復旧、選択された過去datasetの再公開、上流near-real-time feedの復旧は別事象である。今回の読書から現在のfeed稼働、施設全体の障害、text抽出で失われた実績/計画の表装飾は推測しない。緊急入力のage、履歴完全性、許可、fallbackを既存の評価条件へ追加する。",
       "current_state_en": "RIKEN compression, the SPring-8/GakuNin RDM trial, and an APS AI-imaging demonstration are public, with different data and measurement conditions. DIII-D inter-shot HPC analysis and facility-local FPGA inference have different measurement boundaries and do not establish a common full-control-loop SLA. Scoped additions in this batch: DIAS application restoration, selected historical dataset republication and upstream near-realtime feed restoration are distinct. Do not infer current feed health, a facility-wide outage or actual/planned table styling lost in text extraction. Add input age, history completeness, authorization and fallback to the existing urgent-readiness assessment.",
-      "hpci_implications_ja": "本番化にはデータ率、期限、再送、来歴、認証、障害時の手動経路をユースケース別に固定する必要があります。 科学的品質、入力window、queue待ち、推論、actuator到達、重み更新承認を分けて評価します。 共同実証は神戸・柏間800Gbps APNで、第2世代HPCI共用ストレージ検証環境とMMCFTP/NVMeサーバを併用。合算転送は最大約775Gbps、750Gbps超を数分継続し、この構成のAPN遅延はSINET比約20%低減と報告。取得から判断までの期限や第3世代の本番SLAを確立する値ではない。",
-      "hpci_implications_en": "Production requires use-case-specific data rate, deadline, retry, provenance, identity, and manual fallback contracts. Evaluate scientific quality, input windows, queueing, inference, actuator delivery and weight-update authorization separately. A joint study reports Kobe–Kashiwa transfer on an800Gbps APN path using second-generation HPCI storage validation infrastructure plus MMCFTP/NVMe servers. Combined traffic peaked near775Gbps and exceeded750Gbps for several minutes. APN latency was about20% below SINET in this setup. These are bounded transfer results, with neither instrument-to-decision latency nor a third-generation storage service SLA established.",
+      "hpci_implications_ja": "本番化にはデータ率、期限、再送、来歴、認証、障害時の手動経路をユースケース別に固定する必要があります。 科学的品質、入力window、queue待ち、推論、actuator到達、重み更新承認を分けて評価します。 共同実証は神戸・柏間800Gbps APNで、第2世代HPCI共用ストレージ検証環境とMMCFTP/NVMeサーバを併用。合算転送は最大約775Gbps、750Gbps超を数分継続し、この構成のAPN遅延はSINET比約20%低減と報告。取得から判断までの期限や第3世代の本番SLAを確立する値ではない。 過去の限定確認記録に基づく追補（現在状態の再確認ではない）： event時刻・trigger照合window・server監視/形式変換・offline再構成を別工程・成果物で記録する。Run9施設内実装を広域HPC応答期限・無欠損保証・現行service認定にしない。 clock参照と計時点を明記し、平均同期差・tail/最大時間・機械安定性に制約される動作を分離する。安定性と安全な手動fallbackを保持し、CRIS試運転をremote制御期限・予約・一般提供としない。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+      "hpci_implications_en": "Production requires use-case-specific data rate, deadline, retry, provenance, identity, and manual fallback contracts. Evaluate scientific quality, input windows, queueing, inference, actuator delivery and weight-update authorization separately. A joint study reports Kobe–Kashiwa transfer on an800Gbps APN path using second-generation HPCI storage validation infrastructure plus MMCFTP/NVMe servers. Combined traffic peaked near775Gbps and exceeded750Gbps for several minutes. APN latency was about20% below SINET in this setup. These are bounded transfer results, with neither instrument-to-decision latency nor a third-generation storage service SLA established. Retained bounded earlier observations, without fresh current-status verification: Record event timestamps, trigger-matching windows, server monitoring/formatting and offline reconstruction as separate stages and artifacts. BM@N Run9 is a facility-local implementation example, not a cross-site HPC deadline, losslessness guarantee or current service certificate. Name clock references and measurement endpoints; distinguish average synchronization offsets, tail/max timing and mechanically constrained actions. Preserve stability and safe human fallback. CRIS commissioning does not establish remote-control deadlines, resource reservations or general-service availability. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
       "source_ids": [
         "SRC-CDS397",
         "SRC-CDS402",
@@ -55,7 +55,9 @@
         "SRC-OCT05-APP014-04",
         "SRC-OCT05-APP014-05",
         "SRC-D31-APP014-01-01",
-        "SRC-D31-APP014-01-02"
+        "SRC-D31-APP014-01-02",
+        "SRC-OCT23-APP014-1-1",
+        "SRC-OCT23-APP014-1-2"
       ]
     },
     {
@@ -67,8 +69,8 @@
       "summary_en": "Evaluate on-premises quantum systems, HPC resources, and classical baselines together.",
       "current_state_ja": "ROQUOとORNL Pathfinderは運用開始が公表され、QuEraは2028年以降の製品目標を示しています。量子優位性やHPCI共通サービスは確立していません。 今回の限定的な追補：RT-BBO最終論文のSR 26.7ms・MR 38.5ms（37 sub-rewards、CPU無線simulation含む）とv1の17.1/17.5ms・19個を条件別に保持する。QOBLIB例では制約の16.7%を実装し、raw解は実行不能で古典greedy修復が最適解に寄与する。待機を除く時間と並列資源数を保つ。QUBO++の9月版・別GPU pluginのモデル制約を固定して再試験する。計測回数N=L×Sを揃えた量子センシング研究はunitary modelの比較で、雑音・実設備・最良古典法との総費用優位は未確認。 Miyabi/Reimei複合利用は制限された申請経路と別の理研承認を要し、Reimeiの2026年11月提供は予定。EuroQCS-Spain保守はallocationを停止する計画で表示年は暗黙、job自動再開の保証ではない。予期しないQPU障害のrefund、利用者取消、通常失効を分ける。共通サービス、quantum advantage、締切・総費用優位は未確認。",
       "current_state_en": "ROQUO and ORNL Pathfinder have announced operation, while QuEra states targets from 2028. Quantum advantage and a common HPCI service are not established. Scoped additions in this batch: Keep RT-BBO final SR 26.7ms/MR 38.5ms with 37 sub-rewards and CPU wireless simulation separate from v1 17.1/17.5ms with 19. The QOBLIB illustration implements 16.7% of constraints; raw samples are infeasible and greedy classical repair contributes the optimum. Retain queue-excluding time and parallel resource counts. Retest September QUBO++ versions and separate GPU-plugin model restrictions. Sensing comparison at N=L×S uses unitary models; noise, deployed deadlines and total-cost advantage over the best classical method remain unestablished. Miyabi/Reimei combined access has restricted application routes and separate RIKEN approval; November 2026 Reimei availability is planned. EuroQCS-Spain planned maintenance pauses allocations, with an implicit year and no automatic job-resumption guarantee. Separate unexpected QPU-outage refunds, user cancellation and normal expiry. Common services, quantum advantage, deadlines and total-cost superiority remain unestablished.",
-      "hpci_implications_ja": "量子回路だけでなく、前後処理、待ち時間、誤り、古典基準、利用者支援を含めます。 Ising応用は許容gap・成功確率、専用古典機、replica・embeddingを含む全費用で比較する。動的制御は平均rewardと最悪遅延を分離し、資料の版間で異なる時間値を統合しない。 QUBO++ 2026.10.31はVolta GPU（V100/TITAN V）対応を追加。変数比較を算術式へ使う方式を廃止しcons(x - y == 0)へ変更。不正範囲・search引数は例外となる。EasySolver/ABS3Solverの性能改善も記載するが定量的証拠はない。 VULCANは無雑音emulationでbatched ADAPT-VQE比5～20%のPauli項評価数を報告。shot数・経過時間ではない。古典GPU ENPT2を含み、C3H6の分母計算段階はH100で11.8時間。雑音実機での全体性能・古典量子化学への優位性は未確立。 10月29日の保守版0.50.1・0.49.1・0.48.1はFoldRZZ修正をbackport。従来はIBM target非対応のGlobalPhaseGateを挿入して実行不能な回路を生成していたが、回路global_phase属性の更新へ変更する。QPY保存互換性とは別のコンパイル適合性修正。 Braket SDK1.127.6はmeasurementsの代わりにoutputsを返すtask resultを許容。結果デコードの版別契約変更であり、新QPU供用や実行成功の証拠ではない。",
-      "hpci_implications_en": "Include preprocessing, postprocessing, queueing, error, classical baselines, and user support in addition to quantum circuits. Compare Ising applications at fixed gap and success probability, including specialized classical hardware and full replica/embedding costs. Separate average reward from worst-case latency in dynamic control and do not combine timings from differing source versions. QUBO++ 2026.10.31 adds Volta GPU support (V100/TITAN V). Variable comparisons can no longer participate in arithmetic; use cons(x - y == 0). Invalid ranges and search parameters now raise errors. Release notes also claim EasySolver/ABS3Solver performance improvements without quantified evidence. VULCAN reports 5–20% of batched ADAPT-VQE Pauli-term evaluations in noiseless emulation. This is not shot count or wall time. Classical GPU ENPT2 is part of the workflow; one C3H6 denominator stage took 11.8 hours on an H100. Full noisy-hardware performance and advantage over classical chemistry are unestablished. October29 maintenance releases backport the FoldRZZ target fix. The prior pass inserted an unsupported GlobalPhaseGate into IBM-targeted circuits; the fix changes the circuit global_phase attribute instead. This is a concrete compilability correction, separate from QPY persistence. Braket SDK1.127.6 accepts task results containing outputs in place of measurements. This is a version-specific result-decoding contract change; it does not establish new QPU availability or successful execution.",
+      "hpci_implications_ja": "量子回路だけでなく、前後処理、待ち時間、誤り、古典基準、利用者支援を含めます。 Ising応用は許容gap・成功確率、専用古典機、replica・embeddingを含む全費用で比較する。動的制御は平均rewardと最悪遅延を分離し、資料の版間で異なる時間値を統合しない。 QUBO++ 2026.10.31はVolta GPU（V100/TITAN V）対応を追加。変数比較を算術式へ使う方式を廃止しcons(x - y == 0)へ変更。不正範囲・search引数は例外となる。EasySolver/ABS3Solverの性能改善も記載するが定量的証拠はない。 VULCANは無雑音emulationでbatched ADAPT-VQE比5～20%のPauli項評価数を報告。shot数・経過時間ではない。古典GPU ENPT2を含み、C3H6の分母計算段階はH100で11.8時間。雑音実機での全体性能・古典量子化学への優位性は未確立。 10月29日の保守版0.50.1・0.49.1・0.48.1はFoldRZZ修正をbackport。従来はIBM target非対応のGlobalPhaseGateを挿入して実行不能な回路を生成していたが、回路global_phase属性の更新へ変更する。QPY保存互換性とは別のコンパイル適合性修正。 Braket SDK1.127.6はmeasurementsの代わりにoutputsを返すtask resultを許容。結果デコードの版別契約変更であり、新QPU供用や実行成功の証拠ではない。 過去の限定確認記録に基づく追補（現在状態の再確認ではない）： qBraid OSはQPUとNVIDIA資源の共同scheduling、予約・計量・課金、operator権限内agentを掲げるearly-access運用software。機能表は共同確保の原子性・取消時解放・計上整合や本番SLAの実証ではない。 Qiskit2.6はC APIの回路交換とQPY入出力を拡張し、既定保存formatをQPYv18にする。旧readerで読めない場合があり、C APIは未stable、Python installation不要化は未完了。SDK更新はschedulerやQPU供用の保証ではない。 最適解到達と、到達を条件とする状態・sector標本分布の品質を分け、参照分布・support・有限標本の限界を残す。指定Ising研究の区別を一般的な古典困難性・総費用優位へ外挿しない。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。 定式化を含む全workflow比較と候補固定solver置換を区別し、候補集合・占有率符号化・可行集合の同値性・科学指標を固定する。本研究の複数成分変更、API往復時間と全workflow時間、量子寄与未分離を保持する。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+      "hpci_implications_en": "Include preprocessing, postprocessing, queueing, error, classical baselines, and user support in addition to quantum circuits. Compare Ising applications at fixed gap and success probability, including specialized classical hardware and full replica/embedding costs. Separate average reward from worst-case latency in dynamic control and do not combine timings from differing source versions. QUBO++ 2026.10.31 adds Volta GPU support (V100/TITAN V). Variable comparisons can no longer participate in arithmetic; use cons(x - y == 0). Invalid ranges and search parameters now raise errors. Release notes also claim EasySolver/ABS3Solver performance improvements without quantified evidence. VULCAN reports 5–20% of batched ADAPT-VQE Pauli-term evaluations in noiseless emulation. This is not shot count or wall time. Classical GPU ENPT2 is part of the workflow; one C3H6 denominator stage took 11.8 hours on an H100. Full noisy-hardware performance and advantage over classical chemistry are unestablished. October29 maintenance releases backport the FoldRZZ target fix. The prior pass inserted an unsupported GlobalPhaseGate into IBM-targeted circuits; the fix changes the circuit global_phase attribute instead. This is a concrete compilability correction, separate from QPY persistence. Braket SDK1.127.6 accepts task results containing outputs in place of measurements. This is a version-specific result-decoding contract change; it does not establish new QPU availability or successful execution. Retained bounded earlier observations, without fresh current-status verification: qBraid OS is early-access operator software claiming QPU/NVIDIA co-scheduling, reservation, metering, billing and operator-bounded agents. These capabilities do not establish atomic co-allocation, cancellation release, accounting consistency or a production SLA. Qiskit2.6 expands C-API circuit exchange and QPY I/O and defaults to QPYv18. Older readers may not load the new format. The C API is not declared stable, and eliminating Python installation remains unfinished. SDK changes do not establish scheduler or QPU-service availability. Record optimization-hit success separately from conditional state/sector sampling quality, with reference distribution, support and finite-sample limits. The specified Ising study demonstrates this distinction; its SA protocols do not establish general classical hardness or total-cost advantage. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation. Distinguish end-to-end formulation comparisons from fixed-candidate solver substitution: pin candidate pools, occupancy encoding, feasible-set equivalence and scientific metrics. This ligand study changes multiple components; call-to-return timing is not full workflow time, and quantum-hardware contribution remains unisolated. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
       "source_ids": [
         "SRC-WORK060",
         "SRC-CDS422",
@@ -96,7 +98,11 @@
         "SRC-D31-OPS009-01-01",
         "SRC-D31-OPS009-01-02",
         "SRC-D31-OPS009-02-01",
-        "SRC-D31-OPS009-02-02"
+        "SRC-D31-OPS009-02-02",
+        "SRC-OCT23-OPS009-1-1",
+        "SRC-OCT23-OPS009-2-1",
+        "SRC-OCT23-APP010-1-1",
+        "SRC-OCT23-APP010-2-1"
       ]
     }
   ],
@@ -655,6 +661,54 @@
       "url": "https://github.com/amazon-braket/amazon-braket-sdk-python/releases/tag/v1.127.6",
       "source_class": "project-official",
       "published_at": "2026-10-27"
+    },
+    {
+      "source_id": "SRC-OCT23-APP010-1-1",
+      "title": "Author preprint 2610.29035v1",
+      "publisher": "Preprint authors on arXiv",
+      "url": "https://arxiv.org/html/2610.29035v1",
+      "source_class": "academic-primary",
+      "published_at": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-OCT23-APP010-2-1",
+      "title": "Author preprint 2610.29058v1",
+      "publisher": "Preprint authors on arXiv",
+      "url": "https://arxiv.org/html/2610.29058v1",
+      "source_class": "academic-primary",
+      "published_at": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-OCT23-APP014-1-1",
+      "title": "Author preprint 2610.31077v1",
+      "publisher": "Preprint authors on arXiv",
+      "url": "https://arxiv.org/html/2610.31077v1",
+      "source_class": "academic-primary",
+      "published_at": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-APP014-1-2",
+      "title": "Author preprint 2610.29627v1",
+      "publisher": "Preprint authors on arXiv",
+      "url": "https://arxiv.org/html/2610.29627v1",
+      "source_class": "academic-primary",
+      "published_at": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-OCT23-OPS009-1-1",
+      "title": "qBraid Announces qBraid OS for Operating Quantum Computing Services",
+      "publisher": "qBraid",
+      "url": "https://qbraid.com/press/qbraid-os-press-release",
+      "source_class": "project-official",
+      "published_at": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-OCT23-OPS009-2-1",
+      "title": "Qiskit SDK v2.6 release summary",
+      "publisher": "IBM / Qiskit Team",
+      "url": "https://www.ibm.com/quantum/blog/qiskit-2-6-release-summary",
+      "source_class": "project-official",
+      "published_at": "2026-10-22"
     }
   ],
   "coverage_gaps": [
@@ -686,7 +740,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-DAILY41-BOUNDED-PUBLIC-20261031",
-    "human_approval_directive_id": "DIR-900167"
+    "publication_decision_id": "PUBDEC-LEGACY25-BOUNDED-20261031",
+    "human_approval_directive_id": "DIR-900168"
   }
 }

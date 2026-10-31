@@ -41,8 +41,8 @@
       "summary_en": "Track dependencies, restart, monitoring, and execution backends.",
       "current_state_ja": "Parsl、Nextflow、WHEEL等に個別機能がありますが、共通運用は未確認です。 今回の限定的な追補：Pegasus5.1.3のSFAPI adapterはcredential・scope・runtime前提を残し、adaptive retryは失敗後にのみ作用し、rescue DAGはpartial job状態を復元しない。Parsl同一run cacheは例外も再利用するがcheckpointは保存せず、同時uncached呼出しは重複実行し得る。RO-Crate0.6の版組合せ・IRI変更をOPS-012と共通化し、任意status/resource記録・欠落status成功解釈を全試行監査と混同しない。施設認可・budget・失敗取消cache retryを既存workflow gateへ加える。 Workflow Run RO-Crate0.6（9月7日）はRO-Crate1.3/Workflow1.1へ整合し、旧0.1–0.5の1.1/1.0とIRIが異なる。旧0.5確認は履歴で、適合は全失敗・取消・cache・retry試行の完全性やlossless再実行を保証しない。不老・弐の大学報告による10月1日9時開始と希望home staging・利用者copy責任を反映し、3MIG queue復旧・ACL/checksum受入は未確認。Roihu文書のidentity assurance・24時間SSH certificate・CPU/GPU再build条件は実移行実績ではなく、Allas無制限容量も仮定しない。 理研とソフトバンクは第3期公募で20件の提案を採択しました。採択機関には覚書の締結後、黎明、ibm_kobe、富岳、ROQUOの利用アカウントを付与する予定です。次回公募と一部成果の大規模実験支援は2027年度の早期を予定します。採択は量子優位性や性能向上を実証した結果ではありません。 Fujitsuはニューメキシコ州と量子計算研究センターの設立に向けた連携を発表しました。量子計算、量子シミュレーション、AI、古典HPCを組み合わせる研究でMONAKAの役割も検討します。センターの開設日、導入構成、性能結果は示されておらず、稼働済み施設とは扱いません。",
       "current_state_en": "Parsl, Nextflow, WHEEL, and others provide individual capabilities; common operations remain unverified. Scoped additions in this batch: Pegasus 5.1.3 SFAPI adapters retain credential/scope/runtime prerequisites; adaptive retry acts after failures and rescue DAGs do not restore partial-job state. Parsl within-run cache can reuse exceptions while checkpoints omit them; simultaneous uncached calls may duplicate execution. Share RO-Crate 0.6 version/IRI interpretation with OPS-012: optional status/resources and omitted-status success defaults do not assure all-attempt auditing. Extend the existing workflow gate with facility authorization, budgets and failed/cancelled/cached/retry attempts. Workflow Run RO-Crate 0.6 (September 7) aligns with RO-Crate 1.3/Workflow 1.1 and changes IRIs from legacy 0.1–0.5 at 1.1/1.0. Keep historical 0.5; conformance does not assure all failed/cancelled/cached/retry attempts or lossless replay. Reflect Nagoya-reported October 1 09:00 start, requested-home staging and user copy responsibilities without MIG recovery/ACL/checksum acceptance. Roihu identity assurance, 24-hour SSH certificates and CPU/GPU rebuild requirements are documented prerequisites, not migration results or unlimited Allas capacity. RIKEN and SoftBank selected 20 proposals. Accounts for Reimei, ibm_kobe, Fugaku and ROQUO are planned after memoranda are signed. The next call and support for selected large-scale experiments are planned early in FY2027. Selection does not establish quantum advantage or measured speedup. Fujitsu announced collaboration with New Mexico toward establishing a quantum computing research center. It will examine MONAKA's role in research combining quantum computing, simulation, AI and classical HPC. Opening dates, installed configurations and performance results were not provided; this is not an operational-center announcement.",
-      "hpci_implications_ja": "代表ワークフローを複数センターで同じ来歴付きで再実行する必要があります。 著者preprintはNVダイヤモンド実測とTSUBAME4検証を結合した事例を報告。予測一致でもドリフトした取得を不確定とし、基準を緩めず修正した。Sageのsimulation/replayとは別の限定的な物理workflow例。装置構築・安全上限設定は人が担当。最終予測固定は取得後・target解析前であり、実測dataは要請提供、研究promptは非公開。 10月28日のdraftレビューは、保留中の遅延変換報告へ分布上の差を追加する。変換後の下限clampは下限への確率集中を生み、棄却再標本化と同じ分布ではない。既定値と負荷モデルの根拠は未合意で、採択済み修正・修正版releaseではない。 SDK0.4.11はSSE cursor・chunk保持とwait/join/cancel再接続のbackoffを収録。空ID・分割event・応答切断を試験する案。PR9481は5回上限と初回失敗時raiseを維持。Store認可とは別で、exactly-onceや施設受入を保証しない。 Nextflow 26.10.4はPR7887を収録。型付き関数のrecord戻り値が実体依存でhash化され、resumeでcache hitしない問題を修正する。record戻り型の消去による具体的なcache再開修正であり、既存のログ秘匿化とは別。戻り値の実行時型検査への影響は確認事項として残す。",
-      "hpci_implications_en": "Representative workflows need reproducible execution with provenance across centers. An author preprint reports an NV-diamond physical investigation coupled to TSUBAME4 computational checks. Agents rejected a drifting acquisition despite predictive agreement and revised it without loosening criteria. This adds a bounded physical-workflow example beyond Sage simulations/replays. Humans built the apparatus and configured safety limits; final predictions were locked after acquisition but before target analysis. Raw data require request and study prompts are omitted. The October28 draft review adds a distribution-level tradeoff to the pending delay-transform report: enforcing a post-scaling floor by clamping creates mass at the floor rather than preserving rejection-sampling semantics. The proposed default and workload rationale remain unresolved; this is neither accepted remediation nor a released fix. SDK 0.4.11 ships SSE cursor/chunk preservation and bounded backoff for wait/join/cancel reconnects. Qualify empty IDs, split events and interrupted responses; PR9481 retains five attempts and first-request failures still raise. This is separate from Store authorization; no exactly-once guarantee or site acceptance. Nextflow 26.10.4 includes PR7887: typed-function record results previously received identity-dependent task hashes, preventing cache hits on resume. The correction erases record return types. This is a concrete cache-recovery fix, separate from pending log redaction. Runtime checking of record return values remains a qualification concern.",
+      "hpci_implications_ja": "代表ワークフローを複数センターで同じ来歴付きで再実行する必要があります。 著者preprintはNVダイヤモンド実測とTSUBAME4検証を結合した事例を報告。予測一致でもドリフトした取得を不確定とし、基準を緩めず修正した。Sageのsimulation/replayとは別の限定的な物理workflow例。装置構築・安全上限設定は人が担当。最終予測固定は取得後・target解析前であり、実測dataは要請提供、研究promptは非公開。 10月28日のdraftレビューは、保留中の遅延変換報告へ分布上の差を追加する。変換後の下限clampは下限への確率集中を生み、棄却再標本化と同じ分布ではない。既定値と負荷モデルの根拠は未合意で、採択済み修正・修正版releaseではない。 SDK0.4.11はSSE cursor・chunk保持とwait/join/cancel再接続のbackoffを収録。空ID・分割event・応答切断を試験する案。PR9481は5回上限と初回失敗時raiseを維持。Store認可とは別で、exactly-onceや施設受入を保証しない。 Nextflow 26.10.4はPR7887を収録。型付き関数のrecord戻り値が実体依存でhash化され、resumeでcache hitしない問題を修正する。record戻り型の消去による具体的なcache再開修正であり、既存のログ秘匿化とは別。戻り値の実行時型検査への影響は確認事項として残す。 過去の限定確認記録に基づく追補（現在状態の再確認ではない）： LangGraphの10月21日advisoryはPythonのPostgres/SQLite Storeでドット入りlabelによるnamespace衝突を報告する。InMemoryStoreは対象外。修正版packageとAgent Server/Cloud revisionの境界を分け、実施設の影響・修復完了は認定しない。 1.4.0rc1はKV cache manager V2とPython KV transceiverを既定にする。release notesにはA100のstream取消後KV転送失敗とQwen3 JSON-schema例の無制限応答が既知問題として残る。RC・未解決範囲を保持し、GAや全修正完了としない。 Nextflow26.04.9とmerge済みPR7879は、投入失敗・再試行・設定・trace・lineage等に関する秘密値マスク改善の一系統である。合成の秘密値を使い、非機密のattempt IDと実行contextを保持して各経路を確認する評価案。完全mask、過去log消去、全plugin対応、全CI成功、施設適用の証拠ではない。 文脈の寿命とCPU/GPU・メモリ実占有時間を分け、active・model待機・tool待機・offload・restoreと復元費用・同一成果確認を記録する。pVisorの各条件1回の予備静的試験を、実需要分布のcapacity・電力・全国需要削減へ外挿しない。科学showcaseはsimulation・歴史replayに限る。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。 潜在分布設定・context依存変換・生成後delay・実replay時刻を分離照合し、component/global境界の優先順位・seed/版fingerprintを保持する。issueと後日のcontributor再現申告をmaintainer確認・採択patch・修正版releaseとしない。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+      "hpci_implications_en": "Representative workflows need reproducible execution with provenance across centers. An author preprint reports an NV-diamond physical investigation coupled to TSUBAME4 computational checks. Agents rejected a drifting acquisition despite predictive agreement and revised it without loosening criteria. This adds a bounded physical-workflow example beyond Sage simulations/replays. Humans built the apparatus and configured safety limits; final predictions were locked after acquisition but before target analysis. Raw data require request and study prompts are omitted. The October28 draft review adds a distribution-level tradeoff to the pending delay-transform report: enforcing a post-scaling floor by clamping creates mass at the floor rather than preserving rejection-sampling semantics. The proposed default and workload rationale remain unresolved; this is neither accepted remediation nor a released fix. SDK 0.4.11 ships SSE cursor/chunk preservation and bounded backoff for wait/join/cancel reconnects. Qualify empty IDs, split events and interrupted responses; PR9481 retains five attempts and first-request failures still raise. This is separate from Store authorization; no exactly-once guarantee or site acceptance. Nextflow 26.10.4 includes PR7887: typed-function record results previously received identity-dependent task hashes, preventing cache hits on resume. The correction erases record return types. This is a concrete cache-recovery fix, separate from pending log redaction. Runtime checking of record return values remains a qualification concern. Retained bounded earlier observations, without fresh current-status verification: The October21 LangGraph advisory reports dot-label namespace collisions in Python Postgres/SQLite Stores; InMemoryStore is excluded. Keep patched-package and Agent Server/Cloud revision boundaries separate. This establishes neither site exposure nor completed remediation. Version1.4.0rc1 defaults to KV cache manager V2 and the Python KV transceiver. Release notes retain an A100 post-stream-cancellation KV-transfer failure and a Qwen3 JSON-schema unbounded-response example. Preserve RC status and unresolved scope rather than claiming GA or all fixes complete. Nextflow26.04.9 and merged PR7879 form one secret-redaction improvement lineage. Propose synthetic-secret checks across failure/retry, configuration, trace and lineage paths while retaining non-sensitive attempt IDs and execution context. They do not prove complete masking, retroactive log removal, all-plugin coverage, all-CI success or site deployment. Separate context lifetime from physical CPU/GPU/memory residency. Record active, model-wait, tool-wait, offload and restore phases plus restoration cost and same-result integrity. Sage pVisor reports preliminary one-run-per-condition static memory savings, not workload-distribution capacity, energy or nationwide demand savings. Scientific showcases remain simulations or historical replays. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation. Check latent parameters, context-dependent transforms, final generated delays and actual replay timing separately. Preserve component/global bound precedence and seed/version fingerprints. The issue and later contributor reproduction report motivate a test; they do not establish maintainer confirmation, an accepted patch or released remediation. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
       "source_ids": [
         "SRC-CDS066",
         "SRC-CDS067",
@@ -70,7 +70,12 @@
         "SRC-D31-SSW009-01-02",
         "SRC-D31-SSW009-01-03",
         "SRC-D31-SSW012-01-01",
-        "SRC-D31-SSW012-01-02"
+        "SRC-D31-SSW012-01-02",
+        "SRC-OCT23-SSW009-1-1",
+        "SRC-OCT23-SSW009-3-1",
+        "SRC-OCT23-SSW012-1-1",
+        "SRC-OCT23-SSW012-1-2",
+        "SRC-OCT23-APP012-1-1"
       ]
     },
     {
@@ -82,8 +87,8 @@
       "summary_en": "Cover bulk transfer and continuous experimental-data processing.",
       "current_state_ja": "ADIOS2、Globus、EuroHPC workflow資料を確認しました。",
       "current_state_en": "ADIOS2, Globus, and EuroHPC workflow documentation were checked.",
-      "hpci_implications_ja": "認証、データ所在、再送、メタデータ、保存期間を一体で試験します。 Personal3.3.2の新規・再setupと既存collectionを区別し、共有RAG indexはgraph build5時間34分と全工程25時間、品質・入力・復旧条件を分けて比較する評価案。現地修正・独立再現・SLA達成ではない。 著者preprintはNVダイヤモンド実測とTSUBAME4検証を結合した事例を報告。予測一致でもドリフトした取得を不確定とし、基準を緩めず修正した。Sageのsimulation/replayとは別の限定的な物理workflow例。装置構築・安全上限設定は人が担当。最終予測固定は取得後・target解析前であり、実測dataは要請提供、研究promptは非公開。 共同実証は神戸・柏間800Gbps APNで、第2世代HPCI共用ストレージ検証環境とMMCFTP/NVMeサーバを併用。合算転送は最大約775Gbps、750Gbps超を数分継続し、この構成のAPN遅延はSINET比約20%低減と報告。取得から判断までの期限や第3世代の本番SLAを確立する値ではない。 GCS 5.4.100はgaccess.ioへのdomain移行を追加。変更履歴は5.4.99のsupport終了を2027年4月28日と明記し、前回未確定だった後続版依存の期限を具体化した。参照先移行guideは2025年7月16日更新のまま将来toolを記載する。 Ceph21.2.0はUmbrella初のstable版。containerのhostはx86-64-v3、cephadmはPython3.9以上を要求。CephFSのmirror checkpoint/status、RGWのGlacier/tape復元状態の永続化を記載し、object重複排除はtechnology previewとする。 DDNはUNSWがEXAScalerとArcitecta Mediafluxを選び、11保存systemを置換する計画を発表。学内cacheと学外storageを連携し、connectorでfilesystem metadata変更を取得する設計。2027年初納入・同年後半稼働は予定。 Nextflow 26.10.4はPR7887を収録。型付き関数のrecord戻り値が実体依存でhash化され、resumeでcache hitしない問題を修正する。record戻り型の消去による具体的なcache再開修正であり、既存のログ秘匿化とは別。戻り値の実行時型検査への影響は確認事項として残す。",
-      "hpci_implications_en": "Test identity, location, retransmission, metadata, and retention together. Proposed checks distinguish Personal 3.3.2 new/repeated setup from existing collections;for shared RAG, separate 5h 34m graph build from 25h end-to-end with quality, input and recovery conditions. This is not site remediation, independent reproduction or achieved SLA. An author preprint reports an NV-diamond physical investigation coupled to TSUBAME4 computational checks. Agents rejected a drifting acquisition despite predictive agreement and revised it without loosening criteria. This adds a bounded physical-workflow example beyond Sage simulations/replays. Humans built the apparatus and configured safety limits; final predictions were locked after acquisition but before target analysis. Raw data require request and study prompts are omitted. A joint study reports Kobe–Kashiwa transfer on an800Gbps APN path using second-generation HPCI storage validation infrastructure plus MMCFTP/NVMe servers. Combined traffic peaked near775Gbps and exceeded750Gbps for several minutes. APN latency was about20% below SINET in this setup. These are bounded transfer results, with neither instrument-to-decision latency nor a third-generation storage service SLA established. GCS 5.4.100 adds gaccess.io domain migration. The changelog now gives 5.4.99 a support end of April28,2027, resolving the successor-dependent deadline left unknown in the prior review. The linked migration guide remains dated July16,2025 and still describes future tooling. Ceph21.2.0 is the first stable Umbrella release. Container hosts require x86-64-v3 and cephadm requires Python3.9+. Release notes add CephFS mirroring checkpoints/status and RGW persistent Glacier/tape restore state; object dedup remains technology preview. DDN announces UNSW selection of EXAScaler with Arcitecta Mediaflux to replace11 storage systems. The planned design links campus caches to off-campus storage and captures filesystem metadata changes through a connector. Delivery is planned early2027; go-live later2027 remains expected. Nextflow 26.10.4 includes PR7887: typed-function record results previously received identity-dependent task hashes, preventing cache hits on resume. The correction erases record return types. This is a concrete cache-recovery fix, separate from pending log redaction. Runtime checking of record return values remains a qualification concern.",
+      "hpci_implications_ja": "認証、データ所在、再送、メタデータ、保存期間を一体で試験します。 Personal3.3.2の新規・再setupと既存collectionを区別し、共有RAG indexはgraph build5時間34分と全工程25時間、品質・入力・復旧条件を分けて比較する評価案。現地修正・独立再現・SLA達成ではない。 著者preprintはNVダイヤモンド実測とTSUBAME4検証を結合した事例を報告。予測一致でもドリフトした取得を不確定とし、基準を緩めず修正した。Sageのsimulation/replayとは別の限定的な物理workflow例。装置構築・安全上限設定は人が担当。最終予測固定は取得後・target解析前であり、実測dataは要請提供、研究promptは非公開。 共同実証は神戸・柏間800Gbps APNで、第2世代HPCI共用ストレージ検証環境とMMCFTP/NVMeサーバを併用。合算転送は最大約775Gbps、750Gbps超を数分継続し、この構成のAPN遅延はSINET比約20%低減と報告。取得から判断までの期限や第3世代の本番SLAを確立する値ではない。 GCS 5.4.100はgaccess.ioへのdomain移行を追加。変更履歴は5.4.99のsupport終了を2027年4月28日と明記し、前回未確定だった後続版依存の期限を具体化した。参照先移行guideは2025年7月16日更新のまま将来toolを記載する。 Ceph21.2.0はUmbrella初のstable版。containerのhostはx86-64-v3、cephadmはPython3.9以上を要求。CephFSのmirror checkpoint/status、RGWのGlacier/tape復元状態の永続化を記載し、object重複排除はtechnology previewとする。 DDNはUNSWがEXAScalerとArcitecta Mediafluxを選び、11保存systemを置換する計画を発表。学内cacheと学外storageを連携し、connectorでfilesystem metadata変更を取得する設計。2027年初納入・同年後半稼働は予定。 Nextflow 26.10.4はPR7887を収録。型付き関数のrecord戻り値が実体依存でhash化され、resumeでcache hitしない問題を修正する。record戻り型の消去による具体的なcache再開修正であり、既存のログ秘匿化とは別。戻り値の実行時型検査への影響は確認事項として残す。 過去の限定確認記録に基づく追補（現在状態の再確認ではない）： LangGraphの10月21日advisoryはPythonのPostgres/SQLite Storeでドット入りlabelによるnamespace衝突を報告する。InMemoryStoreは対象外。修正版packageとAgent Server/Cloud revisionの境界を分け、実施設の影響・修復完了は認定しない。 1.4.0rc1はKV cache manager V2とPython KV transceiverを既定にする。release notesにはA100のstream取消後KV転送失敗とQwen3 JSON-schema例の無制限応答が既知問題として残る。RC・未解決範囲を保持し、GAや全修正完了としない。 Nextflow26.04.9とmerge済みPR7879は、投入失敗・再試行・設定・trace・lineage等に関する秘密値マスク改善の一系統である。合成の秘密値を使い、非機密のattempt IDと実行contextを保持して各経路を確認する評価案。完全mask、過去log消去、全plugin対応、全CI成功、施設適用の証拠ではない。 event時刻・trigger照合window・server監視/形式変換・offline再構成を別工程・成果物で記録する。Run9施設内実装を広域HPC応答期限・無欠損保証・現行service認定にしない。 clock参照と計時点を明記し、平均同期差・tail/最大時間・機械安定性に制約される動作を分離する。安定性と安全な手動fallbackを保持し、CRIS試運転をremote制御期限・予約・一般提供としない。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+      "hpci_implications_en": "Test identity, location, retransmission, metadata, and retention together. Proposed checks distinguish Personal 3.3.2 new/repeated setup from existing collections;for shared RAG, separate 5h 34m graph build from 25h end-to-end with quality, input and recovery conditions. This is not site remediation, independent reproduction or achieved SLA. An author preprint reports an NV-diamond physical investigation coupled to TSUBAME4 computational checks. Agents rejected a drifting acquisition despite predictive agreement and revised it without loosening criteria. This adds a bounded physical-workflow example beyond Sage simulations/replays. Humans built the apparatus and configured safety limits; final predictions were locked after acquisition but before target analysis. Raw data require request and study prompts are omitted. A joint study reports Kobe–Kashiwa transfer on an800Gbps APN path using second-generation HPCI storage validation infrastructure plus MMCFTP/NVMe servers. Combined traffic peaked near775Gbps and exceeded750Gbps for several minutes. APN latency was about20% below SINET in this setup. These are bounded transfer results, with neither instrument-to-decision latency nor a third-generation storage service SLA established. GCS 5.4.100 adds gaccess.io domain migration. The changelog now gives 5.4.99 a support end of April28,2027, resolving the successor-dependent deadline left unknown in the prior review. The linked migration guide remains dated July16,2025 and still describes future tooling. Ceph21.2.0 is the first stable Umbrella release. Container hosts require x86-64-v3 and cephadm requires Python3.9+. Release notes add CephFS mirroring checkpoints/status and RGW persistent Glacier/tape restore state; object dedup remains technology preview. DDN announces UNSW selection of EXAScaler with Arcitecta Mediaflux to replace11 storage systems. The planned design links campus caches to off-campus storage and captures filesystem metadata changes through a connector. Delivery is planned early2027; go-live later2027 remains expected. Nextflow 26.10.4 includes PR7887: typed-function record results previously received identity-dependent task hashes, preventing cache hits on resume. The correction erases record return types. This is a concrete cache-recovery fix, separate from pending log redaction. Runtime checking of record return values remains a qualification concern. Retained bounded earlier observations, without fresh current-status verification: The October21 LangGraph advisory reports dot-label namespace collisions in Python Postgres/SQLite Stores; InMemoryStore is excluded. Keep patched-package and Agent Server/Cloud revision boundaries separate. This establishes neither site exposure nor completed remediation. Version1.4.0rc1 defaults to KV cache manager V2 and the Python KV transceiver. Release notes retain an A100 post-stream-cancellation KV-transfer failure and a Qwen3 JSON-schema unbounded-response example. Preserve RC status and unresolved scope rather than claiming GA or all fixes complete. Nextflow26.04.9 and merged PR7879 form one secret-redaction improvement lineage. Propose synthetic-secret checks across failure/retry, configuration, trace and lineage paths while retaining non-sensitive attempt IDs and execution context. They do not prove complete masking, retroactive log removal, all-plugin coverage, all-CI success or site deployment. Record event timestamps, trigger-matching windows, server monitoring/formatting and offline reconstruction as separate stages and artifacts. BM@N Run9 is a facility-local implementation example, not a cross-site HPC deadline, losslessness guarantee or current service certificate. Name clock references and measurement endpoints; distinguish average synchronization offsets, tail/max timing and mechanically constrained actions. Preserve stability and safe human fallback. CRIS commissioning does not establish remote-control deadlines, resource reservations or general-service availability. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
       "source_ids": [
         "SRC-CDS071",
         "SRC-CDO075",
@@ -100,7 +105,13 @@
         "SRC-D31-ARCH012-03-01",
         "SRC-D31-ARCH012-03-02",
         "SRC-D31-SSW012-01-01",
-        "SRC-D31-SSW012-01-02"
+        "SRC-D31-SSW012-01-02",
+        "SRC-OCT23-SSW009-1-1",
+        "SRC-OCT23-SSW009-3-1",
+        "SRC-OCT23-SSW012-1-1",
+        "SRC-OCT23-SSW012-1-2",
+        "SRC-OCT23-APP014-1-1",
+        "SRC-OCT23-APP014-1-2"
       ]
     }
   ],
@@ -657,6 +668,62 @@
       "publisher": "DDN Inc. distributed by Business Wire",
       "url": "https://www.businesswire.com/news/home/20261026039719/en/",
       "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT23-APP012-1-1",
+      "title": "Author preprint 2610.28578v1",
+      "publisher": "Preprint authors on arXiv",
+      "url": "https://arxiv.org/html/2610.28578v1",
+      "source_class": "academic-primary",
+      "published_at": "2026-10-20"
+    },
+    {
+      "source_id": "SRC-OCT23-APP014-1-1",
+      "title": "Author preprint 2610.31077v1",
+      "publisher": "Preprint authors on arXiv",
+      "url": "https://arxiv.org/html/2610.31077v1",
+      "source_class": "academic-primary",
+      "published_at": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-APP014-1-2",
+      "title": "Author preprint 2610.29627v1",
+      "publisher": "Preprint authors on arXiv",
+      "url": "https://arxiv.org/html/2610.29627v1",
+      "source_class": "academic-primary",
+      "published_at": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-OCT23-SSW009-1-1",
+      "title": "Namespace labels containing dots reach other namespaces in Postgres and SQLite stores",
+      "publisher": "LangGraph maintainers",
+      "url": "https://github.com/langchain-ai/langgraph/security/advisories/GHSA-6hmw-9432-67qq",
+      "source_class": "project-official",
+      "published_at": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-OCT23-SSW009-3-1",
+      "title": "TensorRT-LLM v1.4.0rc1 release",
+      "publisher": "NVIDIA TensorRT-LLM maintainers",
+      "url": "https://github.com/NVIDIA/TensorRT-LLM/releases/tag/v1.4.0rc1",
+      "source_class": "project-official",
+      "published_at": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-SSW012-1-1",
+      "title": "Nextflow v26.04.9 release",
+      "publisher": "Nextflow project",
+      "url": "https://github.com/nextflow-io/nextflow/releases/tag/v26.04.9",
+      "source_class": "project-official",
+      "published_at": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-SSW012-1-2",
+      "title": "Nextflow PR #7879: secret-redaction improvements",
+      "publisher": "Nextflow project contributors",
+      "url": "https://github.com/nextflow-io/nextflow/pull/7879",
+      "source_class": "project-official",
+      "published_at": "2026-10-21"
     }
   ],
   "coverage_gaps": [
@@ -688,7 +755,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-DAILY41-BOUNDED-PUBLIC-20261031",
-    "human_approval_directive_id": "DIR-900167"
+    "publication_decision_id": "PUBDEC-LEGACY25-BOUNDED-20261031",
+    "human_approval_directive_id": "DIR-900168"
   }
 }

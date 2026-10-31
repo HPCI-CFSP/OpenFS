@@ -184,12 +184,13 @@
       "summary_en": "Tracks Japanese and European HPC processors together with productization, software maturity, and supply continuity.",
       "current_state_ja": "MONAKAは2026年11月販売、FY2026 Q4のCPU供給、2027年4月からのサーバー順次出荷が発表されており、別世代のMONAKA-Xとは区別する。欧州のEPIは2026年Q3に、Rhea1の実シリコン上でHPCソフトウェアスタックを動作させるデモを実施した。",
       "current_state_en": "MONAKA has announced November 2026 sales, FY2026 Q4 CPU supply and sequential server shipments from April 2027, distinct from the later MONAKA-X generation. EPI demonstrated Rhea1 silicon running an HPC software stack in Q3 2026.",
-      "hpci_implications_ja": "国内開発と技術主権は評価要素となるが、性能可搬性、量産供給、長期保守、国際的なエコシステムと併せて判断する。",
-      "hpci_implications_en": "Domestic development and technological sovereignty may be positive factors, but they must be assessed alongside performance portability, volume supply, long-term support, and international ecosystems.",
+      "hpci_implications_ja": "国内開発と技術主権は評価要素となるが、性能可搬性、量産供給、長期保守、国際的なエコシステムと併せて判断する。 過去の限定確認記録に基づく追補（現在状態の再確認ではない）： Fujitsu/Fsas/Schwarz Digits協業は共同governance・PoC・統合・capacity投資計画として扱う。欧州data/cloud主権をCPU設計・製造・実装・部材自立性と分け、MONAKA言及を出荷済みやSTACKIT機器一般提供としない。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+      "hpci_implications_en": "Domestic development and technological sovereignty may be positive factors, but they must be assessed alongside performance portability, volume supply, long-term support, and international ecosystems. Retained bounded earlier observations, without fresh current-status verification: Treat Fujitsu/Fsas/Schwarz Digits cooperation as joint governance, PoC, integration and capacity-investment planning. European data/cloud sovereignty is distinct from CPU design, fabrication, packaging and component independence. MONAKA references do not establish shipped processors or generally available STACKIT hardware. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
       "source_ids": [
         "SRC-COMP005",
         "SRC-COMP007",
-        "SRC-OCT03-ARCH001-E1"
+        "SRC-OCT03-ARCH001-E1",
+        "SRC-OCT23-CROSS003-2-1"
       ]
     },
     {
@@ -276,8 +277,8 @@
       "summary_en": "OpenFS provisional gates connecting public roadmaps to continuous benchmarking and procurement decisions.",
       "current_state_ja": "共通の評価基準とベンチマーク実行環境は整備途上であり、製品発表だけでは採用判断できない。",
       "current_state_en": "Common evaluation criteria and benchmark execution remain under development; product announcements alone cannot determine adoption.",
-      "hpci_implications_ja": "センター別ワークロードと全体共通カーネルを両方用い、候補構成を反復評価する。 GROMACS2026.4はGPU halo通信時のhost timerによるload imbalance表示を無意味として削除し、出力forceのPME寄与欠落とGPU非局所相互作用の古いshift vector使用を修正。旧計時・force確認は版と構成を固定して解釈する。修正公表であり速度向上やHPCI妥当性の検証ではない。 mpWYQRはHouseholderの2つのnorm評価にfp32を使い、他のreflector計算はfp16を主体とする。決定論的な精度は低精度水準のまま。著者はEmerald Rapids CPUとMKLで合成行列のQR残差・直交性を評価し、GPU実装は今後の課題とする。normの範囲・累積演算に関する具体的な失敗境界であり、fp32相当の科学的精度を意味しない。 AMDはMI355X上でMONAI推論5種をBF16・channels-last 3D・torch.compileで評価したと10月30日に公表。測定は9月21日、単一の脾臓CT入力、予備5回・計測20回。Early Accessの推論対応であり、学習対応は今後の検証。 NVIDIAはAllen Telescope ArrayでHoloscan/DAQIRIによるGPU直接取込とCyberEther/CUDA-X処理を紹介。RTX PRO 6000 Blackwellを用いるシステムが2.4 Tb/sを処理可能とするベンダー報告であり、GPU台数・計測方法は不明。GPU1台当たりの実測値や独立再現性能とは扱わない。 Tenstorrent v0.26.0はQwen2.5-VLとolmOCRのモデル・機種別対応を追加。表ではT3Kの32BはEXPERIMENTAL、72BはFUNCTIONAL、7BのT3K/GalaxyとolmOCR-2-7B-1025のT3KはCOMPLETE。Galaxy推奨はtt-smi5.2.0・firmware19.10.0.0・tt-kmd2.9.0。保守者の対応状態であり、独立した正確性検証やHPCI受入ではない。 Firmware19.17.1はGalaxyのGDDR問題対策としてMRISC powerdownを無効にし、保守者はGalaxyのidle電力が1.6kW増すと記載。推論v0.26.0の推奨firmware19.10.0.0と別に、版固有の安定性・idle電力トレードオフを保持する。自動更新や版間互換性の推奨ではない。 DCGM4.7.1は旧診断run messageを拒否し、run API版10/11・response版12を要求するため、診断clientとhostengineの同時整合が必要とする。未対応health watch指定時の既存watch維持、不正YAML入力時のpolicy維持も記載。",
-      "hpci_implications_en": "Candidate configurations should be evaluated repeatedly with both center-specific workloads and shared kernels. GROMACS2026.4 removes host-timer load-imbalance reporting when halo communication is on GPU because those values were meaningless. It also fixes missing PME contributions in written forces and stale shift vectors in GPU non-local interactions. Preserve release/configuration identity when interpreting old timings and force checks; this establishes fixes, not validated speedups. mpWYQR uses fp32 for two Householder norm evaluations with other reflector work governed by fp16. Its deterministic accuracy remains at low-precision level. Authors evaluate QR residual and orthogonality on synthetic matrices using MKL on an Emerald Rapids CPU; GPU implementation is future work. This adds a concrete norm-range/accumulation failure boundary, not fp32-equivalent scientific accuracy. AMD reports five MONAI inference bundles on MI355X using BF16, channels-last 3D and torch.compile. The September21 vendor test uses one spleen CT input, five warmups and20 timed iterations. Support is Early Access; training remains future work. NVIDIA describes direct GPU ingest with Holoscan/DAQIRI and CyberEther/CUDA-X at the Allen Telescope Array. Its vendor account says the system can handle 2.4 Tb/s using RTX PRO 6000 Blackwell. GPU count and measurement method are unknown; this is neither a per-GPU throughput measurement nor independently reproduced performance. Tenstorrent v0.26.0 adds Qwen2.5-VL and olmOCR model/device entries. Its matrix marks Qwen2.5-VL-32B on T3K EXPERIMENTAL, 72B FUNCTIONAL, 7B on T3K/Galaxy COMPLETE, and olmOCR-2-7B-1025 on T3K COMPLETE. Galaxy recommendations are tt-smi5.2.0, firmware19.10.0.0 and tt-kmd2.9.0. These are maintainer support states, not independent correctness or HPC acceptance. Firmware19.17.1 disables MRISC powerdown on Galaxy to resolve GDDR issues; maintainers report a resulting1.6kW increase in Galaxy idle power. Preserve this version-specific stability/idle-energy tradeoff alongside inference v0.26.0 separately recommending19.10.0.0; no automatic upgrade or cross-version compatibility claim. DCGM4.7.1 requires diagnostic clients and hostengine to move together: older run messages are rejected, with run API versions10/11 and response12 required. It also rejects unsupported health-watch bits without replacing watches and preserves policies on invalid YAML imports.",
+      "hpci_implications_ja": "センター別ワークロードと全体共通カーネルを両方用い、候補構成を反復評価する。 GROMACS2026.4はGPU halo通信時のhost timerによるload imbalance表示を無意味として削除し、出力forceのPME寄与欠落とGPU非局所相互作用の古いshift vector使用を修正。旧計時・force確認は版と構成を固定して解釈する。修正公表であり速度向上やHPCI妥当性の検証ではない。 mpWYQRはHouseholderの2つのnorm評価にfp32を使い、他のreflector計算はfp16を主体とする。決定論的な精度は低精度水準のまま。著者はEmerald Rapids CPUとMKLで合成行列のQR残差・直交性を評価し、GPU実装は今後の課題とする。normの範囲・累積演算に関する具体的な失敗境界であり、fp32相当の科学的精度を意味しない。 AMDはMI355X上でMONAI推論5種をBF16・channels-last 3D・torch.compileで評価したと10月30日に公表。測定は9月21日、単一の脾臓CT入力、予備5回・計測20回。Early Accessの推論対応であり、学習対応は今後の検証。 NVIDIAはAllen Telescope ArrayでHoloscan/DAQIRIによるGPU直接取込とCyberEther/CUDA-X処理を紹介。RTX PRO 6000 Blackwellを用いるシステムが2.4 Tb/sを処理可能とするベンダー報告であり、GPU台数・計測方法は不明。GPU1台当たりの実測値や独立再現性能とは扱わない。 Tenstorrent v0.26.0はQwen2.5-VLとolmOCRのモデル・機種別対応を追加。表ではT3Kの32BはEXPERIMENTAL、72BはFUNCTIONAL、7BのT3K/GalaxyとolmOCR-2-7B-1025のT3KはCOMPLETE。Galaxy推奨はtt-smi5.2.0・firmware19.10.0.0・tt-kmd2.9.0。保守者の対応状態であり、独立した正確性検証やHPCI受入ではない。 Firmware19.17.1はGalaxyのGDDR問題対策としてMRISC powerdownを無効にし、保守者はGalaxyのidle電力が1.6kW増すと記載。推論v0.26.0の推奨firmware19.10.0.0と別に、版固有の安定性・idle電力トレードオフを保持する。自動更新や版間互換性の推奨ではない。 DCGM4.7.1は旧診断run messageを拒否し、run API版10/11・response版12を要求するため、診断clientとhostengineの同時整合が必要とする。未対応health watch指定時の既存watch維持、不正YAML入力時のpolicy維持も記載。 過去の限定確認記録に基づく追補（現在状態の再確認ではない）： 単一A100・Poisson問題の著者preprintは、先行測定に基づく固定4cycleを計時する一方、前反復を評価する遅延monitorで停止すると5cycleを要すると記す。外挿monitorは上界ではなく推定である。判定対象の反復、実測/固定/外挿の別、追加cycleとmonitor費用を記録し、固定cycle性能を同じ品質までのtime-to-solutionとしない評価案。 局所POD preprintの格納量は低rank因子を数え、partition/index metadata・header・encoding費用を除く。greedy分割は全体最小格納量を保証しない。係数空間NRMSEの条件付き範囲を保存則・再開・下流観測量と分け、実encoded bytes、圧縮/展開/転送の全費用を確認してからsystem利得を判断する評価案。 R580.196.07はAttestation SDK2026.10.02未満とattestation ABI非互換で非CCには影響しない。EUD580.126.12以前は非互換。DCGM4.3.x以降、Hopper subrevision3のVBIOS96.00.68.00.xx以降を条件別に確認する。 R595.112.07はSEC fault処理の再帰によるpanic修正と、Blackwellで指定TMA API・backing allocation128KB未満・dense non-overlappingでないtensorの残存問題を併記する。R580と混合せず、全修正完了とはしない。",
+      "hpci_implications_en": "Candidate configurations should be evaluated repeatedly with both center-specific workloads and shared kernels. GROMACS2026.4 removes host-timer load-imbalance reporting when halo communication is on GPU because those values were meaningless. It also fixes missing PME contributions in written forces and stale shift vectors in GPU non-local interactions. Preserve release/configuration identity when interpreting old timings and force checks; this establishes fixes, not validated speedups. mpWYQR uses fp32 for two Householder norm evaluations with other reflector work governed by fp16. Its deterministic accuracy remains at low-precision level. Authors evaluate QR residual and orthogonality on synthetic matrices using MKL on an Emerald Rapids CPU; GPU implementation is future work. This adds a concrete norm-range/accumulation failure boundary, not fp32-equivalent scientific accuracy. AMD reports five MONAI inference bundles on MI355X using BF16, channels-last 3D and torch.compile. The September21 vendor test uses one spleen CT input, five warmups and20 timed iterations. Support is Early Access; training remains future work. NVIDIA describes direct GPU ingest with Holoscan/DAQIRI and CyberEther/CUDA-X at the Allen Telescope Array. Its vendor account says the system can handle 2.4 Tb/s using RTX PRO 6000 Blackwell. GPU count and measurement method are unknown; this is neither a per-GPU throughput measurement nor independently reproduced performance. Tenstorrent v0.26.0 adds Qwen2.5-VL and olmOCR model/device entries. Its matrix marks Qwen2.5-VL-32B on T3K EXPERIMENTAL, 72B FUNCTIONAL, 7B on T3K/Galaxy COMPLETE, and olmOCR-2-7B-1025 on T3K COMPLETE. Galaxy recommendations are tt-smi5.2.0, firmware19.10.0.0 and tt-kmd2.9.0. These are maintainer support states, not independent correctness or HPC acceptance. Firmware19.17.1 disables MRISC powerdown on Galaxy to resolve GDDR issues; maintainers report a resulting1.6kW increase in Galaxy idle power. Preserve this version-specific stability/idle-energy tradeoff alongside inference v0.26.0 separately recommending19.10.0.0; no automatic upgrade or cross-version compatibility claim. DCGM4.7.1 requires diagnostic clients and hostengine to move together: older run messages are rejected, with run API versions10/11 and response12 required. It also rejects unsupported health-watch bits without replacing watches and preserves policies on invalid YAML imports. Retained bounded earlier observations, without fresh current-status verification: The single-A100 Poisson preprint times four fixed cycles based on prior runs; stopping with its lagged monitor requires five. Extrapolation is an estimate, not a bound. Propose recording the evaluated iterate, measured/fixed/extrapolated stopping evidence, extra cycles and monitor cost rather than equating fixed-cycle throughput with matched-quality time to solution. The local-POD preprint counts low-rank factor storage, excluding partition/index metadata, headers and encoding overhead. Greedy partitioning does not guarantee global minimum storage. Propose separating its conditional coefficient-space NRMSE scope from conservation, restart and downstream observables, and assessing actual encoded bytes plus compression/decompression/transfer cost before system-benefit claims. R580.196.07 has an attestation-ABI incompatibility below SDK2026.10.02, with no non-CC effect. EUD580.126.12 and earlier are incompatible. Qualify DCGM4.3.x+ and, for Hopper subrevision3, VBIOS96.00.68.00.xx+ separately. R595.112.07 records a SEC-fault recursion panic fix alongside a residual Blackwell TMA issue for listed APIs, backing allocations below128KB and tensors that are not dense non-overlapping. Keep this branch separate; the fix does not resolve every issue.",
       "source_ids": [
         "SRC-COMP008",
         "SRC-COMP009",
@@ -291,7 +292,11 @@
         "SRC-D31-ARCH009-01-02",
         "SRC-D31-ARCH009-02-02",
         "SRC-D31-OPS002-01-01",
-        "SRC-D31-OPS002-01-02"
+        "SRC-D31-OPS002-01-02",
+        "SRC-OCT23-APP016-1-1",
+        "SRC-OCT23-APP016-2-1",
+        "SRC-OCT23-OPS002-1-1",
+        "SRC-OCT23-OPS002-3-1"
       ]
     },
     {
@@ -2672,6 +2677,46 @@
       "publisher": "NVIDIA",
       "url": "https://catalog.ngc.nvidia.com/orgs/nvidia/cloud-native/containers/dcgm/4.7.1-ubi10/tags",
       "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-OCT23-APP016-1-1",
+      "title": "Mixed-Precision Coalesced Matrix-Free Multigrid with Vertex-Patch Smoothing",
+      "publisher": "Michał Wichrowski; author preprint on arXiv",
+      "url": "https://arxiv.org/html/2610.31496v1",
+      "source_class": "academic-primary",
+      "published_at": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-APP016-2-1",
+      "title": "Adaptive Local Proper Orthogonal Decomposition via Graph Partitioning and Provable Error-Bounded Lossy Compression for Parametric Series in Finite-Dimensional Function Spaces",
+      "publisher": "Roberto Nuca, Matteo Parsani, Lisandro Dalcin; author preprint on arXiv",
+      "url": "https://arxiv.org/html/2610.31375v1",
+      "source_class": "academic-primary",
+      "published_at": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-CROSS003-2-1",
+      "title": "Public evidence: 22-10",
+      "publisher": "Fujitsu",
+      "url": "https://global.fujitsu/en-global/newsroom/europe/2026/22-10",
+      "source_class": "vendor-official",
+      "published_at": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-OPS002-1-1",
+      "title": "Version580.196.07(Linux)/582.99(Windows) release notes",
+      "publisher": "NVIDIA",
+      "url": "https://docs.nvidia.com/datacenter/tesla/tesla-release-notes-580-196-07/index.html",
+      "source_class": "vendor-official",
+      "published_at": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-OCT23-OPS002-3-1",
+      "title": "Version595.112.07(Linux)/597.30(Windows) release notes",
+      "publisher": "NVIDIA",
+      "url": "https://docs.nvidia.com/datacenter/tesla/tesla-release-notes-595-112-07/index.html",
+      "source_class": "vendor-official",
+      "published_at": "2026-10-22"
     }
   ],
   "coverage_gaps": [
@@ -2791,7 +2836,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-DAILY41-BOUNDED-PUBLIC-20261031",
-    "human_approval_directive_id": "DIR-900167"
+    "publication_decision_id": "PUBDEC-LEGACY25-BOUNDED-20261031",
+    "human_approval_directive_id": "DIR-900168"
   }
 }
