@@ -41,8 +41,8 @@
       "summary_en": "Track specifications, implementations, and GPU/NIC support separately.",
       "current_state_ja": "MPI 5.0資料、MPICH 5.0、UCX/UCCの公開資料を基準にします。 2026-10-03再確認では、Open MPI 5.0.11、MPICH 5.0.2、UCX 1.22.0、UCC 1.9.0、libfabric 2.7.0とNCCL/RCCLの版別条件を追加した。標準ABIの言語差、device APIのprovider対応、配布版とdevelop、実験経路を区別する。 今回の限定的な追補：NCCLのB100 PCIe MLoPartのCUDA error 101条件の既知問題とvendor workaround NCCL_CUMEM_ENABLE=0を限定して追記する。nccl4py実験bindingとlib/device IR整合、barrier終了・event全rank一致・CUDA条件を分ける。upstream issue closedはAuroraのwrong-result適合確認ではない。Open MPI5.0.11 download rowの9月16日と8月changelogを区別し、2月source日付を現行release日へ誤用しない。NCCL表示release stampの年・timezone不明を保持。",
       "current_state_en": "MPI 5.0 documents, MPICH 5.0, and UCX/UCC public materials form the baseline. The 2026-10-03 recheck adds Open MPI 5.0.11, MPICH 5.0.2, UCX 1.22.0, UCC 1.9.0, libfabric 2.7.0 and version-specific NCCL/RCCL conditions. Distinguish language-specific standard ABI, provider implementation of device APIs, packaged versus development code, and experimental paths. Scoped additions in this batch: Add the configuration-scoped B100 PCIe MLoPart NCCL allocation issue with CUDA error 101 and vendor NCCL_CUMEM_ENABLE=0 workaround. Separate experimental nccl4py binding/lib/device-IR matching, barrier teardown, all-rank events and CUDA requirements. A closed upstream issue does not qualify Aurora wrong-result recovery. Distinguish Open MPI 5.0.11 download-row September 16 from August changelog and avoid using the old February source date for the current release. Retain unknown NCCL release-label year/timezone.",
-      "hpci_implications_ja": "候補ノードとファブリックの組合せごとに適合試験が必要です。 ABI、起動系、provider、GPU/NIC、実際の転送経路、build flagsを固定し、正確性・終了処理・障害回復と実アプリ性能を別に検証する。 評価案として、peer死亡後の終了・取消・再開を版固定で区別し、上流issueの提案と公開修正版・現地検証を別状態で記録する。 UCXの公式releaseはv1.23.0-rc2を10月27日付のPre-releaseとして表示する。前回のRC1確認より後の候補版だが、10月30～31日の新規発表ではない。1.22.0の安定版境界を保持し、GA・修正内容・性能・施設適合を推定しない。",
-      "hpci_implications_en": "Each candidate node/fabric combination needs conformance testing. Pin ABI, launch stack, provider, GPU/NIC, actual transfer paths and build flags; separately qualify correctness, teardown, recovery and application performance. Proposed evaluation: distinguish pinned-version teardown, cancellation and restart after peer failure, and separately record issue proposals, released fixes and site validation. The official UCX release identifies v1.23.0-rc2 as an October27 prerelease, later than the previously checked RC1. This is a previously missed status update, not October30–31 news. Retain the1.22.0 stable boundary; GA, specific fixes, performance and site qualification are not established.",
+      "hpci_implications_ja": "候補ノードとファブリックの組合せごとに適合試験が必要です。 ABI、起動系、provider、GPU/NIC、実際の転送経路、build flagsを固定し、正確性・終了処理・障害回復と実アプリ性能を別に検証する。 評価案として、peer死亡後の終了・取消・再開を版固定で区別し、上流issueの提案と公開修正版・現地検証を別状態で記録する。 UCXの公式releaseはv1.23.0-rc2を10月27日付のPre-releaseとして表示する。前回のRC1確認より後の候補版だが、10月30～31日の新規発表ではない。1.22.0の安定版境界を保持し、GA・修正内容・性能・施設適合を推定しない。 過去の限定確認記録に基づく追補（現在状態の再確認ではない）： 10月30日19:36UTCの確認記録では、NCCL #2499について上流担当者が10月26日に再現と候補PR2507による自己reproducerの解消を報告する。PRは確認時点でopenであり、merge・release・元GB10環境再現・施設受入は未確認。Socket helperのqueue順序と、別issue2506のpeer故障時終了を同じ原因にしない。 10月30日19:36UTCの確認記録では、NCCL #2503の上流担当者が10月27日にHopper multi-node Confidential Computingは未supportと記す。reporterのhost-staging PR2511と構成限定試験は確認時点で提案段階で、vendor platform support・一般修正・他issueとの共通原因を確定しない。性能評価の前に版・topology・security modeのsupport境界を確認する案。",
+      "hpci_implications_en": "Each candidate node/fabric combination needs conformance testing. Pin ABI, launch stack, provider, GPU/NIC, actual transfer paths and build flags; separately qualify correctness, teardown, recovery and application performance. Proposed evaluation: distinguish pinned-version teardown, cancellation and restart after peer failure, and separately record issue proposals, released fixes and site validation. The official UCX release identifies v1.23.0-rc2 as an October27 prerelease, later than the previously checked RC1. This is a previously missed status update, not October30–31 news. Retain the1.22.0 stable boundary; GA, specific fixes, performance and site qualification are not established. Retained bounded earlier observations, without fresh current-status verification: The retained October30 19:36UTC review records an October26 upstream reproduction of NCCL #2499 and a report that candidate PR2507 fixes that contributor’s reproducer. The PR was open at that check; merge, release, original GB10 reproduction and site acceptance were unverified. Do not equate Socket-helper queue ordering with the separate #2506 dead-peer teardown issue. The retained October30 19:36UTC review records an October27 contributor statement that multi-node NCCL on Hopper in Confidential Computing mode is unsupported. Reporter host-staging PR2511 and configuration-scoped tests remained proposed at that check; they establish neither vendor platform support, a general fix nor a shared cause with other issues. Propose a version/topology/security-mode support gate before transport performance qualification.",
       "source_ids": [
         "SRC-PORT014",
         "SRC-PORT026",
@@ -67,7 +67,11 @@
         "SRC-OCT05-SSW003-14",
         "SRC-OCT05-SSW003-15",
         "SRC-OCT23-SSW003-NCCL2506",
-        "SRC-D31-SSW003-01-01"
+        "SRC-D31-SSW003-01-01",
+        "SRC-OCT23-SSW003-1-1",
+        "SRC-OCT23-SSW003-1-2",
+        "SRC-OCT23-SSW003-2-1",
+        "SRC-OCT23-SSW003-2-2"
       ]
     },
     {
@@ -712,6 +716,38 @@
       "url": "https://open-science-cloud.ec.europa.eu/news/eosc-eu-node-connects-eurohpc-federation-platform-bridging-european-research-data-and",
       "source_class": "project-official",
       "published_at": "2026-10-29"
+    },
+    {
+      "source_id": "SRC-OCT23-SSW003-1-1",
+      "title": "NCCL issue #2499: Socket queue investigation",
+      "publisher": "NVIDIA/nccl contributors",
+      "url": "https://github.com/NVIDIA/nccl/issues/2499",
+      "source_class": "project-official",
+      "published_at": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-OCT23-SSW003-1-2",
+      "title": "NCCL candidate PR #2507",
+      "publisher": "NVIDIA/nccl contributors",
+      "url": "https://github.com/NVIDIA/nccl/pull/2507",
+      "source_class": "project-official",
+      "published_at": "2026-10-25"
+    },
+    {
+      "source_id": "SRC-OCT23-SSW003-2-1",
+      "title": "NCCL issue #2503: topology and CC support discussion",
+      "publisher": "NVIDIA/nccl contributors",
+      "url": "https://github.com/NVIDIA/nccl/issues/2503",
+      "source_class": "project-official",
+      "published_at": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-SSW003-2-2",
+      "title": "NCCL candidate PR #2511",
+      "publisher": "NVIDIA/nccl contributors",
+      "url": "https://github.com/NVIDIA/nccl/pull/2511",
+      "source_class": "project-official",
+      "published_at": "2026-10-26"
     }
   ],
   "coverage_gaps": [
@@ -743,7 +779,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-DAILY41-BOUNDED-PUBLIC-20261031",
-    "human_approval_directive_id": "DIR-900167"
+    "publication_decision_id": "PUBDEC-LEGACY25-BOUNDED-20261031",
+    "human_approval_directive_id": "DIR-900168"
   }
 }

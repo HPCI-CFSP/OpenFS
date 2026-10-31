@@ -151,8 +151,8 @@
       "summary_en": "Evaluates complete agent configurations including the harness, tools, permissions, state management, recovery, and cost rather than the base model alone.",
       "current_state_ja": "既存のSWE-bench、GAIA、tau-bench等に加え、2026年8月にTerminal-Bench 4.0とTerminal-Bench-Science 0.1が公開されました。端末作業と科学研究作業の成功率、実行資源、評価器、モデルとハーネスの組合せを区別します。版による課題・時間上限の変更があるため、異なる版のスコアを同じ尺度で直接比較しません。",
       "current_state_en": "In addition to SWE-bench, GAIA, tau-bench and related suites, Terminal-Bench 4.0 and Terminal-Bench-Science 0.1 were released in August 2026. Distinguish terminal/scientific task success, execution resources, verifiers and model-harness combinations. Changed tasks and time budgets prevent direct score comparisons across incompatible versions.",
-      "hpci_implications_ja": "OpenFSでは最終的な正答率だけでなく、根拠の追跡可能性、再現性、費用、権限逸脱、中間状態の保存、失敗からの回復も記録する。結果はモデル名だけでなく、モデルとハーネスの構成単位で報告する。 10月28日のdraftレビューは、保留中の遅延変換報告へ分布上の差を追加する。変換後の下限clampは下限への確率集中を生み、棄却再標本化と同じ分布ではない。既定値と負荷モデルの根拠は未合意で、採択済み修正・修正版releaseではない。 MLCommonsはLLM judgeから専用の決定的分類器へ変更し、Safetyを固定参照分布のpercentileへ移したと報告する。Safety1.2.1結果は公開、Jailbreak1.1結果は通知期間後の予定。対象は単一turn英語の有害応答で、agent操作・科学的正しさを含まず、課題成功率や負荷・遅延・電力量の代替ではない。",
-      "hpci_implications_en": "In addition to final accuracy, OpenFS should record evidence traceability, reproducibility, cost, permission violations, preservation of intermediate state, and recovery from failure. Results should be reported for each model-harness configuration rather than by model name alone. The October28 draft review adds a distribution-level tradeoff to the pending delay-transform report: enforcing a post-scaling floor by clamping creates mass at the floor rather than preserving rejection-sampling semantics. The proposed default and workload rationale remain unresolved; this is neither accepted remediation nor a released fix. MLCommons reports replacing LLM judges with its deterministic classifier and moving Safety to fixed-reference percentiles; Safety1.2.1 public results are available while Jailbreak1.1 public results await notification. Scope is single-turn English harmful-response evaluation, excluding agent actions and scientific correctness. These scores cannot substitute for task success or load, latency and energy measurements.",
+      "hpci_implications_ja": "OpenFSでは最終的な正答率だけでなく、根拠の追跡可能性、再現性、費用、権限逸脱、中間状態の保存、失敗からの回復も記録する。結果はモデル名だけでなく、モデルとハーネスの構成単位で報告する。 10月28日のdraftレビューは、保留中の遅延変換報告へ分布上の差を追加する。変換後の下限clampは下限への確率集中を生み、棄却再標本化と同じ分布ではない。既定値と負荷モデルの根拠は未合意で、採択済み修正・修正版releaseではない。 MLCommonsはLLM judgeから専用の決定的分類器へ変更し、Safetyを固定参照分布のpercentileへ移したと報告する。Safety1.2.1結果は公開、Jailbreak1.1結果は通知期間後の予定。対象は単一turn英語の有害応答で、agent操作・科学的正しさを含まず、課題成功率や負荷・遅延・電力量の代替ではない。 過去の限定確認記録に基づく追補（現在状態の再確認ではない）： 同じ実体を示す識別子ごとに、実体認識・知識検索・構造から計算する正しさを別採点し、正規化・decode・許容回答を固定する。v1のself-distillationを厳密なrelation-held-out汎化や科学workflow完遂へ拡張しない。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。 潜在分布設定・context依存変換・生成後delay・実replay時刻を分離照合し、component/global境界の優先順位・seed/版fingerprintを保持する。issueと後日のcontributor再現申告をmaintainer確認・採択patch・修正版releaseとしない。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+      "hpci_implications_en": "In addition to final accuracy, OpenFS should record evidence traceability, reproducibility, cost, permission violations, preservation of intermediate state, and recovery from failure. Results should be reported for each model-harness configuration rather than by model name alone. The October28 draft review adds a distribution-level tradeoff to the pending delay-transform report: enforcing a post-scaling floor by clamping creates mass at the floor rather than preserving rejection-sampling semantics. The proposed default and workload rationale remain unresolved; this is neither accepted remediation nor a released fix. MLCommons reports replacing LLM judges with its deterministic classifier and moving Safety to fixed-reference percentiles; Safety1.2.1 public results are available while Jailbreak1.1 public results await notification. Scope is single-turn English harmful-response evaluation, excluding agent actions and scientific correctness. These scores cannot substitute for task success or load, latency and energy measurements. Retained bounded earlier observations, without fresh current-status verification: Test co-referring identifiers separately: entity recognition, knowledge retrieval and structure-computable correctness need distinct scoring. Pin normalization, decoding and accepted answers. ChemIDBench v1 supports this bounded evaluation axis; its self-distillation is cross-prompt transfer, not strictly relation-held-out generalization or scientific-workflow success. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation. Check latent parameters, context-dependent transforms, final generated delays and actual replay timing separately. Preserve component/global bound precedence and seed/version fingerprints. The issue and later contributor reproduction report motivate a test; they do not establish maintainer confirmation, an accepted patch or released remediation. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
       "source_ids": [
         "SRC-WORK020",
         "SRC-WORK021",
@@ -168,7 +168,8 @@
         "SRC-WORK057",
         "SRC-D31-APP013-01-01",
         "SRC-D31-APP013-01-02",
-        "SRC-D31-APP013-02-01"
+        "SRC-D31-APP013-02-01",
+        "SRC-OCT23-APP013-1-1"
       ]
     },
     {
@@ -204,15 +205,16 @@
       "summary_en": "Tracks models extrapolating candidate architecture performance, power, and scaling from current-system measurements.",
       "current_state_ja": "基本設計報告書はA64FX/GraceとA100/GH200の比較を記載するが、CPUでは実測比較後の係数調整も述べる。これは未発売GPUのブラインド予測精度を証明しない。受入済み公開アーティファクトのmodel_contract.output_classはlegacy-what-if-illustration、validated_model_cardsは空である。既存試算は未校正入力と質問票の設計仮定を用い、0.5–1.5倍の範囲も便宜的な例示で、信頼区間・性能保証ではない。 今回の限定的な追補：今回の公式Graph500読書記録で2026年6月BFSの富岳3位、204,068 GTEPS、scale 43、152,064ノードを確認した。10月の新計測ではなく、旧取得失敗は履歴として保持する。Benchpark文書の再実行時の出力上書き注意を踏まえ、各反復の別出力・設定・build identityを保存する評価条件を追加する。適合度は独立holdout誤差ではない。",
       "current_state_en": "The basic-design report compares A64FX/Grace and A100/GH200, but also describes CPU coefficient adjustment after measurement comparison. This does not prove blind prediction accuracy for unreleased GPUs. The accepted public artifact has model_contract.output_class=legacy-what-if-illustration and an empty validated_model_cards list. Its legacy calculations use uncalibrated inputs and questionnaire assumptions; the 0.5–1.5x range is illustrative, not a confidence interval or performance guarantee. Scoped additions in this batch: The official Graph500 receipt verifies Fugaku third in June 2026 BFS: 204,068 GTEPS, scale 43, 152,064 nodes. This is not an October measurement; retain the prior failed-read history. Benchpark warns that reruns overwrite outputs, motivating separate result/configuration/build identities for repetitions. Fit quality is not independent holdout accuracy.",
-      "hpci_implications_ja": "既存試算を検証済み将来性能予測・調達根拠にしない。源機種の公開仕様、源機種の公開アプリ実測、対象機種の公開仕様だけを予測入力とし、対象実測はブラインド検証へ隔離する。",
-      "hpci_implications_en": "Do not use legacy illustrations as validated future-performance forecasts or procurement evidence. Prediction inputs are limited to source public specifications, source public application observations and target public specifications; isolate target measurements for blind validation.",
+      "hpci_implications_ja": "既存試算を検証済み将来性能予測・調達根拠にしない。源機種の公開仕様、源機種の公開アプリ実測、対象機種の公開仕様だけを予測入力とし、対象実測はブラインド検証へ隔離する。 過去の限定確認記録に基づく追補（現在状態の再確認ではない）： 設定context容量・概算prompt目標・実tokenを分け、cache・並行数・反復境界を併記する。単一GPUの日時付きraw記録を最大容量試験・信頼区間・品質同等性・機種やruntimeの因果順位にしない。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+      "hpci_implications_en": "Do not use legacy illustrations as validated future-performance forecasts or procurement evidence. Prediction inputs are limited to source public specifications, source public application observations and target public specifications; isolate target measurements for blind validation. Retained bounded earlier observations, without fresh current-status verification: Record configured context capacity, estimated prompt target and actual token count separately, alongside cache, concurrency and repetition boundaries. This dated single-GPU snapshot is not a full-capacity test, confidence interval, quality comparison or causal hardware/runtime ranking. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
       "source_ids": [
         "SRC-WORK007",
         "SRC-WORK008",
         "SRC-WORK018",
         "SRC-OCT03-APP002-RIKEN-REPORT",
         "SRC-OCT05-APP002-01",
-        "SRC-OCT05-APP002-06"
+        "SRC-OCT05-APP002-06",
+        "SRC-OCT23-APP013-2-1"
       ]
     },
     {
@@ -224,8 +226,8 @@
       "summary_en": "OpenFS provisional gates for periodic decisions on workload composition, execution frequency, prediction error, and procurement use.",
       "current_state_ja": "HPCI公式統計は資源別の応募・採択、分野構成、要求・配分資源量、参加者数を公開し、利用報告書はアプリケーション名・計算機・分野・年度で検索できる。富岳年報は、2024年度B期と2025年度A期に要求資源量が提供可能量を上回ったこと、一般課題の上限縮小、上半期の利用実績に基づく資源の返却・再配分も報告している。一方、全センターの主要ワークロード、実消費資源量別の規模分布、共通ベンチマークとの対応は未確定である。",
       "current_state_en": "Official HPCI statistics publish resource-level application and acceptance data, field composition, requested and allocated resources, and participant counts, while user reports can be searched by application, system, field, and year. The Fugaku annual report also records requested resources exceeding available capacity in the FY2024-B and FY2025-A calls, a lower cap for general projects, and the return and reallocation of resources based on first-half utilization. Top workloads across all centers, scale distributions by actual resource consumption, and mappings to common benchmarks remain unresolved.",
-      "hpci_implications_ja": "固定スイートにせず、安定コアと更新可能な拡張部を分け、履歴を保ったまま四半期ごとに見直す。 ECMWFはVALORADAのリスク評価教材2種を紹介。気候データ処理を自動化しても、地域の曝露・脆弱性データ統合には手作業が残る。需要項目の候補は、気候ハザード計算と分けた地域入力の出所・標準化・手作業量。 エアロゾル予報では、同化する総AODだけで個々の粒子種を拘束できず配分仮定が必要。科学的品質の需要項目候補として、粒子種・粒径の観測可能性、観測誤差、集約観測から状態変数への配分仮定を記録する。 GROMACS2026.4はGPU halo通信時のhost timerによるload imbalance表示を無意味として削除し、出力forceのPME寄与欠落とGPU非局所相互作用の古いshift vector使用を修正。旧計時・force確認は版と構成を固定して解釈する。修正公表であり速度向上やHPCI妥当性の検証ではない。 DEFAIR tutorialのfixture manifestは9月28日時点のproduct path・容量・object ETagを記録し、folder productには単一ETagがない。Dask読込例は40ファイルのFCI scene3組・合計3315.8MBだが、実読込量はchannel/region指定で減る。既存前処理候補の入力同定を具体化する一方、package版固定・数値許容差・性能実測は未解決。 mpWYQRはHouseholderの2つのnorm評価にfp32を使い、他のreflector計算はfp16を主体とする。決定論的な精度は低精度水準のまま。著者はEmerald Rapids CPUとMKLで合成行列のQR残差・直交性を評価し、GPU実装は今後の課題とする。normの範囲・累積演算に関する具体的な失敗境界であり、fp32相当の科学的精度を意味しない。",
-      "hpci_implications_en": "Separate a stable core from an evolvable extension set and review quarterly while retaining history. ECMWF announces two VALORADA risk-assessment books. Local exposure/vulnerability integration still requires substantial manual work despite automated climate-data workflows. Candidate demand field: provenance, standardisation and manual effort for local exposure/vulnerability inputs, distinct from climate hazard computation. The aerosol-forecasting account identifies an observation-to-state ambiguity: assimilated total AOD does not uniquely constrain individual aerosol types. Candidate scientific-quality demand field: species/size observability, observational uncertainty and assumptions in allocating aggregate measurements across state variables. GROMACS2026.4 removes host-timer load-imbalance reporting when halo communication is on GPU because those values were meaningless. It also fixes missing PME contributions in written forces and stale shift vectors in GPU non-local interactions. Preserve release/configuration identity when interpreting old timings and force checks; this establishes fixes, not validated speedups. The DEFAIR tutorial fixture manifest records product paths, sizes and object ETags as of September28, while folder products have no single ETag. Its Dask-read example lists three40-file FCI scenes totaling3315.8MB; requested channels/regions read less. This supplies concrete input references for the pending preprocessing candidate, while package pinning, numerical tolerances and measured performance remain open. mpWYQR uses fp32 for two Householder norm evaluations with other reflector work governed by fp16. Its deterministic accuracy remains at low-precision level. Authors evaluate QR residual and orthogonality on synthetic matrices using MKL on an Emerald Rapids CPU; GPU implementation is future work. This adds a concrete norm-range/accumulation failure boundary, not fp32-equivalent scientific accuracy.",
+      "hpci_implications_ja": "固定スイートにせず、安定コアと更新可能な拡張部を分け、履歴を保ったまま四半期ごとに見直す。 ECMWFはVALORADAのリスク評価教材2種を紹介。気候データ処理を自動化しても、地域の曝露・脆弱性データ統合には手作業が残る。需要項目の候補は、気候ハザード計算と分けた地域入力の出所・標準化・手作業量。 エアロゾル予報では、同化する総AODだけで個々の粒子種を拘束できず配分仮定が必要。科学的品質の需要項目候補として、粒子種・粒径の観測可能性、観測誤差、集約観測から状態変数への配分仮定を記録する。 GROMACS2026.4はGPU halo通信時のhost timerによるload imbalance表示を無意味として削除し、出力forceのPME寄与欠落とGPU非局所相互作用の古いshift vector使用を修正。旧計時・force確認は版と構成を固定して解釈する。修正公表であり速度向上やHPCI妥当性の検証ではない。 DEFAIR tutorialのfixture manifestは9月28日時点のproduct path・容量・object ETagを記録し、folder productには単一ETagがない。Dask読込例は40ファイルのFCI scene3組・合計3315.8MBだが、実読込量はchannel/region指定で減る。既存前処理候補の入力同定を具体化する一方、package版固定・数値許容差・性能実測は未解決。 mpWYQRはHouseholderの2つのnorm評価にfp32を使い、他のreflector計算はfp16を主体とする。決定論的な精度は低精度水準のまま。著者はEmerald Rapids CPUとMKLで合成行列のQR残差・直交性を評価し、GPU実装は今後の課題とする。normの範囲・累積演算に関する具体的な失敗境界であり、fp32相当の科学的精度を意味しない。 過去の限定確認記録に基づく追補（現在状態の再確認ではない）： ECMWFの10月22日TIGGE記事は共通格子の合意とデータ駆動型アンサンブルの受入準備を説明する。モデル世代、入力生成、格子、ensemble構成、科学的・確率予測の評価条件を分けて記録するOpenFS評価案。準備を拡張稼働・科学的検証完了とせず、科学品質とruntime予測誤差を別に扱う。 DEFAIR紹介はxarray/Dask API、地理座標・HEALPixへの再投影、NetCDF・GeoTIFF・Zarr出力を説明する。観測入力からAI利用までの変換・前処理・再投影・書出しを別工程として、入力・版・数値確認と対応付ける評価案。形式対応は科学的認証、runtime・memory・I/O実測や新しいClimateDTシミュレーション公開ではない。 単一A100・Poisson問題の著者preprintは、先行測定に基づく固定4cycleを計時する一方、前反復を評価する遅延monitorで停止すると5cycleを要すると記す。外挿monitorは上界ではなく推定である。判定対象の反復、実測/固定/外挿の別、追加cycleとmonitor費用を記録し、固定cycle性能を同じ品質までのtime-to-solutionとしない評価案。 局所POD preprintの格納量は低rank因子を数え、partition/index metadata・header・encoding費用を除く。greedy分割は全体最小格納量を保証しない。係数空間NRMSEの条件付き範囲を保存則・再開・下流観測量と分け、実encoded bytes、圧縮/展開/転送の全費用を確認してからsystem利得を判断する評価案。",
+      "hpci_implications_en": "Separate a stable core from an evolvable extension set and review quarterly while retaining history. ECMWF announces two VALORADA risk-assessment books. Local exposure/vulnerability integration still requires substantial manual work despite automated climate-data workflows. Candidate demand field: provenance, standardisation and manual effort for local exposure/vulnerability inputs, distinct from climate hazard computation. The aerosol-forecasting account identifies an observation-to-state ambiguity: assimilated total AOD does not uniquely constrain individual aerosol types. Candidate scientific-quality demand field: species/size observability, observational uncertainty and assumptions in allocating aggregate measurements across state variables. GROMACS2026.4 removes host-timer load-imbalance reporting when halo communication is on GPU because those values were meaningless. It also fixes missing PME contributions in written forces and stale shift vectors in GPU non-local interactions. Preserve release/configuration identity when interpreting old timings and force checks; this establishes fixes, not validated speedups. The DEFAIR tutorial fixture manifest records product paths, sizes and object ETags as of September28, while folder products have no single ETag. Its Dask-read example lists three40-file FCI scenes totaling3315.8MB; requested channels/regions read less. This supplies concrete input references for the pending preprocessing candidate, while package pinning, numerical tolerances and measured performance remain open. mpWYQR uses fp32 for two Householder norm evaluations with other reflector work governed by fp16. Its deterministic accuracy remains at low-precision level. Authors evaluate QR residual and orthogonality on synthetic matrices using MKL on an Emerald Rapids CPU; GPU implementation is future work. This adds a concrete norm-range/accumulation failure boundary, not fp32-equivalent scientific accuracy. Retained bounded earlier observations, without fresh current-status verification: ECMWF’s October22 TIGGE article describes common-grid agreement and preparation for data-driven ensembles. Propose recording model generation, input preparation, grid, ensemble configuration and scientific/probabilistic evaluation conditions separately. Preparation is not operational expansion or completed validation; scientific quality and runtime-prediction error remain distinct. The DEFAIR introduction describes xarray/Dask APIs, geographic/HEALPix reprojection and NetCDF/GeoTIFF/Zarr output. Propose separating observation transformation, preprocessing, reprojection and writing into demand stages tied to pinned inputs, versions and numerical checks. Format support is not scientific certification, measured runtime/memory/I/O or a new ClimateDT simulation release. The single-A100 Poisson preprint times four fixed cycles based on prior runs; stopping with its lagged monitor requires five. Extrapolation is an estimate, not a bound. Propose recording the evaluated iterate, measured/fixed/extrapolated stopping evidence, extra cycles and monitor cost rather than equating fixed-cycle throughput with matched-quality time to solution. The local-POD preprint counts low-rank factor storage, excluding partition/index metadata, headers and encoding overhead. Greedy partitioning does not guarantee global minimum storage. Propose separating its conditional coefficient-space NRMSE scope from conservation, restart and downstream observables, and assessing actual encoded bytes plus compression/decompression/transfer cost before system-benefit claims.",
       "source_ids": [
         "SRC-WORK007",
         "SRC-WORK008",
@@ -243,7 +245,10 @@
         "SRC-D31-APP002-02-03",
         "SRC-D31-APP002-02-04",
         "SRC-D31-APP016-01-01",
-        "SRC-D31-APP016-01-02"
+        "SRC-D31-APP016-01-02",
+        "SRC-OCT23-APP001-1-1",
+        "SRC-OCT23-APP016-1-1",
+        "SRC-OCT23-APP016-2-1"
       ]
     },
     {
@@ -2270,6 +2275,45 @@
       "url": "https://arxiv.org/html/2610.38537v1",
       "source_class": "academic-primary",
       "published_at": "2026-10-28"
+    },
+    {
+      "source_id": "SRC-OCT23-APP001-1-1",
+      "title": "TIGGE at 20 – celebrating two decades of global ensemble forecast data",
+      "publisher": "ECMWF",
+      "url": "https://www.ecmwf.int/en/about/media-centre/focus/2026/tigge-20-celebrating-two-decades-global-ensemble-forecast-data",
+      "source_class": "project-official",
+      "published_at": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-APP013-1-1",
+      "title": "Author preprint 2610.30903v1",
+      "publisher": "Preprint authors on arXiv",
+      "url": "https://arxiv.org/html/2610.30903v1",
+      "source_class": "academic-primary",
+      "published_at": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-APP013-2-1",
+      "title": "Public evidence: gemma-4-5090-context-2026-10-22.json",
+      "publisher": "Measurement author (llm-speed.com)",
+      "url": "https://llm-speed.com/data/gemma-4-5090-context-2026-10-22.json",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT23-APP016-1-1",
+      "title": "Mixed-Precision Coalesced Matrix-Free Multigrid with Vertex-Patch Smoothing",
+      "publisher": "Michał Wichrowski; author preprint on arXiv",
+      "url": "https://arxiv.org/html/2610.31496v1",
+      "source_class": "academic-primary",
+      "published_at": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-APP016-2-1",
+      "title": "Adaptive Local Proper Orthogonal Decomposition via Graph Partitioning and Provable Error-Bounded Lossy Compression for Parametric Series in Finite-Dimensional Function Spaces",
+      "publisher": "Roberto Nuca, Matteo Parsani, Lisandro Dalcin; author preprint on arXiv",
+      "url": "https://arxiv.org/html/2610.31375v1",
+      "source_class": "academic-primary",
+      "published_at": "2026-10-22"
     }
   ],
   "coverage_gaps": [
@@ -2378,7 +2422,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-DAILY41-BOUNDED-PUBLIC-20261031",
-    "human_approval_directive_id": "DIR-900167"
+    "publication_decision_id": "PUBDEC-LEGACY25-BOUNDED-20261031",
+    "human_approval_directive_id": "DIR-900168"
   }
 }

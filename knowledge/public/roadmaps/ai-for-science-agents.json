@@ -41,8 +41,8 @@
       "summary_en": "Cover parallelism, memory, checkpoints, and latency.",
       "current_state_ja": "Megatron、DeepSpeed、vLLM、MLPerfの公開資料を基準にします。 今回の限定的な追補：ECMWFは入力解析世代の変更でGraphCast・Aurora・AIFS v1.1の精度変化を報告し、AIFS v2適応と外部モデルの同センター実時間運用停止を説明する。モデルの世界的廃止ではない。Anemoiの研究例は約100km・6時間入力から約30km・1時間出力へ反復samplerで変換するが、運用日・全系節約は未報告。AgentActionBenchは150論文（AI4Science30）、人手注釈15、GPT-4o-mini採点で行動過程と5段階を評価する。rubric総合点は完全再現論文の割合ではない。 PyTorch DCP2.14のstaging thread所有・cleanupをmemory条件と共に確認する。JSON checkpoint packageのlegacy resume条件は既存msgpack advisoryと別で、JS/TS Storeの設定依存cross-user認可問題を全Python packageの一般脆弱性へ拡張しない。package版・serializer・principal・expiry・checkpoint再開・Store認可を既存agent試験へ組み込み、site診断や再現済みとはしない。",
       "current_state_en": "Public Megatron, DeepSpeed, vLLM, and MLPerf materials form the baseline. Scoped additions in this batch: ECMWF reports quality changes for GraphCast, Aurora and AIFS v1.1 after initial-condition changes, adaptation of AIFS v2 and cessation of its external-model realtime runs, not worldwide model retirement. Anemoi research maps roughly 100km/six-hour inputs to 30km/hourly outputs through iterative sampling without reported deployment dates or end-to-end savings. AgentActionBench covers 150 papers (30 AI4Science), 15 human-annotated papers and GPT-4o-mini scoring of actions/five stages. Overall rubric scores are not fractions of completely reproduced papers. Add PyTorch DCP 2.14 staging-thread ownership/cleanup alongside memory conditions. Keep JSON-package legacy resume conditions distinct from the existing msgpack advisory; configuration-dependent JS/TS Store authorization does not establish a universal Python vulnerability. Add package versions, serializers, principals, expiry, checkpoint resumption and Store authorization to existing agent tests without site diagnosis or reproduction claims.",
-      "hpci_implications_ja": "学習と推論を同じピーク演算値だけで評価せず、通信、KV cache、データ経路を測定します。 非同期保存の境界と等資源推論比較を受入試験に加える。 公式2.15 releaseにより従前のRC限定保留を更新できる。nccl groupは新backendが既定となりlegacy rollbackとhang診断を示すが関連分散APIはunstable。Python3.10対応を終了。backend・環境適合を再確認する案で、施設受入ではない。 rc2もprerelease。noteはwheel1.4.0rc2.post1とcontainer/docs1.4.0rc2を区別しtransceiverV2のV1対応削除を示す。RPC/MPI初期化hangを記載。rc1取消/schema問題は直接の解決証拠まで保留し、記載消失を修正証明としない。",
-      "hpci_implications_en": "Do not evaluate training and inference by peak arithmetic alone; measure communication, KV cache, and data paths. Add asynchronous-save boundaries and equal-resource serving comparisons to acceptance tests. The official 2.15 release replaces the prior RC-only hold. It defaults nccl groups to the rewritten backend, with legacy rollback and hang diagnostics; the relevant distributed APIs remain unstable. Python 3.10 support is removed. Requalify backend and environment compatibility; release is not facility acceptance. rc2 stays prerelease. Its note distinguishes wheel 1.4.0rc2.post1 from container/docs 1.4.0rc2 and removes V1 support from transceiver V2. It lists an RPC/MPI initialization hang. Preserve rc1 cancellation/schema concerns until direct resolution evidence; note omission does not prove fixes.",
+      "hpci_implications_ja": "学習と推論を同じピーク演算値だけで評価せず、通信、KV cache、データ経路を測定します。 非同期保存の境界と等資源推論比較を受入試験に加える。 公式2.15 releaseにより従前のRC限定保留を更新できる。nccl groupは新backendが既定となりlegacy rollbackとhang診断を示すが関連分散APIはunstable。Python3.10対応を終了。backend・環境適合を再確認する案で、施設受入ではない。 rc2もprerelease。noteはwheel1.4.0rc2.post1とcontainer/docs1.4.0rc2を区別しtransceiverV2のV1対応削除を示す。RPC/MPI初期化hangを記載。rc1取消/schema問題は直接の解決証拠まで保留し、記載消失を修正証明としない。 過去の限定確認記録に基づく追補（現在状態の再確認ではない）： TitanRLは学習と生成でmodelコードを共有し、対応on-policy・batch-invariant構成でlog probabilityのbitwise一致を報告する。この条件を任意backend、off-policy、障害再開へ一般化しない。内部clusterの開発者測定はMLCommons審査済み提出やHPCI受入ではない。 1.4.0rc1はKV cache manager V2とPython KV transceiverを既定にする。release notesにはA100のstream取消後KV転送失敗とQwen3 JSON-schema例の無制限応答が既知問題として残る。RC・未解決範囲を保持し、GAや全修正完了としない。 設定context容量・概算prompt目標・実tokenを分け、cache・並行数・反復境界を併記する。単一GPUの日時付きraw記録を最大容量試験・信頼区間・品質同等性・機種やruntimeの因果順位にしない。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+      "hpci_implications_en": "Do not evaluate training and inference by peak arithmetic alone; measure communication, KV cache, and data paths. Add asynchronous-save boundaries and equal-resource serving comparisons to acceptance tests. The official 2.15 release replaces the prior RC-only hold. It defaults nccl groups to the rewritten backend, with legacy rollback and hang diagnostics; the relevant distributed APIs remain unstable. Python 3.10 support is removed. Requalify backend and environment compatibility; release is not facility acceptance. rc2 stays prerelease. Its note distinguishes wheel 1.4.0rc2.post1 from container/docs 1.4.0rc2 and removes V1 support from transceiver V2. It lists an RPC/MPI initialization hang. Preserve rc1 cancellation/schema concerns until direct resolution evidence; note omission does not prove fixes. Retained bounded earlier observations, without fresh current-status verification: TitanRL reports shared training/generation model code and bitwise log-probability agreement in supported on-policy batch-invariant configurations. This does not establish arbitrary-backend, off-policy or restart equivalence. Developer internal-cluster measurements are not adjudicated MLCommons submissions or HPCI acceptance. Version1.4.0rc1 defaults to KV cache manager V2 and the Python KV transceiver. Release notes retain an A100 post-stream-cancellation KV-transfer failure and a Qwen3 JSON-schema unbounded-response example. Preserve RC status and unresolved scope rather than claiming GA or all fixes complete. Record configured context capacity, estimated prompt target and actual token count separately, alongside cache, concurrency and repetition boundaries. This dated single-GPU snapshot is not a full-capacity test, confidence interval, quality comparison or causal hardware/runtime ranking. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
       "source_ids": [
         "SRC-CDS048",
         "SRC-CDS050",
@@ -58,7 +58,10 @@
         "SRC-OCT05-SSW009-02",
         "SRC-OCT05-SSW009-03",
         "SRC-D31-SSW009-02-01",
-        "SRC-D31-SSW009-03-01"
+        "SRC-D31-SSW009-03-01",
+        "SRC-OCT23-SSW009-2-1",
+        "SRC-OCT23-SSW009-3-1",
+        "SRC-OCT23-APP013-2-1"
       ]
     },
     {
@@ -70,8 +73,8 @@
       "summary_en": "Cover correctness, reproducibility, cost, time, and tool use.",
       "current_state_ja": "ScienceAgentBenchとJalapenoの公開成果は異なる評価範囲を持ちます。 今回の限定的な追補：ECMWFは入力解析世代の変更でGraphCast・Aurora・AIFS v1.1の精度変化を報告し、AIFS v2適応と外部モデルの同センター実時間運用停止を説明する。モデルの世界的廃止ではない。Anemoiの研究例は約100km・6時間入力から約30km・1時間出力へ反復samplerで変換するが、運用日・全系節約は未報告。AgentActionBenchは150論文（AI4Science30）、人手注釈15、GPT-4o-mini採点で行動過程と5段階を評価する。rubric総合点は完全再現論文の割合ではない。 PyTorch DCP2.14のstaging thread所有・cleanupをmemory条件と共に確認する。JSON checkpoint packageのlegacy resume条件は既存msgpack advisoryと別で、JS/TS Storeの設定依存cross-user認可問題を全Python packageの一般脆弱性へ拡張しない。package版・serializer・principal・expiry・checkpoint再開・Store認可を既存agent試験へ組み込み、site診断や再現済みとはしない。",
       "current_state_en": "ScienceAgentBench and Jalapeno public results cover different evaluation scopes. Scoped additions in this batch: ECMWF reports quality changes for GraphCast, Aurora and AIFS v1.1 after initial-condition changes, adaptation of AIFS v2 and cessation of its external-model realtime runs, not worldwide model retirement. Anemoi research maps roughly 100km/six-hour inputs to 30km/hourly outputs through iterative sampling without reported deployment dates or end-to-end savings. AgentActionBench covers 150 papers (30 AI4Science), 15 human-annotated papers and GPT-4o-mini scoring of actions/five stages. Overall rubric scores are not fractions of completely reproduced papers. Add PyTorch DCP 2.14 staging-thread ownership/cleanup alongside memory conditions. Keep JSON-package legacy resume conditions distinct from the existing msgpack advisory; configuration-dependent JS/TS Store authorization does not establish a universal Python vulnerability. Add package versions, serializers, principals, expiry, checkpoint resumption and Store authorization to existing agent tests without site diagnosis or reproduction claims.",
-      "hpci_implications_ja": "HPCIで実行可能な科学タスク群と監査可能な実行記録が必要です。 永続状態の整合性と再開時の復元型の制約も検証する。 評価案として、元実装・移植直後・最適化後と、移植の正しさ・最適化同値性・実測性能を分けて記録する。達成や日程変更を意味しない。 著者はRNGD上のGemma-4-12B decode 3 kernelで公式baseline比幾何平均9.293倍を報告。希少デバイスでの知識構築・反復実測と固定入力shortcutの除外を具体例として追加。 EasyProver/AegisはRust翻訳後の固定命題について証明と反証を分離。Aegis層別sample 2,000命題中1,997試行、1命題30分で1,054証明を報告。事前反証例と偽を要求したcategoryはsampleから除外。 著者preprintはNVダイヤモンド実測とTSUBAME4検証を結合した事例を報告。予測一致でもドリフトした取得を不確定とし、基準を緩めず修正した。Sageのsimulation/replayとは別の限定的な物理workflow例。装置構築・安全上限設定は人が担当。最終予測固定は取得後・target解析前であり、実測dataは要請提供、研究promptは非公開。 MLCommonsはLLM judgeから専用の決定的分類器へ変更し、Safetyを固定参照分布のpercentileへ移したと報告する。Safety1.2.1結果は公開、Jailbreak1.1結果は通知期間後の予定。対象は単一turn英語の有害応答で、agent操作・科学的正しさを含まず、課題成功率や負荷・遅延・電力量の代替ではない。 SDK0.4.11はSSE cursor・chunk保持とwait/join/cancel再接続のbackoffを収録。空ID・分割event・応答切断を試験する案。PR9481は5回上限と初回失敗時raiseを維持。Store認可とは別で、exactly-onceや施設受入を保証しない。 rc2もprerelease。noteはwheel1.4.0rc2.post1とcontainer/docs1.4.0rc2を区別しtransceiverV2のV1対応削除を示す。RPC/MPI初期化hangを記載。rc1取消/schema問題は直接の解決証拠まで保留し、記載消失を修正証明としない。",
-      "hpci_implications_en": "HPCI needs executable scientific task suites and auditable run records. Also qualify persistent-state integrity and type restrictions during resume. Proposed evaluation: record original, ported and optimized baselines, separating migration correctness, optimization equivalence and measured performance. This does not establish achievement or change dates. Author reports 9.293x geomean over official baselines for three Gemma-4-12B decode kernels on RNGD. Adds a scarce-device target-onboarding case with repeated device comparisons and disclosed fixed-input cheating excluded from results. EasyProver/Aegis adds frozen-statement proof-or-refutation accounting over translated Rust. Authors report 1,054 proofs from a 2,000-statement stratified Aegis sample, 1,997 attempted, at 30 minutes per statement; negatives screened beforehand and requested-false category excluded. An author preprint reports an NV-diamond physical investigation coupled to TSUBAME4 computational checks. Agents rejected a drifting acquisition despite predictive agreement and revised it without loosening criteria. This adds a bounded physical-workflow example beyond Sage simulations/replays. Humans built the apparatus and configured safety limits; final predictions were locked after acquisition but before target analysis. Raw data require request and study prompts are omitted. MLCommons reports replacing LLM judges with its deterministic classifier and moving Safety to fixed-reference percentiles; Safety1.2.1 public results are available while Jailbreak1.1 public results await notification. Scope is single-turn English harmful-response evaluation, excluding agent actions and scientific correctness. These scores cannot substitute for task success or load, latency and energy measurements. SDK 0.4.11 ships SSE cursor/chunk preservation and bounded backoff for wait/join/cancel reconnects. Qualify empty IDs, split events and interrupted responses; PR9481 retains five attempts and first-request failures still raise. This is separate from Store authorization; no exactly-once guarantee or site acceptance. rc2 stays prerelease. Its note distinguishes wheel 1.4.0rc2.post1 from container/docs 1.4.0rc2 and removes V1 support from transceiver V2. It lists an RPC/MPI initialization hang. Preserve rc1 cancellation/schema concerns until direct resolution evidence; note omission does not prove fixes.",
+      "hpci_implications_ja": "HPCIで実行可能な科学タスク群と監査可能な実行記録が必要です。 永続状態の整合性と再開時の復元型の制約も検証する。 評価案として、元実装・移植直後・最適化後と、移植の正しさ・最適化同値性・実測性能を分けて記録する。達成や日程変更を意味しない。 著者はRNGD上のGemma-4-12B decode 3 kernelで公式baseline比幾何平均9.293倍を報告。希少デバイスでの知識構築・反復実測と固定入力shortcutの除外を具体例として追加。 EasyProver/AegisはRust翻訳後の固定命題について証明と反証を分離。Aegis層別sample 2,000命題中1,997試行、1命題30分で1,054証明を報告。事前反証例と偽を要求したcategoryはsampleから除外。 著者preprintはNVダイヤモンド実測とTSUBAME4検証を結合した事例を報告。予測一致でもドリフトした取得を不確定とし、基準を緩めず修正した。Sageのsimulation/replayとは別の限定的な物理workflow例。装置構築・安全上限設定は人が担当。最終予測固定は取得後・target解析前であり、実測dataは要請提供、研究promptは非公開。 MLCommonsはLLM judgeから専用の決定的分類器へ変更し、Safetyを固定参照分布のpercentileへ移したと報告する。Safety1.2.1結果は公開、Jailbreak1.1結果は通知期間後の予定。対象は単一turn英語の有害応答で、agent操作・科学的正しさを含まず、課題成功率や負荷・遅延・電力量の代替ではない。 SDK0.4.11はSSE cursor・chunk保持とwait/join/cancel再接続のbackoffを収録。空ID・分割event・応答切断を試験する案。PR9481は5回上限と初回失敗時raiseを維持。Store認可とは別で、exactly-onceや施設受入を保証しない。 rc2もprerelease。noteはwheel1.4.0rc2.post1とcontainer/docs1.4.0rc2を区別しtransceiverV2のV1対応削除を示す。RPC/MPI初期化hangを記載。rc1取消/schema問題は直接の解決証拠まで保留し、記載消失を修正証明としない。 過去の限定確認記録に基づく追補（現在状態の再確認ではない）： LangGraphの10月21日advisoryはPythonのPostgres/SQLite Storeでドット入りlabelによるnamespace衝突を報告する。InMemoryStoreは対象外。修正版packageとAgent Server/Cloud revisionの境界を分け、実施設の影響・修復完了は認定しない。 1.4.0rc1はKV cache manager V2とPython KV transceiverを既定にする。release notesにはA100のstream取消後KV転送失敗とQwen3 JSON-schema例の無制限応答が既知問題として残る。RC・未解決範囲を保持し、GAや全修正完了としない。 Nextflow26.04.9とmerge済みPR7879は、投入失敗・再試行・設定・trace・lineage等に関する秘密値マスク改善の一系統である。合成の秘密値を使い、非機密のattempt IDと実行contextを保持して各経路を確認する評価案。完全mask、過去log消去、全plugin対応、全CI成功、施設適用の証拠ではない。 VeriGen-C v1のC→ACSL生成・修復では、実装の生成契約への適合と自然言語要件の完全性は別である。slice/core/fullの受理を完全仕様の合格へ合算せず、要件→契約→実装の各検証境界を記録する評価案。LLM照合や単一専門家監査を形式同値証明・科学品質・工数改善としない。 When Code Gets Cheap, Evaluation Gets Scarceの経験報告を補助に、browser/API/runtimeのmock境界と実環境で検証した境界、専門家評価・統合診断・手戻りを生成時間と別記する評価案。開発者・利用者・専門家が同一の自己報告は、因果的生産性倍率・独立HPC試験・科学コード保証ではない。 文脈の寿命とCPU/GPU・メモリ実占有時間を分け、active・model待機・tool待機・offload・restoreと復元費用・同一成果確認を記録する。pVisorの各条件1回の予備静的試験を、実需要分布のcapacity・電力・全国需要削減へ外挿しない。科学showcaseはsimulation・歴史replayに限る。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。 同じ実体を示す識別子ごとに、実体認識・知識検索・構造から計算する正しさを別採点し、正規化・decode・許容回答を固定する。v1のself-distillationを厳密なrelation-held-out汎化や科学workflow完遂へ拡張しない。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。",
+      "hpci_implications_en": "HPCI needs executable scientific task suites and auditable run records. Also qualify persistent-state integrity and type restrictions during resume. Proposed evaluation: record original, ported and optimized baselines, separating migration correctness, optimization equivalence and measured performance. This does not establish achievement or change dates. Author reports 9.293x geomean over official baselines for three Gemma-4-12B decode kernels on RNGD. Adds a scarce-device target-onboarding case with repeated device comparisons and disclosed fixed-input cheating excluded from results. EasyProver/Aegis adds frozen-statement proof-or-refutation accounting over translated Rust. Authors report 1,054 proofs from a 2,000-statement stratified Aegis sample, 1,997 attempted, at 30 minutes per statement; negatives screened beforehand and requested-false category excluded. An author preprint reports an NV-diamond physical investigation coupled to TSUBAME4 computational checks. Agents rejected a drifting acquisition despite predictive agreement and revised it without loosening criteria. This adds a bounded physical-workflow example beyond Sage simulations/replays. Humans built the apparatus and configured safety limits; final predictions were locked after acquisition but before target analysis. Raw data require request and study prompts are omitted. MLCommons reports replacing LLM judges with its deterministic classifier and moving Safety to fixed-reference percentiles; Safety1.2.1 public results are available while Jailbreak1.1 public results await notification. Scope is single-turn English harmful-response evaluation, excluding agent actions and scientific correctness. These scores cannot substitute for task success or load, latency and energy measurements. SDK 0.4.11 ships SSE cursor/chunk preservation and bounded backoff for wait/join/cancel reconnects. Qualify empty IDs, split events and interrupted responses; PR9481 retains five attempts and first-request failures still raise. This is separate from Store authorization; no exactly-once guarantee or site acceptance. rc2 stays prerelease. Its note distinguishes wheel 1.4.0rc2.post1 from container/docs 1.4.0rc2 and removes V1 support from transceiver V2. It lists an RPC/MPI initialization hang. Preserve rc1 cancellation/schema concerns until direct resolution evidence; note omission does not prove fixes. Retained bounded earlier observations, without fresh current-status verification: The October21 LangGraph advisory reports dot-label namespace collisions in Python Postgres/SQLite Stores; InMemoryStore is excluded. Keep patched-package and Agent Server/Cloud revision boundaries separate. This establishes neither site exposure nor completed remediation. Version1.4.0rc1 defaults to KV cache manager V2 and the Python KV transceiver. Release notes retain an A100 post-stream-cancellation KV-transfer failure and a Qwen3 JSON-schema unbounded-response example. Preserve RC status and unresolved scope rather than claiming GA or all fixes complete. Nextflow26.04.9 and merged PR7879 form one secret-redaction improvement lineage. Propose synthetic-secret checks across failure/retry, configuration, trace and lineage paths while retaining non-sensitive attempt IDs and execution context. They do not prove complete masking, retroactive log removal, all-plugin coverage, all-CI success or site deployment. For VeriGen-C v1, C implementation conformance to generated ACSL contracts is separate from complete natural-language requirements. Propose recording requirement-to-contract-to-implementation boundaries rather than counting accepted slices/cores as complete specifications. LLM alignment and one expert auditor establish neither formal equivalence, scientific quality nor effort savings. Use the experience report When Code Gets Cheap, Evaluation Gets Scarce to motivate distinguishing mocked browser/API/runtime boundaries from target-environment checks, and expert evaluation, integration diagnosis and rework from generation time. A self-report by one developer/user/expert provides neither causal productivity multipliers, independent HPC trials nor scientific-code guarantees. Separate context lifetime from physical CPU/GPU/memory residency. Record active, model-wait, tool-wait, offload and restore phases plus restoration cost and same-result integrity. Sage pVisor reports preliminary one-run-per-condition static memory savings, not workload-distribution capacity, energy or nationwide demand savings. Scientific showcases remain simulations or historical replays. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation. Test co-referring identifiers separately: entity recognition, knowledge retrieval and structure-computable correctness need distinct scoring. Pin normalization, decoding and accepted answers. ChemIDBench v1 supports this bounded evaluation axis; its self-distillation is cross-prompt transfer, not strictly relation-held-out generalization or scientific-workflow success. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation.",
       "source_ids": [
         "SRC-CDA053",
         "SRC-HC26-JALAPENO-RESULTS",
@@ -93,7 +96,15 @@
         "SRC-D31-SSW009-01-01",
         "SRC-D31-SSW009-01-02",
         "SRC-D31-SSW009-01-03",
-        "SRC-D31-SSW009-03-01"
+        "SRC-D31-SSW009-03-01",
+        "SRC-OCT23-SSW009-1-1",
+        "SRC-OCT23-SSW009-3-1",
+        "SRC-OCT23-SSW012-1-1",
+        "SRC-OCT23-SSW012-1-2",
+        "SRC-OCT23-APP005-1-1",
+        "SRC-OCT23-APP005-2-1",
+        "SRC-OCT23-APP012-1-1",
+        "SRC-OCT23-APP013-1-1"
       ]
     }
   ],
@@ -476,6 +487,85 @@
       "url": "https://github.com/langchain-ai/langgraph/pull/9481",
       "source_class": "project-official",
       "published_at": "2026-10-28"
+    },
+    {
+      "source_id": "SRC-OCT23-APP005-1-1",
+      "title": "VeriGen-C (arXiv2610.30725v1)",
+      "publisher": "Zian Wang et al.; author preprint",
+      "url": "https://arxiv.org/html/2610.30725v1",
+      "source_class": "academic-primary",
+      "published_at": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-APP005-2-1",
+      "title": "When Code Gets Cheap, Evaluation Gets Scarce (v1)",
+      "publisher": "Barbara Weber, Olaf Zimmermann, Marco Franceschetti; author report",
+      "url": "https://arxiv.org/html/2610.30916v1",
+      "source_class": "academic-primary",
+      "published_at": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-APP012-1-1",
+      "title": "Author preprint 2610.28578v1",
+      "publisher": "Preprint authors on arXiv",
+      "url": "https://arxiv.org/html/2610.28578v1",
+      "source_class": "academic-primary",
+      "published_at": "2026-10-20"
+    },
+    {
+      "source_id": "SRC-OCT23-APP013-1-1",
+      "title": "Author preprint 2610.30903v1",
+      "publisher": "Preprint authors on arXiv",
+      "url": "https://arxiv.org/html/2610.30903v1",
+      "source_class": "academic-primary",
+      "published_at": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-APP013-2-1",
+      "title": "Public evidence: gemma-4-5090-context-2026-10-22.json",
+      "publisher": "Measurement author (llm-speed.com)",
+      "url": "https://llm-speed.com/data/gemma-4-5090-context-2026-10-22.json",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT23-SSW009-1-1",
+      "title": "Namespace labels containing dots reach other namespaces in Postgres and SQLite stores",
+      "publisher": "LangGraph maintainers",
+      "url": "https://github.com/langchain-ai/langgraph/security/advisories/GHSA-6hmw-9432-67qq",
+      "source_class": "project-official",
+      "published_at": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-OCT23-SSW009-2-1",
+      "title": "TorchTitan Update: New SOTA Models, Performance at Scale, TitanRL",
+      "publisher": "The PyTorch Team at Meta",
+      "url": "https://pytorch.org/blog/torchtitan-update-new-sota-models-performance-at-scale-titanrl/",
+      "source_class": "project-official",
+      "published_at": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-OCT23-SSW009-3-1",
+      "title": "TensorRT-LLM v1.4.0rc1 release",
+      "publisher": "NVIDIA TensorRT-LLM maintainers",
+      "url": "https://github.com/NVIDIA/TensorRT-LLM/releases/tag/v1.4.0rc1",
+      "source_class": "project-official",
+      "published_at": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-SSW012-1-1",
+      "title": "Nextflow v26.04.9 release",
+      "publisher": "Nextflow project",
+      "url": "https://github.com/nextflow-io/nextflow/releases/tag/v26.04.9",
+      "source_class": "project-official",
+      "published_at": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-OCT23-SSW012-1-2",
+      "title": "Nextflow PR #7879: secret-redaction improvements",
+      "publisher": "Nextflow project contributors",
+      "url": "https://github.com/nextflow-io/nextflow/pull/7879",
+      "source_class": "project-official",
+      "published_at": "2026-10-21"
     }
   ],
   "coverage_gaps": [
@@ -507,7 +597,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-DAILY41-BOUNDED-PUBLIC-20261031",
-    "human_approval_directive_id": "DIR-900167"
+    "publication_decision_id": "PUBDEC-LEGACY25-BOUNDED-20261031",
+    "human_approval_directive_id": "DIR-900168"
   }
 }
