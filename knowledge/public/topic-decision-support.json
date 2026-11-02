@@ -2,7 +2,7 @@
   "schema_version": "0.2.0",
   "export_id": "TOPIC-DECISION-SUPPORT-001",
   "status": "published",
-  "as_of": "2026-11-01",
+  "as_of": "2026-11-02",
   "research_status": "provisional",
   "consensus_status": "incomplete",
   "regions": [
@@ -31192,8 +31192,8 @@
     },
     {
       "topic_id": "SSW-09",
-      "summary_ja": "AI学習・推論・エージェント実行基盤の根拠・導入条件を補完し、非同期保存境界、等資源推論評価、checkpoint整合性を追加する。",
-      "summary_en": "Supplement AI training, inference and agent-runtime evidence with asynchronous-save boundaries, equal-resource inference evaluation and checkpoint integrity.",
+      "summary_ja": "今回の限定追補：vLLM0.33の配布物・接続互換性を再確認。既存根拠・Gap・日程を保持する暫定更新で、独立検証とConsensusは未完了。",
+      "summary_en": "This bounded addition concerns Requalify vLLM0.33 artifact and connector compatibility. Existing evidence, gaps and dates are retained; independent validation and Consensus remain incomplete.",
       "sections": [
         {
           "section_id": "TDS-SSW09-CURRENT",
@@ -33553,6 +33553,42 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-N02-SSW009-671",
+          "title_ja": "vLLM0.33の配布物・接続互換性を再確認",
+          "title_en": "Requalify vLLM0.33 artifact and connector compatibility",
+          "summary_ja": "一次資料に帰属させた限定追補。独立検証とConsensusは未完了。",
+          "summary_en": "Bounded attributed addition; independent validation and Consensus remain incomplete.",
+          "items": [
+            {
+              "item_id": "TDI-N02-SSW009-671",
+              "name_ja": "vLLM0.33の配布物・接続互換性を再確認",
+              "name_en": "Requalify vLLM0.33 artifact and connector compatibility",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "公開一覧の表示は11月2日10:10で年・timezoneは明記されない。2026年は今回の閲覧文脈に基づく推定で、検証済みISO公開日時ではない。タグ頁の11月1日表示とは区別する。",
+              "timing_en": "The release listing displays02Nov10:10 without an explicit year or time zone.2026 is inferred from the current retrieval context, not a verified ISO publication timestamp; distinguish the tag page November1 label.",
+              "statement_ja": "11月2日のvLLM公式公開一覧はv0.33.0という見出しで、CUDA12.9配布終了・CUDA13.0配布、ROCm既定10.0と別配布7.2、NIXL1.5以降という互換条件を記載する。一方、同じ一覧のタグリンクはv0.33.0rc3であり、最終配布物の同一性は未確認。公開一覧の説明であり、導入・稼働・性能の実証ではない。",
+              "statement_en": "The November2 vLLM release listing, headed v0.33.0, describes CUDA13.0 artifacts without CUDA12.9, default ROCm10.0 plus a separate7.2 variant, and NIXL1.5 or newer. Its tag link nevertheless points to v0.33.0rc3; final artifact identity remains unverified. These are release-list statements, not installation, operation or performance evidence.",
+              "hpci_relevance_ja": "vLLM公開一覧の配布条件変更に対しimage/wheel・driver・framework・connector版と最終タグ同一性を固定し、同一負荷の品質・TTFT/TPOT・取消を再確認する。導入日・性能値・Gap完了は更新しない。",
+              "hpci_relevance_en": "For the vLLM listing compatibility changes, pin image/wheel, driver, framework, connector and final tag identity, then recheck quality, TTFT/TPOT and cancellation under matched workloads. Retain deployment dates, performance values and open gaps.",
+              "adoption_conditions_ja": [
+                "見出しv0.33.0とタグリンクv0.33.0rc3の不整合は未解決。配布物のdigest・install・実行結果は未検証。",
+                "既存の未解決Gap・日程・閾値を保持し、同一出典を独立な複数起源として加算しない。"
+              ],
+              "adoption_conditions_en": [
+                "The v0.33.0 heading versus v0.33.0rc3 tag mismatch is unresolved. Artifact digests, installation and runtime behavior are unverified.",
+                "Retain open gaps, dates and thresholds; one origin is not independent corroboration."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-N02-671-01"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -33851,6 +33887,16 @@
           ],
           "created_at": "2026-10-31T17:14:44.487655+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000671",
+          "bundle_sha256": "1b07cff72572dabc9bd252c19639036bb5b8181cb526ccc426c072472d3b1f99",
+          "base_commit": "9965234e304ab9aa192ed7cd9428c0a00d941962",
+          "unit_ids": [
+            "SSW-09-U02"
+          ],
+          "created_at": "2026-11-02T15:11:04.965845+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -33923,7 +33969,8 @@
               "TDS-P30-424-SSW-09-U02",
               "TDS-OCT03-SSW009-U02",
               "TDS-D31-SSW009-03",
-              "TDS-L31-SSW009-03"
+              "TDS-L31-SSW009-03",
+              "TDS-N02-SSW009-671"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -41909,8 +41956,8 @@
     },
     {
       "topic_id": "APP-05",
-      "summary_ja": "既存の科学コード・kernel評価に、repository全体のbuildを含む移植、選択母集団を明示したtest汚染監査、AIレビューの残存リスクを追記する。benchmark得点を実運用の生産性に換算しない。 Aqueductの比較基準と証明範囲を区別する限定追記。独立検証は未完了。",
-      "summary_en": "Append repository translation including builds, selection-qualified test/contamination auditing and AI-review limits to existing science/kernel evidence. Do not convert benchmark scores into deployment productivity. Scoped Aqueduct baseline/proof-boundary addition; independent validation remains incomplete.",
+      "summary_ja": "今回の限定追補：修正申告と実証を分離する小規模静的監査。既存根拠・Gap・日程を保持する暫定更新で、独立検証とConsensusは未完了。",
+      "summary_en": "This bounded addition concerns Small static audit separates fix claims from demonstrated evidence. Existing evidence, gaps and dates are retained; independent validation and Consensus remain incomplete.",
       "sections": [
         {
           "section_id": "TDS-APP05-CURRENT",
@@ -43009,6 +43056,42 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-N02-APP005-672",
+          "title_ja": "修正申告と実証を分離する小規模静的監査",
+          "title_en": "Small static audit separates fix claims from demonstrated evidence",
+          "summary_ja": "一次資料に帰属させた限定追補。独立検証とConsensusは未完了。",
+          "summary_en": "Bounded attributed addition; independent validation and Consensus remain incomplete.",
+          "items": [
+            {
+              "item_id": "TDI-N02-APP005-672",
+              "name_ja": "修正申告と実証を分離する小規模静的監査",
+              "name_en": "Small static audit separates fix claims from demonstrated evidence",
+              "stage": "research",
+              "maturity": "research",
+              "timing_ja": "2026-10-24公開の著者preprintを11月2日に本文へ新規追補する候補。11月2日の新発表ではない。",
+              "timing_en": "Author preprint published2026-10-24, newly identified for this document November2; not a November2 announcement.",
+              "statement_ja": "10件の修正申告を対象にした当事者の静的監査は、申告位置での確認6件と位置確認失敗4件を報告する。ただし失敗の1件は判定条件自体が未記載である。snapshot・call-siteとの結合を重視する根拠候補だが、pattern存在やmtimeだけでは実行時の正しさを証明しない。",
+              "statement_en": "A first-party static audit of ten fix claims reports six matching their claimed file/location, with four location-check failures; one failure itself has an undocumented predicate. Snapshot and call-site binding matter, but neither pattern presence nor mtime demonstrates runtime correctness.",
+              "hpci_relevance_ja": "修正申告の位置、snapshot、正確な判定条件、実行テスト、独立確認を分けて記録する根拠注記を追補する。当事者の静的10件事例であり、実行時正しさ・一般的誤り率・security保証には拡張しない。既存の日程・Gapを保持する。",
+              "hpci_relevance_en": "Append an evidence note distinguishing claimed location, snapshot, exact predicate, execution test and independent verification. This author-operated ten-claim static case does not establish runtime correctness, population error rates or security. Retain existing dates and gaps.",
+              "adoption_conditions_ja": [
+                "単一の当事者システム・静的性質のみ。判定失敗の1件はpredicate未記載。独立再現・runtime検証はなく、一般誤り率・security保証へ拡張しない。",
+                "既存の未解決Gap・日程・閾値を保持し、同一出典を独立な複数起源として加算しない。"
+              ],
+              "adoption_conditions_en": [
+                "One author-operated system, no independent replication, static properties only; no population error-rate or runtime-security inference. One failed check has an undocumented predicate.",
+                "Retain open gaps, dates and thresholds; one origin is not independent corroboration."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-N02-672-01"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -43154,6 +43237,16 @@
           ],
           "created_at": "2026-10-31T17:14:44.487655+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000672",
+          "bundle_sha256": "dd6af848d5c27a00d4024130ead4e90caa6a48399882ddb7a3eb227b4f511de9",
+          "base_commit": "9965234e304ab9aa192ed7cd9428c0a00d941962",
+          "unit_ids": [
+            "APP-05-U01"
+          ],
+          "created_at": "2026-11-02T15:11:04.965845+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -43184,7 +43277,8 @@
               "TDS-D31-APP005-01",
               "TDS-D31-APP005-02",
               "TDS-L31-APP005-01",
-              "TDS-L31-APP005-02"
+              "TDS-L31-APP005-02",
+              "TDS-N02-APP005-672"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -51595,8 +51689,8 @@
     },
     {
       "topic_id": "CROSS-08",
-      "summary_ja": "今回の限定追補：AOBAフロントエンド保守の予定・終了表示・job継続を分離。既存本文・原資料・Gapを保持する暫定更新で、独立検証とConsensusは未完了。提供予定・実施実績・測定値を混同しない。",
-      "summary_en": "This bounded update adds: Separate AOBA maintenance schedule, ended marker and job continuity. Existing evidence and gaps are retained. The update is provisional; independent validation and Consensus remain incomplete. Plans, observed events and measurements remain distinct.",
+      "summary_ja": "今回の限定追補：TSUBAME4ログインnode保守の終了表明と表示時刻。既存根拠・Gap・日程を保持する暫定更新で、独立検証とConsensusは未完了。",
+      "summary_en": "This bounded addition concerns TSUBAME4 login maintenance completion statement and display times. Existing evidence, gaps and dates are retained; independent validation and Consensus remain incomplete.",
       "sections": [
         {
           "section_id": "TDS-CBL-BASELINE",
@@ -53798,6 +53892,78 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-N02-CROSS002-673",
+          "title_ja": "AOBA11月2日保守のcomponent範囲とjob継続",
+          "title_en": "AOBA November2 maintenance components and job continuity",
+          "summary_ja": "一次資料に帰属させた限定追補。独立検証とConsensusは未完了。",
+          "summary_en": "Bounded attributed addition; independent validation and Consensus remain incomplete.",
+          "items": [
+            {
+              "item_id": "TDI-N02-CROSS002-673",
+              "name_ja": "AOBA11月2日保守のcomponent範囲とjob継続",
+              "name_en": "AOBA November2 maintenance components and job continuity",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "2026-11-02運用者通知。表示更新時刻と実際の復旧イベント時刻を分ける。",
+              "timing_en": "Operator notice dated2026-11-02. Display update labels are distinct from actual recovery event time.",
+              "statement_ja": "運用者は11月2日9:30–17:00予定のAOBAフロント系・転送系・利用者portal保守を通知。login切断と実行中・投入済job継続を区別する。9:10は更新表示で、終了や実復旧時刻の記載は確認していない。",
+              "statement_en": "The operator schedules November2 frontend, transfer and user-portal maintenance across AOBA-A/B/S. Login sessions may disconnect while submitted/running jobs continue. The9:10 label is an update, not a recovery timestamp; completion is unconfirmed.",
+              "hpci_relevance_ja": "運用者通知をcomponent別の利用可能性・支援条件の確認へ追補する。予定終了と終了表明・実復旧を区別し、日程・容量・SLA・Gap・受入状態は変更しない。",
+              "hpci_relevance_en": "Append component-specific availability/support evidence to existing BLUE-ESTATE/BLUE-HPCI-GATES/ADOPTION-SUPPORT; preserve lifecycle dates, capacity, gaps and acceptance state. Preserve dates, capacity, SLA, gaps and acceptance state.",
+              "adoption_conditions_ja": [
+                "運用者によるcomponent別記述のみ。時刻表示の差異・実復旧は未検証で、全経路の稼働保証や独立受入確認にはしない。",
+                "既存の未解決Gap・日程・閾値を保持し、同一出典を独立な複数起源として加算しない。"
+              ],
+              "adoption_conditions_en": [
+                "Timezone unstated; scheduled end elapsed does not prove completion. Operator statement only; no patch/CVE, independent live test or nationwide availability inference.",
+                "Retain open gaps, dates and thresholds; one origin is not independent corroboration."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-N02-673-01"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-N02-CROSS002-674",
+          "title_ja": "TSUBAME4ログインnode保守の終了表明と表示時刻",
+          "title_en": "TSUBAME4 login maintenance completion statement and display times",
+          "summary_ja": "一次資料に帰属させた限定追補。独立検証とConsensusは未完了。",
+          "summary_en": "Bounded attributed addition; independent validation and Consensus remain incomplete.",
+          "items": [
+            {
+              "item_id": "TDI-N02-CROSS002-674",
+              "name_ja": "TSUBAME4ログインnode保守の終了表明と表示時刻",
+              "name_en": "TSUBAME4 login maintenance completion statement and display times",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "2026-11-02運用者通知。表示更新時刻と実際の復旧イベント時刻を分ける。",
+              "timing_en": "Operator notice dated2026-11-02. Display update labels are distinct from actual recovery event time.",
+              "statement_ja": "TSUBAME4運用者は11月2日正午からlogin1/2を再起動する緊急保守を告知し、本文13:15追記で終了を表明。session・login上processの終了と実行中job非影響を区別する。homepageの13:10終了・15:10利用可能表示は別の表示時刻として保持する。",
+              "statement_en": "The operator reports November2 noon emergency reboot maintenance of login1/2 and adds a13:15 ended statement. Session/login-process termination is separated from unaffected running jobs. Homepage13:10 ended and15:10 available labels remain distinct display times.",
+              "hpci_relevance_ja": "運用者通知をcomponent別の利用可能性・支援条件の確認へ追補する。予定終了と終了表明・実復旧を区別し、日程・容量・SLA・Gap・受入状態は変更しない。",
+              "hpci_relevance_en": "Append dated component-level operator recovery claim to existing BLUE-HPCI-GATES/ADOPTION-SUPPORT; no SLA, all-path verification or independent acceptance claim. Preserve dates, capacity, SLA, gaps and acceptance state.",
+              "adoption_conditions_ja": [
+                "運用者によるcomponent別記述のみ。時刻表示の差異・実復旧は未検証で、全経路の稼働保証や独立受入確認にはしない。",
+                "既存の未解決Gap・日程・閾値を保持し、同一出典を独立な複数起源として加算しない。"
+              ],
+              "adoption_conditions_en": [
+                "Homepage/body timestamps differ; do not select one as exact restoration event time. No independent live test, patch/CVE, service-wide or performance improvement evidence.",
+                "Retain open gaps, dates and thresholds; one origin is not independent corroboration."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-N02-674-01"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -54127,6 +54293,28 @@
           ],
           "created_at": "2026-11-01T16:16:37.723454+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000673",
+          "bundle_sha256": "50fdd1d3e382ef9a22f6425ad92ffb1e2eb1761a6c786623c50784da9944382a",
+          "base_commit": "9965234e304ab9aa192ed7cd9428c0a00d941962",
+          "unit_ids": [
+            "CROSS-08-U01",
+            "CROSS-08-U02"
+          ],
+          "created_at": "2026-11-02T15:11:04.965845+00:00",
+          "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000674",
+          "bundle_sha256": "38af28b01cb30477ce4e649bd24a384463eaeacf9686f826d23985d7e75e5eb7",
+          "base_commit": "9965234e304ab9aa192ed7cd9428c0a00d941962",
+          "unit_ids": [
+            "CROSS-08-U01",
+            "CROSS-08-U02"
+          ],
+          "created_at": "2026-11-02T15:11:04.965845+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -54165,7 +54353,9 @@
               "TDS-OCT05-CROSS002-INTEGRATED-READABLE",
               "TDS-D31-CROSS002-01",
               "TDS-L31-CROSS002-01",
-              "TDS-N01-CROSS002-666"
+              "TDS-N01-CROSS002-666",
+              "TDS-N02-CROSS002-673",
+              "TDS-N02-CROSS002-674"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -55772,8 +55962,8 @@
     },
     {
       "topic_id": "APP-11",
-      "summary_ja": "既存の化学・HQC証拠を保持し、Ising近似解の限定的scaling、専用古典機、国内RT-BBOの版間差、SQBM+の係数上限を追記する。全費用優位と独立Consensusは未確立。 10月の公式発表を追補。提供・稼働・性能の未確認事項は保持します。",
-      "summary_en": "Preserve chemistry/HQC evidence and append restricted approximate-Ising scaling, specialized classical controls, Japanese RT-BBO version differences and the SQBM+ coefficient limit. Full-cost advantage and independent Consensus remain unestablished. Append October official announcements; availability, operation and performance gaps remain open.",
+      "summary_ja": "今回の限定追補：VULCAN v2の版固定と圧縮コストの区別。既存根拠・Gap・日程を保持する暫定更新で、独立検証とConsensusは未完了。",
+      "summary_en": "This bounded addition concerns Pin VULCAN v2 and distinguish compression costs. Existing evidence, gaps and dates are retained; independent validation and Consensus remain incomplete.",
       "sections": [
         {
           "section_id": "TDS-CD1-APP-11-U01",
@@ -56592,6 +56782,44 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-N02-APP010-675",
+          "title_ja": "VULCAN v2の版固定と圧縮コストの区別",
+          "title_en": "Pin VULCAN v2 and distinguish compression costs",
+          "summary_ja": "一次資料に帰属させた限定追補。独立検証とConsensusは未完了。",
+          "summary_en": "Bounded attributed addition; independent validation and Consensus remain incomplete.",
+          "items": [
+            {
+              "item_id": "TDI-N02-APP010-675",
+              "name_ja": "VULCAN v2の版固定と圧縮コストの区別",
+              "name_en": "Pin VULCAN v2 and distinguish compression costs",
+              "stage": "research",
+              "maturity": "research",
+              "timing_ja": "2026-10-30改訂v2を11月2日に新たに確認。v1-v2の全文差分は未確認で、個別記述の初出をv2と断定しない。",
+              "timing_en": "October30 v2 newly observed November2; the fullv1-v2 diff remains unverified, so individual statements are not asserted to originate inv2.",
+              "statement_ja": "VULCANの版履歴は10月30日改訂v2を示す。v2本文の計数はPauli項評価の代理指標であり、shot数や総経過時間ではない。圧縮は評価回数を増やし、CNOT数も全条件でADAPT-VQE比較対象を下回るわけではない。既存の5–20%という未圧縮時の記述を圧縮後や雑音実機へ外挿しない。",
+              "statement_en": "The history now exposes October30 v2. Its count is a Pauli-term evaluation proxy, not shots or elapsed time. Compression increases evaluation work and does not always beat the ADAPT-VQE CNOT baseline. Do not extend the existing uncompressed5–20% figure to compressed or noisy-hardware runs.",
+              "hpci_relevance_ja": "既存の量子評価gateへ版・代理指標・圧縮有無・比較対象の整合確認を追補する。shot数・経過時間・雑音実機性能へ外挿せず、日程・閾値・Gapは保持する。",
+              "hpci_relevance_en": "Add version/metric/compression matching to existing REALTIME-QUANTUM evidence gate only; retain dates, thresholds and gaps.",
+              "adoption_conditions_ja": [
+                "前回の取得でv1のみ表示された理由と、v1-v2全文差分は未確認。",
+                "同一著者の無雑音emulation報告で、独立再現・雑音実機・全workflow費用は未検証。",
+                "既存の未解決Gap・日程・閾値を保持し、同一出典を独立な複数起源として加算しない。"
+              ],
+              "adoption_conditions_en": [
+                "The reason the earlier retrieval showed onlyv1, and a fullv1-v2 diff, remain unverified.",
+                "One author study, noiseless emulation; no independent replication, noisy-hardware or full workflow cost validation.",
+                "Retain open gaps, dates and thresholds; one origin is not independent corroboration."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-N02-675-01"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -56724,6 +56952,16 @@
           ],
           "created_at": "2026-10-31T17:14:44.487655+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000675",
+          "bundle_sha256": "e72757184c5db35d8923fd140af985b51f5571b64837cf0bc41193ffe192c320",
+          "base_commit": "9965234e304ab9aa192ed7cd9428c0a00d941962",
+          "unit_ids": [
+            "APP-11-U01"
+          ],
+          "created_at": "2026-11-02T15:11:04.965845+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -56754,7 +56992,8 @@
               "TDS-D31-APP010-01",
               "TDS-D31-APP010-02",
               "TDS-L31-APP010-01",
-              "TDS-L31-APP010-02"
+              "TDS-L31-APP010-02",
+              "TDS-N02-APP010-675"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -57640,8 +57879,8 @@
     },
     {
       "topic_id": "APP-15",
-      "summary_ja": "既存の実設備事例を保持し、streamの欠損・backpressure・終了状態と、予定到着時刻からのtail評価を追加する。実測値や共通SLOの達成を新たに主張しない。",
-      "summary_en": "Preserve facility examples; add stream loss, backpressure, termination semantics and scheduled-arrival tail evaluation. Assert no new measured performance or common SLO attainment.",
+      "summary_ja": "今回の限定追補：ADIOS2候補版の終了判定とstream追従の区別。既存根拠・Gap・日程を保持する暫定更新で、独立検証とConsensusは未完了。",
+      "summary_en": "This bounded addition distinguishes ADIOS2 prerelease termination from live-stream following. Existing evidence, gaps and dates remain; independent validation and Consensus are incomplete.",
       "sections": [
         {
           "section_id": "TDS-CD1-APP-15-U01",
@@ -58826,6 +59065,44 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-N02-APP015-677",
+          "title_ja": "ADIOS2 2.13候補版の終了判定とstream追従の区別",
+          "title_en": "Distinguish ADIOS22.13 candidate termination and live-stream following",
+          "summary_ja": "候補版の一次記述に基づく限定追補。独立した実行検証とConsensusは未完了。",
+          "summary_en": "Bounded prerelease guidance; independent execution and Consensus remain incomplete.",
+          "items": [
+            {
+              "item_id": "TDI-N02-APP015-677",
+              "name_ja": "ADIOS2 2.13候補版の終了判定とstream追従の区別",
+              "name_en": "Distinguish ADIOS22.13 candidate termination and live-stream following",
+              "stage": "research",
+              "maturity": "announced",
+              "timing_ja": "表示は10月27日20:58だが年・timezone・notes初出日は未確認。11月2日は確認日で、公表日として置換しない。",
+              "timing_en": "Displayed27Oct20:58, with year/timezone and first-note date unverified. November2 is the check date, not a substituted publication date.",
+              "statement_ja": "ADIOS2の2.13.0-rc1は候補版。開発者のrelease notesはBP4/BP5が既定でactive-writer印を無視し、既存stepを読んでEndOfStreamへ進む変更を示す。書込中fileの追従にはFileStreamまたは明示設定が必要とする。存在しない入力のcollective失敗も記す。既存SST queue契約とは別に版・engine・終了判定を固定して検証する候補であり、障害復旧や科学的期限の実証ではない。",
+              "statement_en": "The2.13.0-rc1 prerelease notes change BP4/BP5 default active-writer handling: consume available steps then return EndOfStream. Following a live file requires FileStream or explicit settings. They also describe collective failure for missing input. Pin version, engine and termination semantics separately from existing SST queue guidance; this is not demonstrated recovery or scientific deadline attainment.",
+              "hpci_relevance_ja": "ADIOS2候補版のBP4/BP5終了判定とlive追従の違いを、既存の実験stream・workflow検証gateへ追補する。版・engine・設定を固定し、SSTとは別に検証する。日程・Gap・科学的期限・復旧保証は変更しない。",
+              "hpci_relevance_en": "Append the ADIOS2 prerelease BP4/BP5 termination versus live-following distinction to existing experiment-stream/workflow evidence gates. Pin version, engine and settings separately from SST; retain dates, gaps, scientific deadlines and recovery claims.",
+              "adoption_conditions_ja": [
+                "前夜取得で候補版が表示されなかった理由、notesの初出日・年・timezoneは未確認。11月2日は確認日。",
+                "候補版であり実導入・異常終了注入・全投入の科学的品質・tail遅延・復旧実測なし。",
+                "SST queue契約とは別の候補版記述で、既存のGap・日程・閾値を維持する。"
+              ],
+              "adoption_conditions_en": [
+                "Why the earlier view omitted this prerelease and the first note publication date/year/timezone remain unverified; November2 is check date.",
+                "Prerelease only; no deployment, fault injection or alloffered scientific-quality, tail-latency or recovery measurement.",
+                "Prerelease guidance differs from SST queue semantics; retain open gaps, dates and thresholds."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-N02-677-01"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -58998,6 +59275,16 @@
           ],
           "created_at": "2026-10-31T17:14:44.487655+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000677",
+          "bundle_sha256": "40d6246e5e9128810f5f6ed8c9804136a1deefeda11129ec22e3efbc4eb698bb",
+          "base_commit": "9965234e304ab9aa192ed7cd9428c0a00d941962",
+          "unit_ids": [
+            "APP-15-U02"
+          ],
+          "created_at": "2026-11-02T15:12:56.637377+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -59045,7 +59332,8 @@
               "TDS-CD3-APP-15-U02",
               "TDS-WC388-APP-15-01",
               "TDS-PW-APP-15-01",
-              "TDS-OCT03-APP015-U02"
+              "TDS-OCT03-APP015-U02",
+              "TDS-N02-APP015-677"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -71173,8 +71461,8 @@
     },
     {
       "topic_id": "CROSS-11",
-      "summary_ja": "日本発技術の海外導入・商用ソフト接続と国際的な運用受入基準を追加。経済効果と供給自立性は未確定。",
-      "summary_en": "Add overseas deployment, commercial-software integration and international operational-acceptance criteria; economic impact and supply autonomy remain unverified.",
+      "summary_ja": "今回の限定追補：MONAKAの単体CPU・サーバー段階と試用状況を区別。既存根拠・Gap・日程を保持する暫定更新で、独立検証とConsensusは未完了。",
+      "summary_en": "This bounded addition concerns Separate MONAKA standalone-CPU, server-business and field-trial stages. Existing evidence, gaps and dates are retained; independent validation and Consensus remain incomplete.",
       "sections": [
         {
           "section_id": "TDS-CD1-CROSS-11-U01",
@@ -71932,6 +72220,44 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-N02-CROSS003-676",
+          "title_ja": "MONAKAの単体CPU・サーバー段階と試用状況を区別",
+          "title_en": "Separate MONAKA standalone-CPU, server-business and field-trial stages",
+          "summary_ja": "一次資料に帰属させた限定追補。独立検証とConsensusは未完了。",
+          "summary_en": "Bounded attributed addition; independent validation and Consensus remain incomplete.",
+          "items": [
+            {
+              "item_id": "TDI-N02-CROSS003-676",
+              "name_ja": "MONAKAの単体CPU・サーバー段階と試用状況を区別",
+              "name_en": "Separate MONAKA standalone-CPU, server-business and field-trial stages",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "2026-10-29説明会日。PDF公開の正確な日時は未確認。11月2日は確認日で新発表日ではない。",
+              "timing_en": "October29 briefing date; exactPDFposting time unknown. November2 is the check date, not a new announcement.",
+              "statement_ja": "10月29日の富士通決算説明会Q&Aは、単体CPUを先行しサーバー事業が本格化するのは2027年度という段階を示す。同社は試験サーバーで45顧客がfield trial中と報告する。11月発売は発言時点の予定であり、出荷・一般供用・顧客受入やHPCI性能の証明ではない。",
+              "statement_en": "Fujitsu’s October29 earnings Q&A distinguishes a standalone-CPU-first sequence from a material server-business ramp in FY2027 and reports45 customers in test-server field trials. The November release remains forward-looking at the briefing date; this does not establish shipments, general service, customer acceptance or HPCI performance.",
+              "hpci_relevance_ja": "既存の国内技術の実証・販売・出荷・運用受入確認へ、単体CPUとサーバーの段階別根拠を追記する候補。既存期日・Gap・成熟度は変更しない。",
+              "hpci_relevance_en": "Candidate evidence note for existing domestic demonstration/sale/shipment/acceptance gates, separating standaloneCPU andserver stages. Preserve existingdates, gaps andmaturity.",
+              "adoption_conditions_ja": [
+                "決算説明会日でありPDFの正確な公開日時は未確認。既存の9月発表と同じ発行主体で独立確認ではない。",
+                "45顧客は発行者報告で、顧客一覧・試験条件・matched性能・契約数量・SLAは未検証。",
+                "既存の未解決Gap・日程・閾値を保持し、同一出典を独立な複数起源として加算しない。"
+              ],
+              "adoption_conditions_en": [
+                "Briefingdate, notverifiedexactPDFpostingdate; sameissuer asSeptemberannouncement, notindependentcorroboration.",
+                "No customerlist, matchedtrialconditions/performance, contractedvolume orSLA verified.",
+                "Retain open gaps, dates and thresholds; one origin is not independent corroboration."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-N02-676-01"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -72061,6 +72387,16 @@
           ],
           "created_at": "2026-10-31T17:14:44.487655+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000676",
+          "bundle_sha256": "219dd8e71ef1b982a260086b1071a5b94729723a84298154d3bf2e3e570c3d57",
+          "base_commit": "9965234e304ab9aa192ed7cd9428c0a00d941962",
+          "unit_ids": [
+            "CROSS-11-U01"
+          ],
+          "created_at": "2026-11-02T15:11:04.965845+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -72088,7 +72424,8 @@
               "TDS-OCT05-CROSS003-INTEGRATED-RETAINED",
               "TDS-OCT05-CROSS003-INTEGRATED-READABLE",
               "TDS-L31-CROSS003-01",
-              "TDS-L31-CROSS003-02"
+              "TDS-L31-CROSS003-02",
+              "TDS-N02-CROSS003-676"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -88090,6 +88427,62 @@
       "url": "https://docs.nvidia.com/nim/large-language-models/latest/reference/benchmarking.html",
       "source_class": "official-project",
       "published_or_updated": "Page last updated2026-10-31; individual section introduction/publication date unknown"
+    },
+    {
+      "source_id": "SRC-N02-671-01",
+      "title": "vLLM release listing: v0.33.0 heading and rc3 tag ambiguity",
+      "publisher": "vLLM project",
+      "url": "https://github.com/vllm-project/vllm/releases",
+      "source_class": "official-project",
+      "published_or_updated": "Displayed02Nov10:10;2026 inferred from retrieval context, year/timezone not explicitly verified; rc3 tag mismatch unresolved"
+    },
+    {
+      "source_id": "SRC-N02-672-01",
+      "title": "PASS Is a Claim, Not an Observation: Mechanical Re-verification of 10 Self-Asserted Fix Claims in a Live Multi-Agent Audit Layer",
+      "publisher": "Lei Zhenbing and Lei Chang / arXiv",
+      "url": "https://arxiv.org/html/2610.35950v1",
+      "source_class": "research-artifact",
+      "published_or_updated": "2026-10-24"
+    },
+    {
+      "source_id": "SRC-N02-673-01",
+      "title": "AOBA frontend emergency maintenance, Nov2 9:10 update",
+      "publisher": "Tohoku University Cyberscience Center",
+      "url": "https://www.ss.cc.tohoku.ac.jp/n20261102-1/",
+      "source_class": "official-project",
+      "published_or_updated": "2026-11-02"
+    },
+    {
+      "source_id": "SRC-N02-674-01",
+      "title": "Login-node emergency maintenance Nov2, ended",
+      "publisher": "Institute of Science Tokyo",
+      "url": "https://www.t4.cii.isct.ac.jp/node/311",
+      "source_class": "official-project",
+      "published_or_updated": "2026-11-02"
+    },
+    {
+      "source_id": "SRC-N02-675-01",
+      "title": "VULCAN v2 full text",
+      "publisher": "Nogueira et al. / arXiv",
+      "url": "https://arxiv.org/html/2610.40561v2",
+      "source_class": "research-artifact",
+      "published_or_updated": "2026-10-30 (v2 revision)"
+    },
+    {
+      "source_id": "SRC-N02-676-01",
+      "title": "Summary Translation of Q&A at FY2026 First Half Financial Results Briefing",
+      "publisher": "Fujitsu",
+      "url": "https://resources.global.fujitsu/prir/2026/10/2026Q2-Questions-and-Answers-en.pdf",
+      "source_class": "official-project",
+      "published_or_updated": "2026-10-29 briefing; exactfileposting unknown"
+    },
+    {
+      "source_id": "SRC-N02-677-01",
+      "title": "ADIOS2 v2.13.0-rc1 release notes",
+      "publisher": "ADIOS2 maintainers",
+      "url": "https://github.com/ornladios/ADIOS2/releases/tag/v2.13.0-rc1",
+      "source_class": "official-project",
+      "published_or_updated": "Displayed27Oct20:58; year/timezone and first-note publication date unknown"
     }
   ],
   "coverage_gaps": [
@@ -89274,7 +89667,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-DAILY41-BOUNDED-PUBLIC-20261101",
-    "human_approval_directive_id": "DIR-900170"
+    "publication_decision_id": "PUBDEC-DAILY41-BOUNDED-PUBLIC-20261102",
+    "human_approval_directive_id": "DIR-900171"
   }
 }
