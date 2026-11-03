@@ -104,6 +104,7 @@
     document.getElementById("application-overview-table").replaceChildren(table);
     window.OpenFSGpuMeasurements.render(language);
     window.OpenFSRuntime.render(language);
+    window.OpenFSAcceleratorForecasts.render(language);
     if (!document.getElementById("legacy-device-reference").hidden) window.OpenFSDeviceComparison.render(language);
   }
   function focusApplication() {
