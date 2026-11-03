@@ -41,8 +41,8 @@
       "summary_en": "Cover parallelism, memory, checkpoints, and latency.",
       "current_state_ja": "Megatron、DeepSpeed、vLLM、MLPerfの公開資料を基準にします。 今回の限定的な追補：ECMWFは入力解析世代の変更でGraphCast・Aurora・AIFS v1.1の精度変化を報告し、AIFS v2適応と外部モデルの同センター実時間運用停止を説明する。モデルの世界的廃止ではない。Anemoiの研究例は約100km・6時間入力から約30km・1時間出力へ反復samplerで変換するが、運用日・全系節約は未報告。AgentActionBenchは150論文（AI4Science30）、人手注釈15、GPT-4o-mini採点で行動過程と5段階を評価する。rubric総合点は完全再現論文の割合ではない。 PyTorch DCP2.14のstaging thread所有・cleanupをmemory条件と共に確認する。JSON checkpoint packageのlegacy resume条件は既存msgpack advisoryと別で、JS/TS Storeの設定依存cross-user認可問題を全Python packageの一般脆弱性へ拡張しない。package版・serializer・principal・expiry・checkpoint再開・Store認可を既存agent試験へ組み込み、site診断や再現済みとはしない。",
       "current_state_en": "Public Megatron, DeepSpeed, vLLM, and MLPerf materials form the baseline. Scoped additions in this batch: ECMWF reports quality changes for GraphCast, Aurora and AIFS v1.1 after initial-condition changes, adaptation of AIFS v2 and cessation of its external-model realtime runs, not worldwide model retirement. Anemoi research maps roughly 100km/six-hour inputs to 30km/hourly outputs through iterative sampling without reported deployment dates or end-to-end savings. AgentActionBench covers 150 papers (30 AI4Science), 15 human-annotated papers and GPT-4o-mini scoring of actions/five stages. Overall rubric scores are not fractions of completely reproduced papers. Add PyTorch DCP 2.14 staging-thread ownership/cleanup alongside memory conditions. Keep JSON-package legacy resume conditions distinct from the existing msgpack advisory; configuration-dependent JS/TS Store authorization does not establish a universal Python vulnerability. Add package versions, serializers, principals, expiry, checkpoint resumption and Store authorization to existing agent tests without site diagnosis or reproduction claims.",
-      "hpci_implications_ja": "学習と推論を同じピーク演算値だけで評価せず、通信、KV cache、データ経路を測定します。 非同期保存の境界と等資源推論比較を受入試験に加える。 公式2.15 releaseにより従前のRC限定保留を更新できる。nccl groupは新backendが既定となりlegacy rollbackとhang診断を示すが関連分散APIはunstable。Python3.10対応を終了。backend・環境適合を再確認する案で、施設受入ではない。 rc2もprerelease。noteはwheel1.4.0rc2.post1とcontainer/docs1.4.0rc2を区別しtransceiverV2のV1対応削除を示す。RPC/MPI初期化hangを記載。rc1取消/schema問題は直接の解決証拠まで保留し、記載消失を修正証明としない。 過去の限定確認記録に基づく追補（現在状態の再確認ではない）： TitanRLは学習と生成でmodelコードを共有し、対応on-policy・batch-invariant構成でlog probabilityのbitwise一致を報告する。この条件を任意backend、off-policy、障害再開へ一般化しない。内部clusterの開発者測定はMLCommons審査済み提出やHPCI受入ではない。 1.4.0rc1はKV cache manager V2とPython KV transceiverを既定にする。release notesにはA100のstream取消後KV転送失敗とQwen3 JSON-schema例の無制限応答が既知問題として残る。RC・未解決範囲を保持し、GAや全修正完了としない。 設定context容量・概算prompt目標・実tokenを分け、cache・並行数・反復境界を併記する。単一GPUの日時付きraw記録を最大容量試験・信頼区間・品質同等性・機種やruntimeの因果順位にしない。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。 vLLM公開一覧の配布条件変更に対しimage/wheel・driver・framework・connector版と最終タグ同一性を固定し、同一負荷の品質・TTFT/TPOT・取消を再確認する。導入日・性能値・Gap完了は更新しない。",
-      "hpci_implications_en": "Do not evaluate training and inference by peak arithmetic alone; measure communication, KV cache, and data paths. Add asynchronous-save boundaries and equal-resource serving comparisons to acceptance tests. The official 2.15 release replaces the prior RC-only hold. It defaults nccl groups to the rewritten backend, with legacy rollback and hang diagnostics; the relevant distributed APIs remain unstable. Python 3.10 support is removed. Requalify backend and environment compatibility; release is not facility acceptance. rc2 stays prerelease. Its note distinguishes wheel 1.4.0rc2.post1 from container/docs 1.4.0rc2 and removes V1 support from transceiver V2. It lists an RPC/MPI initialization hang. Preserve rc1 cancellation/schema concerns until direct resolution evidence; note omission does not prove fixes. Retained bounded earlier observations, without fresh current-status verification: TitanRL reports shared training/generation model code and bitwise log-probability agreement in supported on-policy batch-invariant configurations. This does not establish arbitrary-backend, off-policy or restart equivalence. Developer internal-cluster measurements are not adjudicated MLCommons submissions or HPCI acceptance. Version1.4.0rc1 defaults to KV cache manager V2 and the Python KV transceiver. Release notes retain an A100 post-stream-cancellation KV-transfer failure and a Qwen3 JSON-schema unbounded-response example. Preserve RC status and unresolved scope rather than claiming GA or all fixes complete. Record configured context capacity, estimated prompt target and actual token count separately, alongside cache, concurrency and repetition boundaries. This dated single-GPU snapshot is not a full-capacity test, confidence interval, quality comparison or causal hardware/runtime ranking. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation. For the vLLM listing compatibility changes, pin image/wheel, driver, framework, connector and final tag identity, then recheck quality, TTFT/TPOT and cancellation under matched workloads. Retain deployment dates, performance values and open gaps.",
+      "hpci_implications_ja": "学習と推論を同じピーク演算値だけで評価せず、通信、KV cache、データ経路を測定します。 非同期保存の境界と等資源推論比較を受入試験に加える。 公式2.15 releaseにより従前のRC限定保留を更新できる。nccl groupは新backendが既定となりlegacy rollbackとhang診断を示すが関連分散APIはunstable。Python3.10対応を終了。backend・環境適合を再確認する案で、施設受入ではない。 rc2もprerelease。noteはwheel1.4.0rc2.post1とcontainer/docs1.4.0rc2を区別しtransceiverV2のV1対応削除を示す。RPC/MPI初期化hangを記載。rc1取消/schema問題は直接の解決証拠まで保留し、記載消失を修正証明としない。 過去の限定確認記録に基づく追補（現在状態の再確認ではない）： TitanRLは学習と生成でmodelコードを共有し、対応on-policy・batch-invariant構成でlog probabilityのbitwise一致を報告する。この条件を任意backend、off-policy、障害再開へ一般化しない。内部clusterの開発者測定はMLCommons審査済み提出やHPCI受入ではない。 1.4.0rc1はKV cache manager V2とPython KV transceiverを既定にする。release notesにはA100のstream取消後KV転送失敗とQwen3 JSON-schema例の無制限応答が既知問題として残る。RC・未解決範囲を保持し、GAや全修正完了としない。 設定context容量・概算prompt目標・実tokenを分け、cache・並行数・反復境界を併記する。単一GPUの日時付きraw記録を最大容量試験・信頼区間・品質同等性・機種やruntimeの因果順位にしない。 保存済み確認記録に基づく限定追補で、現在の施設稼働・適用・独立検証を認定しない。 vLLM公開一覧の配布条件変更に対しimage/wheel・driver・framework・connector版と最終タグ同一性を固定し、同一負荷の品質・TTFT/TPOT・取消を再確認する。導入日・性能値・Gap完了は更新しない。 既存の版・model・layout・KV形式・資源を固定する評価条件へ、共有fileの互換性と欠落shard時の挙動を接続する。施設SLOや導入達成とは扱わない。",
+      "hpci_implications_en": "Do not evaluate training and inference by peak arithmetic alone; measure communication, KV cache, and data paths. Add asynchronous-save boundaries and equal-resource serving comparisons to acceptance tests. The official 2.15 release replaces the prior RC-only hold. It defaults nccl groups to the rewritten backend, with legacy rollback and hang diagnostics; the relevant distributed APIs remain unstable. Python 3.10 support is removed. Requalify backend and environment compatibility; release is not facility acceptance. rc2 stays prerelease. Its note distinguishes wheel 1.4.0rc2.post1 from container/docs 1.4.0rc2 and removes V1 support from transceiver V2. It lists an RPC/MPI initialization hang. Preserve rc1 cancellation/schema concerns until direct resolution evidence; note omission does not prove fixes. Retained bounded earlier observations, without fresh current-status verification: TitanRL reports shared training/generation model code and bitwise log-probability agreement in supported on-policy batch-invariant configurations. This does not establish arbitrary-backend, off-policy or restart equivalence. Developer internal-cluster measurements are not adjudicated MLCommons submissions or HPCI acceptance. Version1.4.0rc1 defaults to KV cache manager V2 and the Python KV transceiver. Release notes retain an A100 post-stream-cancellation KV-transfer failure and a Qwen3 JSON-schema unbounded-response example. Preserve RC status and unresolved scope rather than claiming GA or all fixes complete. Record configured context capacity, estimated prompt target and actual token count separately, alongside cache, concurrency and repetition boundaries. This dated single-GPU snapshot is not a full-capacity test, confidence interval, quality comparison or causal hardware/runtime ranking. This bounded follow-up uses the retained check record; it does not attest current site operation, deployment or independent validation. For the vLLM listing compatibility changes, pin image/wheel, driver, framework, connector and final tag identity, then recheck quality, TTFT/TPOT and cancellation under matched workloads. Retain deployment dates, performance values and open gaps. Connect file compatibility and missing-shard behavior to existing pinned-version/model/layout/KV/resource qualification; do not imply facility SLO or deployment achievement.",
       "source_ids": [
         "SRC-CDS048",
         "SRC-CDS050",
@@ -62,7 +62,9 @@
         "SRC-OCT23-SSW009-2-1",
         "SRC-OCT23-SSW009-3-1",
         "SRC-OCT23-APP013-2-1",
-        "SRC-N02-671-01"
+        "SRC-N02-671-01",
+        "SRC-N03-692-01",
+        "SRC-N03-692-02"
       ]
     },
     {
@@ -584,6 +586,20 @@
       "url": "https://arxiv.org/html/2610.35950v1",
       "source_class": "academic-primary",
       "published_at": "2026-10-24"
+    },
+    {
+      "source_id": "SRC-N03-692-01",
+      "title": "SGLang v0.5.23 release",
+      "publisher": "SGLang project",
+      "url": "https://github.com/sgl-project/sglang/releases/tag/v0.5.23",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-N03-692-02",
+      "title": "SGLang PR41187: MLA/DCP HiCache file storage",
+      "publisher": "SGLang project",
+      "url": "https://github.com/sgl-project/sglang/pull/41187",
+      "source_class": "project-official"
     }
   ],
   "coverage_gaps": [
@@ -615,7 +631,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-DAILY41-BOUNDED-PUBLIC-20261102",
-    "human_approval_directive_id": "DIR-900171"
+    "publication_decision_id": "PUBDEC-DAILY41-WAVE3-PUBLIC-20261103",
+    "human_approval_directive_id": "DIR-900174"
   }
 }

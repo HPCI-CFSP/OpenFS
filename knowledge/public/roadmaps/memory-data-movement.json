@@ -3738,6 +3738,21 @@
       "url": "https://docs.nvidia.com/datacenter/tesla/tesla-release-notes-580-196-07/index.html",
       "source_class": "vendor-official",
       "published_at": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-N03-687-01",
+      "title": "Sandisk Fiscal First Quarter2027 Financial Results",
+      "publisher": "Sandisk",
+      "url": "https://investor.sandisk.com/static-files/4ca97b6e-7da4-4d52-b4ac-0e80f462716f",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-N03-687-02",
+      "title": "SK hynix OCP Global Summit2026 memory-centric systems report",
+      "publisher": "SK hynix",
+      "url": "https://news.skhynix.com/en/ocp-global-summit-2026/",
+      "source_class": "vendor-official",
+      "published_at": "2026-10-16"
     }
   ],
   "coverage_gaps": [
@@ -3824,8 +3839,8 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-LEGACY25-BOUNDED-20261031",
-    "human_approval_directive_id": "DIR-900168"
+    "publication_decision_id": "PUBDEC-DAILY41-WAVE3-PUBLIC-20261103",
+    "human_approval_directive_id": "DIR-900174"
   },
   "roadmap_id": "RM-HW-MEMORY",
   "groups": [
@@ -4100,13 +4115,15 @@
       "summary_en": "A NAND-based high-bandwidth, high-capacity memory-tier candidate, distinct from DRAM-based HBM.",
       "current_state_ja": "2026年8月に仕様概要が公表された。Sandiskの旧計画は2026年後半のメモリサンプル、2027年早期の推論装置サンプル。実機性能、一般販売、公開規範文書の確認は未完了。",
       "current_state_en": "A specification summary was announced in August 2026. Sandisk's earlier plan targets H2 2026 memory samples and early-2027 inference-device samples. Hardware performance, general sales and public normative-document verification remain incomplete.",
-      "hpci_implications_ja": "読取り帯域だけでなく、書込み、耐久性、遅延、ページ粒度、HBMとの分担、制御ソフトを評価する。内部シミュレーションを実測と扱わない。",
-      "hpci_implications_en": "Evaluate writes, endurance, latency, page size, HBM coexistence and control software, not read bandwidth alone. Internal simulation is not hardware measurement.",
+      "hpci_implications_ja": "読取り帯域だけでなく、書込み、耐久性、遅延、ページ粒度、HBMとの分担、制御ソフトを評価する。内部シミュレーションを実測と扱わない。 HBFの旧サンプル目標と今回のtape-out報告を別に保持する。既存のCXL展示実績に対する追加PoCとして扱い、量産・提供時期・独立性能は未確認とする。",
+      "hpci_implications_en": "Evaluate writes, endurance, latency, page size, HBM coexistence and control software, not read bandwidth alone. Internal simulation is not hardware measurement. Keep the earlier HBF sample targets distinct from this tape-out report. Treat the CXL PoC as additional evidence beyond the existing display milestone; production, availability and independent performance remain unverified.",
       "source_ids": [
         "SRC-HW2-HBF-FMS",
         "SRC-HW2-HBF-TIMING",
         "SRC-HW2-HBF-FACTS",
-        "SRC-HW2-OCP-HBF-ACCESS"
+        "SRC-HW2-OCP-HBF-ACCESS",
+        "SRC-N03-687-01",
+        "SRC-N03-687-02"
       ]
     },
     {
@@ -4210,8 +4227,8 @@
       "summary_en": "A cache-coherent interconnect among CPUs, accelerators, and memory, enabling expansion, tiering, sharing, and pooling.",
       "current_state_ja": "CXL 4.0規格は2025年に公開された。一方、2026年に公開された製品や展示はCXL 2.0から3.2が中心である。2026年7月にはMontage TechnologyがCXL 3.2対応MXCの試験量産を発表しており、規格世代と実製品の間には時間差がある。",
       "current_state_en": "The CXL 4.0 specification was released in 2025, while public products and demonstrations in 2026 remain concentrated on CXL 2.0 through 3.2. Montage Technology announced trial production of a CXL 3.2 MXC in July 2026, illustrating the standards-to-product lag.",
-      "hpci_implications_ja": "規格帯域だけでなく、NUMA遅延、競合、公平性、メモリ配置、OS/スケジューラ、スイッチ障害、相互運用性を実機で評価する必要がある。 一部の実CXLデバイスでµs級tail latencyが報告されているため、対象アプリケーションの反復時間の上位分位も測定する。poisonを消費したプロセスの終了やviral状態でのリセット可能性を踏まえ、障害注入・封じ込め・チェックポイント再開を構成ごとに検証する。これらは提案するHPCI評価条件であり、既存世代の実測をCXL 4.0の性能保証や導入日程へ転用しない。",
-      "hpci_implications_en": "HPCI needs real-system evaluation of NUMA latency, contention, fairness, placement, OS and scheduler behavior, switch failures, and interoperability, not specification bandwidth alone. Because some real CXL devices exhibit microsecond-scale tail latency, also measure target-application iteration-time tails. Account for possible process termination after poison consumption and reset in a viral condition by testing fault injection, containment and checkpoint/restart for each configuration. These are proposed HPCI evaluation conditions; measurements of earlier generations are not CXL 4.0 performance guarantees or adoption dates.",
+      "hpci_implications_ja": "規格帯域だけでなく、NUMA遅延、競合、公平性、メモリ配置、OS/スケジューラ、スイッチ障害、相互運用性を実機で評価する必要がある。 一部の実CXLデバイスでµs級tail latencyが報告されているため、対象アプリケーションの反復時間の上位分位も測定する。poisonを消費したプロセスの終了やviral状態でのリセット可能性を踏まえ、障害注入・封じ込め・チェックポイント再開を構成ごとに検証する。これらは提案するHPCI評価条件であり、既存世代の実測をCXL 4.0の性能保証や導入日程へ転用しない。 HBFの旧サンプル目標と今回のtape-out報告を別に保持する。既存のCXL展示実績に対する追加PoCとして扱い、量産・提供時期・独立性能は未確認とする。",
+      "hpci_implications_en": "HPCI needs real-system evaluation of NUMA latency, contention, fairness, placement, OS and scheduler behavior, switch failures, and interoperability, not specification bandwidth alone. Because some real CXL devices exhibit microsecond-scale tail latency, also measure target-application iteration-time tails. Account for possible process termination after poison consumption and reset in a viral condition by testing fault injection, containment and checkpoint/restart for each configuration. These are proposed HPCI evaluation conditions; measurements of earlier generations are not CXL 4.0 performance guarantees or adoption dates. Keep the earlier HBF sample targets distinct from this tape-out report. Treat the CXL PoC as additional evidence beyond the existing display milestone; production, availability and independent performance remain unverified.",
       "source_ids": [
         "SRC-MEM028",
         "SRC-MEM029",
@@ -4221,7 +4238,9 @@
         "SRC-ARCH003-20261011-CXL-QA",
         "SRC-ARCH003-20261011-CXL-WEBINAR",
         "SRC-OCT03-ARCH003-MELODY",
-        "SRC-OCT03-ARCH003-CXL-RAS"
+        "SRC-OCT03-ARCH003-CXL-RAS",
+        "SRC-N03-687-01",
+        "SRC-N03-687-02"
       ],
       "generation_bands": [
         {
