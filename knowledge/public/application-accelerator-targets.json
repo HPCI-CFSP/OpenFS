@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0",
+  "export_id": "APP-ACCELERATOR-TARGETS-20261103",
+  "as_of": "2026-11-03",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "publication": {"information_classification":"public","publication_approved":true,"publication_decision_id":"PUBDEC-ACCELERATOR-TARGETS-20261103","human_approval_directive_id":"DIR-911103"},
+  "title_ja": "MI430X・MI455X：条件付き性能推定",
+  "title_en": "MI430X and MI455X: conditional performance estimates",
+  "summary_ja": "公開済みの小規模例題を基準に、精度別の理論性能と帯域を使った感度推定です。AMD実測・移植済み実装・正式EEA1予測ではありません。",
+  "summary_en": "Sensitivity estimates for already-public small examples using precision-specific theoretical peaks and bandwidth. These are not AMD measurements, validated ports or formal EEA1 forecasts.",
+  "caveat_ja": "CUDAからROCmへ同等の処理を移植でき、選択カーネルの残差または効率を保持するという未検証の仮説です。未計測カーネルは基準時間に保持する仮定で、仕事量ゼロの証明ではありません。CPU・起動・転送・キャッシュ・電力・実効クロックの変化は未同定です。範囲は仮定感度であり信頼区間・誤差保証ではなく、長時間測定や25%達成に算入しません。",
+  "caveat_en": "Unvalidated hypotheses assume an equivalent CUDA-to-ROCm port and preserve sampled-kernel residuals or efficiency. Uncovered kernels are held at baseline time, not proven to have zero work. Changes in CPU, launch, transfers, cache, power and effective clocks are unidentified. Ranges are assumption sensitivities, not confidence intervals or error guarantees; they do not count as long-run validation or 25% success.",
+  "model_contract": {
+    "method_id": "sampled-roofline-residual-typed-target-v1",
+    "baseline_selection": "GENESIS:h200;SALMON:gh200;LQCD:gh200;fixed_before_AMD_calculation",
+    "uncovered_kernel_policy": "baseline-held-constant-unvalidated",
+    "fixed_phase_sensitivity": [0.5,2],
+    "target_observations_used": false,
+    "cross_vendor_port_validated": false,
+    "formal25_verified": false,
+    "interval_kind": "assumption-sensitivity-not-confidence"
+  },
+  "sources": [
+    {"source_id":"AMD-MI430X-PRODUCT-20261103","title":"AMD Instinct MI430X GPUs","publisher":"AMD","url":"https://www.amd.com/en/products/accelerators/instinct/mi400/mi430x.html","checked_at":"2026-11-03","published_at":null,"locator":"Product peaks and July2026 engineering-projection footnote;2027 availability FAQ"},
+    {"source_id":"AMD-MI455X-PRODUCT-20261103","title":"AMD Instinct MI455X GPUs","publisher":"AMD","url":"https://www.amd.com/en/products/accelerators/instinct/mi400/mi455x.html","checked_at":"2026-11-03","published_at":null,"locator":"GPU Specifications:vector FP64 and FP32;GPU Memory:HBM4 capacity/bandwidth"},
+    {"source_id":"AMD-MI400-FAQ-20261103","title":"AMD Instinct MI400 Series","publisher":"AMD","url":"https://www.amd.com/en/products/accelerators/instinct/mi400.html","checked_at":"2026-11-03","published_at":null,"locator":"MI430X FAQ bandwidth2.3TB/s;retained separately from product23.3TB/s"},
+    {"source_id":"AMD-MI430X-ANNOUNCEMENT-2025","title":"AMD Instinct MI430X: Powering the Next Wave of AI","publisher":"AMD","url":"https://www.amd.com/en/blogs/2025/amd-instinct-mi430x-powering-the-next-wave-of-ai.html","checked_at":"2026-11-03","published_at":"2025-11-19","locator":"Introductory paragraph:432GB HBM4 and19.6TB/s;historical projection,not a verified final specification"}
+  ],
+  "targets": [
+    {
+      "id":"mi430x","name":"AMD Instinct MI430X","architecture":"CDNA 5","scope":"one-gpu","market_status":"announced-2027","fp64_kind":"native-vector","fp64_tflops":288,"fp32_tflops":null,"memory_gb":432,
+      "source_ids":["AMD-MI430X-PRODUCT-20261103","AMD-MI400-FAQ-20261103","AMD-MI430X-ANNOUNCEMENT-2025"],
+      "default_scenario_id":"product-23.3",
+      "bandwidth_scenarios":[
+        {"id":"product-23.3","bandwidth_gbs":23300,"source_id":"AMD-MI430X-PRODUCT-20261103","status":"projected","label_ja":"製品ページ：23.3 TB/s","label_en":"Product page:23.3 TB/s"},
+        {"id":"faq-2.3","bandwidth_gbs":2300,"source_id":"AMD-MI400-FAQ-20261103","status":"source-conflict","label_ja":"シリーズFAQ：2.3 TB/s（不一致）","label_en":"Series FAQ:2.3 TB/s (conflict)"},
+        {"id":"historical-19.6","bandwidth_gbs":19600,"source_id":"AMD-MI430X-ANNOUNCEMENT-2025","status":"historical-projection","label_ja":"旧発表：19.6 TB/s","label_en":"Earlier announcement:19.6 TB/s"}
+      ],
+      "note_ja":"2027年提供予定の工学的予測。FP32性能は未確認で、MI455Xの値を流用しません。2.3/23.3の誤記補正や資料間の平均は行わず、帯域は出典別に計算します。",
+      "note_en":"Engineering projection for expected2027 availability. FP32 peak is unverified; MI455X values are not reused. No typo repair or averaging of2.3/23.3; bandwidth is evaluated by source."
+    },
+    {
+      "id":"mi455x","name":"AMD Instinct MI455X","architecture":"CDNA 5","scope":"one-gpu","market_status":"product-listed-access-unverified","fp64_kind":"native-vector","fp64_tflops":5,"fp32_tflops":315,"memory_gb":432,
+      "source_ids":["AMD-MI455X-PRODUCT-20261103"],"default_scenario_id":"product-23.3",
+      "bandwidth_scenarios":[{"id":"product-23.3","bandwidth_gbs":23300,"source_id":"AMD-MI455X-PRODUCT-20261103","status":"published-peak","label_ja":"製品ページ：23.3 TB/s","label_en":"Product page:23.3 TB/s"}],
+      "note_ja":"実機アクセス・達成性能は未確認。FP64の5 TFLOP/sとFP16/BF16行列の約5 PFLOP/sを区別し、低精度AI性能をFP64に使いません。",
+      "note_en":"Hardware access and attained performance are unverified. Distinguish5 TFLOP/s FP64 from about5 PFLOP/s FP16/BF16 matrix rates; low-precision AI peaks are not FP64."
+    }
+  ],
+  "requests": [
+    {"id":"genesis-jac-pme20","title_ja":"GENESIS：CHARMM/PME・20ステップ","title_en":"GENESIS:CHARMM/PME,20 steps","study_id":"PHASE-GENESIS-JAC-PME20","baseline_machine_id":"h200","baseline_sha256":"61571985427ef95de317d8fd4f056ab6874d495d5f9cad62c845a357f9243fcc"},
+    {"id":"salmon-si8-gs","title_ja":"SALMON：Si 8原子・基底状態","title_en":"SALMON:Si8 ground state","study_id":"PHASE-SALMON-SI8-GS","baseline_machine_id":"gh200","baseline_sha256":"7819c20b631c5aa7c2554a65fc44237a1054ecb356da1a964438360dcff45f28"},
+    {"id":"salmon-si8-rt180","title_ja":"SALMON：Si 8原子・180ステップ","title_en":"SALMON:Si8,180 time steps","study_id":"PHASE-SALMON-SI8-RT180","baseline_machine_id":"gh200","baseline_sha256":"db02f9c93a86990c932a8bae76c4a48ff8495401c29f0e3d3224286ffe2b9dc8"},
+    {"id":"lqcd-8x4-main","title_ja":"LQCD：8×8×8×8・main全体","title_en":"LQCD:8×8×8×8,full main","study_id":"PHASE-LQCD-8X4-MAIN","baseline_machine_id":"gh200","baseline_sha256":"1e06c76516e1b2f63c1a17724fb2092b0f7d33c9ea222bdc3614fae2fef771e9"}
+  ]
+}
