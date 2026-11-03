@@ -103,6 +103,7 @@
     table.append(caption, head, body);
     document.getElementById("application-overview-table").replaceChildren(table);
     window.OpenFSGpuMeasurements.render(language);
+    window.OpenFSIndependentMeasurements.render(language);
     window.OpenFSRuntime.render(language);
     window.OpenFSAcceleratorForecasts.render(language);
     if (!document.getElementById("legacy-device-reference").hidden) window.OpenFSDeviceComparison.render(language);

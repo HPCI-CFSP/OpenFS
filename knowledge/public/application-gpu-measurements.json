@@ -8,14 +8,14 @@
     "information_classification": "public",
     "publication_approved": true,
     "publication_decision_id": "PUBDEC-GPU-MEASUREMENTS-20261103",
-    "human_approval_directive_id": "DIR-910008"
+    "human_approval_directive_id": "DIR-910103"
   },
   "title_ja": "R-CCSクラウド・理究 GPUアプリケーション実測値",
   "title_en": "Measured GPU application runtimes on R-CCS Cloud and Rikyu",
-  "summary_ja": "通常実行の実測値のみ。長時間5ケースと過去の短時間ケースを分離し、計測区間・GPU型番・反復値を保持します。",
-  "summary_en": "Normal-run measurements only. The five long-run cases and historical short tests remain separate, with explicit timer scopes, GPU variants and retained repetitions.",
-  "caveat_ja": "空欄は未掲載・未測定であり0秒ではありません。保存済み証拠の範囲で、両システムの全GPU・全条件の測定完了は未達です。GPU・CPU・コンパイラ・ライブラリ条件は統制されておらず、同一行でも純粋なGPU比較とは限りません。旧保存集計は反復内訳を再構成していません。過去の短時間ケースは今回の30秒以上／HPCG120秒以上の条件を満たした測定に昇格しません。予測値・精度評価は掲載していません。",
-  "caveat_en": "An empty cell is missing evidence, not zero seconds. This retained evidence does not complete all GPU/workload combinations or establish an exhaustive current device inventory. Host CPU, compiler and library conditions are not controlled, so a row is not necessarily a GPU-only comparison. Legacy saved aggregates do not reconstruct per-run samples. Historical short cases do not satisfy the current >=30 s / HPCG >=120 s duration gates. No predictions or accuracy results are included.",
+  "summary_ja": "通常実行の実測値のみ。長時間5ケースと過去の短時間ケースを分離し、計測区間・GPU型番・反復値を保持します。 GENESIS/B300とHPCG/H100 NVLの追補は10月30日の保存済み通常3反復の再照合で、新規実行ではありません。",
+  "summary_en": "Normal-run measurements only. The five long-run cases and historical short tests remain separate, with explicit timer scopes, GPU variants and retained repetitions. The added GENESIS/B300 and HPCG/H100 NVL cohorts reconcile retained October30 three-run data, rather than new executions.",
+  "caveat_ja": "空欄は未掲載・未測定であり0秒ではありません。保存済み証拠の範囲で、両システムの全GPU・全条件の測定完了は未達です。GPU・CPU・コンパイラ・ライブラリ条件は統制されておらず、同一行でも純粋なGPU比較とは限りません。旧保存集計は反復内訳を再構成していません。過去の短時間ケースは今回の30秒以上／HPCG120秒以上の条件を満たした測定に昇格しません。予測値・精度評価は掲載していません。 追補2件は10月30日の別ビルド・実行環境です。GENESISは短い上流比較と長時間入力の有限性・時刻・箱・エネルギー整合、HPCGは固定仕事量と内部検証の範囲です。長い科学軌道の同等性、公式認証、厳密EEA1入力一致、モデル精度改善を示しません。形態未確認H200はSXM列へ追加しません。",
+  "caveat_en": "An empty cell is missing evidence, not zero seconds. This retained evidence does not complete all GPU/workload combinations or establish an exhaustive current device inventory. Host CPU, compiler and library conditions are not controlled, so a row is not necessarily a GPU-only comparison. Legacy saved aggregates do not reconstruct per-run samples. Historical short cases do not satisfy the current >=30 s / HPCG >=120 s duration gates. No predictions or accuracy results are included. The two historical additions use separate October30 builds/runtime environments. GENESIS covers short upstream comparison and finite long-input time/box/energy closure; HPCG covers fixed work and internal validation. They do not establish long-trajectory equivalence, official qualification, formalEEA1 input identity or model accuracy improvement. Form-factor-unverified H200 is not added to the SXM column.",
   "devices": [
     {
       "id": "rcc-a100",
@@ -522,6 +522,32 @@
       "evidence_sha256": "36084dd6d310b5ba1db5734abeec2b54404dfb4e47becadde4bd307380214a31"
     },
     {
+      "id": "genesis-normal3-20261023-rcc-b300",
+      "case_id": "genesis-normal3-20261023",
+      "device_id": "rcc-b300",
+      "seconds": 44.434251218,
+      "samples_seconds": [
+        44.477017878,
+        44.372637058,
+        44.434251218
+      ],
+      "statistic": "median",
+      "evidence_sha256": "16cdf370d72dc35c2c9909451d5c9b8df536cf9de6eb099e30d5225f3bedcdf4"
+    },
+    {
+      "id": "hpcg-normal3-20261023-rcc-h100-nvl",
+      "case_id": "hpcg-normal3-20261023",
+      "device_id": "rcc-h100-nvl",
+      "seconds": 269.218343401,
+      "samples_seconds": [
+        268.452415188,
+        269.898940414,
+        269.218343401
+      ],
+      "statistic": "median",
+      "evidence_sha256": "c7db17be7bc9b74991a1c40222fa33a0df2a34f9f51dea1997b8de1bae1eab89"
+    },
+    {
       "id": "lqcd-normal3-20261023-rcc-a100",
       "case_id": "lqcd-normal3-20261023",
       "device_id": "rcc-a100",
@@ -546,6 +572,32 @@
       ],
       "statistic": "median",
       "evidence_sha256": "adc0c38f39cb9ef40e034687ddae4d2ca93428c039a7052400e2522e98bed231"
+    },
+    {
+      "id": "salmon-normal3-20261023-rcc-b300",
+      "case_id": "salmon-normal3-20261023",
+      "device_id": "rcc-b300",
+      "seconds": 111.748819075,
+      "samples_seconds": [
+        112.987719988,
+        111.748819075,
+        108.849266052
+      ],
+      "statistic": "median",
+      "evidence_sha256": "b07f0c9d5f1218bb85d65250419923e7db5773ae3c877c6b237ed72b9ced13c2"
+    },
+    {
+      "id": "hpl-normal3-20261023-rcc-b300",
+      "case_id": "hpl-normal3-20261023",
+      "device_id": "rcc-b300",
+      "seconds": 63.337146665,
+      "samples_seconds": [
+        113.935009039,
+        63.337146665,
+        56.410944345
+      ],
+      "statistic": "median",
+      "evidence_sha256": "bbec1cfebe60fb58a6dade525884805543c0cd91a42e6b91589d86115505e340"
     }
   ],
   "predictions_included": false,
