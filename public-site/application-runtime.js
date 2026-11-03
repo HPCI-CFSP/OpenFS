@@ -222,10 +222,13 @@
         if(c.kind==="application-study") contents.push(el("p",t("主要計算区間にカーネル別モデルを適用します。初期化・終了処理の中心値は予測元の通常実行から据え置き、0.5〜2倍を感度範囲に含めます。ホストCPU・I/Oの性能予測ではありません。","The kernel model scales computation only. Initialization and finalization retain baseline normal-run values, with 0.5–2× sensitivity. Host CPU and I/O performance are not independently predicted.")));
       }
     } else {
-      contents.push(el("p", t("通常実行。プロファイラ無効。初回を除く3回の中央値。", "Normal execution with profiler disabled. Median of three retained repetitions after excluding the first process.")),
+      if(r.statistic === "saved-median") {
+        contents.push(el("p",t("保存済みの通常実行の中央値。反復値・範囲・区間別内訳は未掲載です。main全体を計測しています。", "Archived normal-run median. Per-run samples, range and phase breakdown are unavailable. The timer covers the full main.")),
+          el("p","Evidence SHA-256: "+r.evidence_sha256));
+      } else contents.push(el("p", t("通常実行。プロファイラ無効。初回を除く3回の中央値。", "Normal execution with profiler disabled. Median of three retained repetitions after excluding the first process.")),
         el("p", t("観測範囲：", "Observed range: ")+fmt(r.minimum)+"–"+fmt(r.maximum)+" s"));
       if (r.phases) contents.push(table([t("区間", "Phase"), "s"], Object.entries(r.phases).map(([key,value])=>[phaseName(key),fmt(value)])));
-      else contents.push(el("p", t("初期化・終了処理はこの計測区間に含まれません。", "Initialization and finalization are outside this timing boundary.")));
+      else if(r.scope !== "main") contents.push(el("p", t("初期化・終了処理はこの計測区間に含まれません。", "Initialization and finalization are outside this timing boundary.")));
     }
     contents.push(link(t("評価条件・実行時間の内訳", "Conditions and runtime breakdown"),href(c,"runtime-detail")));
     contents.push(link(t("再現情報・ジョブスクリプト", "Reproduction records and job scripts"),href(c,"runtime-repro-records")));
@@ -233,7 +236,7 @@
     dialog(machine(r.machine_id).name+" · "+(r.kind === "measured" ? t("実測値","Measured") : t("予測値","Predicted")),contents);
   }
   function phaseName(key) {
-    return ({initialization:t("初期化","Initialization"),compute:t("主要計算","Computation"),finalization:t("終了処理","Finalization"),unclassified:t("未分類","Unclassified"),update:t("更新区間のみ","Update only")})[key];
+    return ({initialization:t("初期化","Initialization"),compute:t("主要計算","Computation"),finalization:t("終了処理","Finalization"),unclassified:t("内訳未取得","Breakdown unavailable"),update:t("更新区間のみ","Update only")})[key];
   }
   function chart(cases, detail) {
     const scroll = el("div"); scroll.className = "runtime-scroll"; scroll.tabIndex = 0; scroll.setAttribute("role","region"); scroll.setAttribute("aria-label",t("評価ケース別の実行時間比較","Runtime comparison by evaluation case"));
@@ -283,7 +286,7 @@
             bar.setAttribute("aria-label",m.name+" · "+slotLabel+" · "+(r.kind==="measured" ? t("実測値","Measured") : local(view.methods.find(v=>v.id===r.method_id),"name"))+" · "+fmt(r.seconds)+" s");
             bar.title=bar.getAttribute("aria-label");
             const value=el("span",fmt(r.seconds));value.className="runtime-value";bar.append(value);
-            const segments=r.phases || {update:r.seconds};
+            const segments=r.phases || (r.scope === "main" ? {unclassified:r.seconds} : {update:r.seconds});
             for(const [key,sec] of Object.entries(segments)) {const s=el("span");s.className="runtime-segment phase-"+key;s.style.height=(sec/r.seconds*100)+"%";s.title=phaseName(key)+": "+fmt(sec)+" s";bar.append(s);}
             plot.append(bar);column.append(plot);
             if(r.kind==="measured") column.append(el("small",t("実測","Measured")));
