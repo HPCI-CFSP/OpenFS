@@ -2,6 +2,7 @@
   "use strict";
   const artifact = window.OPENFS_PUBLIC_DATA.application_device_comparison?.accelerator_targets;
   const selected = new Map();
+  const virtual = {fp64: "288", fp32: "315", bandwidth: "23300"};
   const node = (tag, text) => {
     const element = document.createElement(tag);
     if (text !== undefined) element.textContent = text;
@@ -52,7 +53,14 @@
     const forecasts = table([w.workload, w.source, ...artifact.targets.map(t => `${t.name} · ${w.predicted}`)]);
     for (const request of artifact.requests) {
       const row = node("tr"); row.dataset.acceleratorCase = request.id;
-      const title = node("th", field(request, "title")); title.scope = "row"; row.append(title);
+      const title = node("th", field(request, "title")); title.scope = "row";
+      const provenance = request.calculation_inputs?.provenance;
+      if (provenance) {
+        const code = node("a", provenance.source_commit || (language === "ja" ? "commit不明" : "Unknown commit"));
+        if (/^https:\/\/github\.com\//.test(provenance.source_url || "")) {code.href=provenance.source_url;code.rel="noopener noreferrer";}
+        title.append(node("small", language === "ja" ? "使用コード / commit" : "Application code / commit"), code);
+      }
+      row.append(title);
       const sourceRow = artifact.results.find(r => r.case_id === request.id && r.baseline_seconds != null);
       const source = node("td", `${request.baseline_machine_id.toUpperCase()} · ${number(sourceRow.baseline_seconds)} ${w.seconds}`);
       row.append(source);
@@ -66,6 +74,24 @@
           cell.append(node("strong", `${number(result.seconds)} ${w.seconds}`),
             node("small", `${w.range}: ${number(result.minimum)}–${number(result.maximum)} ${w.seconds}`),
             node("small", `${w.coverage}: ${(100 * result.coverage_fraction).toFixed(1)}%`));
+        }
+        const model = node("a", artifact.model_version || artifact.model_contract.method_id);
+        model.href=`models/sampled-roofline-typed-v1/?lang=${language}`; model.className="accelerator-model-version";
+        cell.append(node("small")); cell.lastChild.append(model);
+        if (request.calculation_inputs) {
+          const calculation = node("details"); calculation.className="accelerator-calculation";
+          const calculationSummary=node("summary", language === "ja" ? " — パラメータと算術" : " — parameters and arithmetic");
+          const valueElement=cell.querySelector("strong");if(valueElement) calculationSummary.prepend(valueElement);
+          calculation.append(calculationSummary);
+          const spec={fp64:target.fp64_tflops,fp32:target.fp32_tflops,bandwidth:target.bandwidth_scenarios.find(s=>s.id===result.scenario_id).bandwidth_gbs};
+          let calculated;
+          try {calculated=window.OpenFSVirtualGPU.predict(request.calculation_inputs,spec);}
+          catch(error) {calculated={unavailable:error.message};}
+          calculation.append(node("pre", JSON.stringify({model_version:artifact.model_version,model_source_sha256:artifact.model_source_sha256,
+            units:{fp64:"TFLOP/s",fp32:"TFLOP/s",bandwidth:"GB/s",fp64_ops:"FLOP",fp32_ops:"FLOP",hbm_bytes:"byte",profiled_nanoseconds:"ns",time:"s"},
+            baseline_spec:request.calculation_inputs.baseline_spec,target_spec:spec,input_sha256:request.input_sha256,forecast_inputs_sha256:result.forecast_inputs_sha256,
+            phases:request.calculation_inputs.phases,provenance:request.calculation_inputs.provenance,calculation:calculated},null,2)));
+          cell.append(calculation);
         }
         cell.title = `SHA-256: ${result.forecast_inputs_sha256}`; row.append(cell);
       }
@@ -85,7 +111,46 @@
         inputs: artifact.results.map(r => ({case_id:r.case_id, target_id:r.target_id, scenario_id:r.scenario_id, sha256:r.forecast_inputs_sha256}))}, null, 2)));
     evidence.append(sources, provenance);
     root.replaceChildren(node("h3", field(artifact, "title")), node("p", w.status), node("p", field(artifact, "summary")),
-      toolbar, frame(specs, w.device), frame(forecasts, w.predicted), evidence);
+      toolbar, frame(specs, w.device), frame(forecasts, w.predicted), virtualPanel(language, artifact, frame, table), evidence);
+  }
+  function virtualPanel(language, artifact, frame, table) {
+    const ja=language==="ja", root=node("section");root.id="virtual-gpu-model";
+    root.append(node("h4",ja?"仮想GPU：同じモデルで再計算":"Virtual GPU: recompute with the same model"),
+      node("p",ja?"入力は1 GPUの理論vector性能とHBM帯域です。空の精度別ピークは不明。単位は十進。メモリ容量・L2帯域・通信はこの式の入力ではなく、適合や実装を保証しません。推定できるのは根拠のある4短時間ケースのみです。":"Enter theoretical vector peaks and HBM bandwidth for one GPU. Blank precision peaks mean unknown. Units are decimal. Memory capacity, L2 bandwidth and communication are not inputs to this equation; fit and implementation are not guaranteed. Only four evidenced short cases can be estimated."));
+    const form=node("form");form.className="accelerator-toolbar";
+    const fields={};
+    for (const [key,title] of [["fp64","FP64 vector (TFLOP/s)"],["fp32","FP32 vector (TFLOP/s)"],["bandwidth","HBM bandwidth (GB/s)"]]) {
+      const label=node("label",title),input=node("input");input.type="number";input.step="any";input.min="0";input.value=virtual[key];input.id="virtual-gpu-"+key;input.setAttribute("aria-label",title);input.style.maxWidth="12rem";label.htmlFor=input.id;label.append(input);form.append(label);fields[key]=input;
+    }
+    const submit=node("button",ja?"再計算":"Recalculate");submit.type="submit";form.append(submit);
+    const output=node("div");output.setAttribute("aria-live","polite");
+    const update=()=>{
+      output.replaceChildren();const spec={};
+      try {
+        for (const key of Object.keys(fields)) {virtual[key]=fields[key].value;spec[key]=fields[key].value.trim()===""?null:Number(fields[key].value);}
+        window.OpenFSVirtualGPU.validateSpec(spec);
+        const resultTable=table([ja?"入力":"Input",ja?"条件付き推定 / 仮定感度 (s)":"Conditional estimate / assumption sensitivity (s)"]);
+        for (const request of artifact.requests) {
+          const row=node("tr"),title=node("th",request["title_"+language]);title.scope="row";const cell=node("td");
+          try {
+            if (!request.calculation_inputs) throw Error(ja?"モデル入力不足":"Model inputs unavailable");
+            const value=window.OpenFSVirtualGPU.predict(request.calculation_inputs,spec);
+            cell.append(node("strong",value.seconds.toFixed(6)+" s"),node("small",value.minimum.toFixed(6)+"–"+value.maximum.toFixed(6)+" s"));
+            const detail=node("details");detail.append(node("summary",ja?"実パラメータ・算術":"Actual parameters and arithmetic"),node("pre",JSON.stringify({model_version:artifact.model_version,target_spec:spec,baseline_spec:request.calculation_inputs.baseline_spec,input_sha256:request.input_sha256,phases:request.calculation_inputs.phases,...value},null,2)));cell.append(detail);
+          } catch(error) {cell.append(node("span",(ja?"推定不可: ":"Unavailable: ")+error.message));}
+          row.append(title,cell);resultTable.tBodies[0].append(row);
+        }
+        for(const app of ["SCALE-LETKF","E-Wave","FrontFlow/blue","HPL","HPCG"]) {
+          const row=node("tr"),title=node("th",app);title.scope="row";
+          row.append(title,node("td",ja?"推定不可：この式へ結び付いたsourceカウンタ・排他的トレース・通常phase入力が未提供。別モデルの数値は流用しません。":"Unavailable: no source counter, exclusive trace and normal-phase input bound to this formula. Values from another model are not reused."));
+          resultTable.tBodies[0].append(row);
+        }
+        output.append(frame(resultTable,ja?"仮想GPU予測":"Virtual GPU forecasts"));
+      } catch(error) {output.append(node("p",(ja?"入力エラー: ":"Invalid input: ")+error.message));}
+    };
+    form.addEventListener("submit",event=>{event.preventDefault();update();});
+    for(const input of Object.values(fields)) input.addEventListener("input",update);
+    root.append(form,output,node("p",artifact["caveat_"+language]));update();return root;
   }
   window.OpenFSAcceleratorForecasts = {render};
 })();

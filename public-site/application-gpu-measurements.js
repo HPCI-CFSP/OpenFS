@@ -47,6 +47,7 @@
       const line = node("tr"); line.dataset.measurementCase = row.id;
       const label = node("th"); label.scope = "row";
       label.append(node("strong", row.application), node("small", row.workload));
+      label.append(node("small", language === "ja" ? "このコホート表のコードrepo・commit：公開記録では未登録。別入力のcommitを流用しません。" : "Code repository / commit for this cohort: not registered in this public record. A commit from a different input is not substituted."));
       line.append(label, node("td", tr[row.scope]));
       for (const device of artifact.devices) {
         const cell = node("td"); cell.dataset.measurementDevice = device.id;
