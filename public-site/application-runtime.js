@@ -189,13 +189,72 @@
     const m = view.methods.find(m => m.id === id);
     return link(local(m, "name"), href(c, "method-"+id));
   }
+  function forecastBinding(r, c) {
+    if (["kernel-study", "application-study"].includes(c.kind)) {
+      const study = kernelStudy(c);
+      const forecasts = study.forecasts || [{baseline_machine_id:study.baseline_machine_id,frozen:study.frozen},...(study.additional_forecasts||[])];
+      const entry = forecasts.find(f=>f.baseline_machine_id===r.baseline_id&&f.frozen.targets[r.machine_id]);
+      return entry ? {study, frozen:entry.frozen, version:entry.frozen.model_sha256} : {study,version:null};
+    }
+    const study=data.profile_studies.find(s=>s.id===c.study_id);
+    return {study,version:study?.forecast_freeze_sha256 || null,versionKind:"forecast-freeze"};
+  }
+  function modelVersionLink(r,c) {
+    const b=forecastBinding(r,c), label=r.method_id+" · "+(b.version ? b.version.slice(0,12) : t("版不明","version unknown"));
+    const url=new URL("models/frozen-runtime/?lang="+language,location.href);
+    url.hash=b.version || r.method_id;
+    const a=link(label,url.href);a.title=(b.versionKind || "model SHA-256")+": "+(b.version || t("不明","unknown"));return a;
+  }
+  function appProvenance(c) {
+    const study=["kernel-study","application-study"].includes(c.kind) ? kernelStudy(c) : data.profile_studies.find(s=>s.id===c.study_id);
+    const rows=[el("h4",t("アプリケーションの来歴","Application provenance"))];
+    const matchingSource=data.application_studies.find(s=>s.application_id===c.application_id && s.source_commit===study?.source_commit && s.source_url);
+    const url=study?.source_url || study?.code_url || matchingSource?.source_url || null;
+    rows.push(el("p",t("ソースcommit: ","Source commit: ")+(study?.source_commit || t("不明・未確認","unknown / unverified"))));
+    if(url)rows.push(link(t("使用ソースのリポジトリ・固定版","Repository and pinned source"),url));
+    else rows.push(el("p",t("使用リポジトリはこのケースの証拠では未確認です。入力や実行物のハッシュをGit commitの代用にしません。","The used repository is not established by this case's evidence. Input and executable hashes are not Git commits.")));
+    return rows;
+  }
+  function arithmetic(r,c) {
+    const out=[el("h4",t("実パラメータと計算手順","Actual parameters and calculation steps")),modelVersionLink(r,c)];
+    const b=forecastBinding(r,c);
+    out.push(el("p",(b.versionKind || "model SHA-256")+": "+(b.version || t("不明","unknown"))));
+    if(r.method_id!=="kernel-roofline") {
+      const T=r.baseline_seconds,B0=r.baseline_bandwidth_gbs,B1=r.target_bandwidth_gbs,f=r.kernel_share;
+      const steps=["T0="+T+" s; B0="+B0+" GB/s; B1="+B1+" GB/s", "B0 / B1 = "+(B0/B1)];
+      if(r.method_id==="profile-assisted")steps.push("f = GPU kernel interval union / profile window = "+f,"T = T0 × ((1 − f) + f × B0/B1) = "+T+" × ((1 − "+f+") + "+f+" × "+(B0/B1)+") = "+r.seconds+" s");
+      else steps.push("T = T0 × B0/B1 = "+T+" × "+(B0/B1)+" = "+r.seconds+" s");
+      steps.forEach(x=>out.push(el("p",x)));return out;
+    }
+    if(!b.frozen) {out.push(el("p",t("固定モデル入力が未確認のため、算術を補完しません。","Frozen inputs unavailable; arithmetic is not invented.")));return out;}
+    const run=b.study.runs.find(v=>v.machine_id===r.baseline_id), raw=run?.data;
+    if(!raw) {out.push(el("p",t("予測元入力未確認","Baseline input unavailable")));return out;}
+    const vals=raw.runs.filter(v=>!v.warmup).map(v=>v.seconds).sort((a,b)=>a-b),T=vals[1],W=raw.window_seconds;
+    out.push(el("p","T0 = median("+vals.join(", ")+") = "+T+" s; W = "+W+" s; a = T0/W = "+(T/W)));
+    const header=[t("カーネル","Kernel"),"t0 (s)","d (s)","R0 (s)","R1 (s)","max(0,d−R0)","ratio","t1 (s)"];
+    const rows=(r.kernels||[]).map(k=>[k.name,k.baseline_seconds,k.covered ? k.sample.profiled_nanoseconds/1e9 : t("未取得","unavailable"),k.roof_baseline_seconds??"—",k.roof_target_seconds??"—",k.residual_seconds??"—",k.ratio??1,k.seconds]);
+    out.push(el("p","Rj = max(F64/(P64j × 10^12) + F32/(P32j × 10^12), HBMbytes/(BWj × 10^9)); d = profiled_nanoseconds / 10^9"),
+      el("p","ratio = (max(0,d − R0) + R1)/d if R0 ≤ d; otherwise max(1,R1/R0). t1 = t0 × ratio. Uncaptured kernels retain t0."),table(header,rows));
+    const counters=el("details");counters.append(el("summary",t("計算に使った標本中央値（各呼出し）","Actual sample medians used (per invocation)")),table([t("カーネル","Kernel"),"FP64 FLOPs","FP32 FLOPs","HBM bytes","profiled ns"],(r.kernels||[]).filter(k=>k.covered).map(k=>[k.name,...["fp64_ops","fp32_ops","hbm_bytes","profiled_nanoseconds"].map(key=>k.sample[key])])));out.push(counters);
+    const fixed=Object.entries(raw.timeline).filter(([key])=>key!=="gpu").reduce((a,[,v])=>a+v,0)*T/W;
+    const gpu=(r.kernels||[]).reduce((a,k)=>a+k.seconds,0);
+    out.push(el("p","Fixed non-GPU timeline = (W − GPU timeline) × a = "+fixed+" s; scaled GPU sum = "+gpu+" s; modeled compute = "+(fixed+gpu)+" s"));
+    if(c.kind==="application-study") {
+      const representative=[...run.phase_rows.filter(v=>!v.warmup)].sort((a,b)=>a.total-b.total)[1];
+      out.push(el("p","Representative normal row (median total): compute="+representative.compute+", initialization="+representative.initialization+", finalization="+representative.finalization+" s"),
+        el("p","Total = modeled compute × (representative compute / T0) + initialization + finalization = "+(fixed+gpu)+" × ("+representative.compute+" / "+T+") + "+representative.initialization+" + "+representative.finalization+" = "+r.seconds+" s"));
+    } else out.push(el("p","Prediction = scaled GPU sum + fixed non-GPU timeline = "+r.seconds+" s"));
+    out.push(el("p",t("0.5〜2倍の据え置き時間などを変えた仮定感度であり、信頼区間ではありません。基準機の実測・標本のみを使用します。","The range varies held-constant time by0.5–2× and alternate efficiency assumptions; it is not a confidence interval. Only baseline timings and samples are inputs.")));return out;
+  }
   function evidence(r, c) {
     const contents = [el("p", local(c,"scope")),
       el("p", fmt(r.seconds)+" s · "+(r.scope === "main" ? t("main全体", "main runtime") : t("HMC更新区間のみ。総時間は未算定。", "HMC update only. Total runtime unavailable.")))];
+    contents.push(...appProvenance(c));
     if (r.kind === "predicted") {
+      contents.push(...arithmetic(r,c));
       const method = view.methods.find(m => m.id === r.method_id);
       contents.push(methodLink(r.method_id, c), el("p", method.formula),
-        el("p", "T0="+fmt(r.baseline_seconds)+" s; B0="+r.baseline_bandwidth_gbs+" GB/s; B1="+r.target_bandwidth_gbs+" GB/s; f="+fmt(r.kernel_share)),
+        ...(r.method_id!=="kernel-roofline" ? [el("p", "T0="+fmt(r.baseline_seconds)+" s; B0="+r.baseline_bandwidth_gbs+" GB/s; B1="+r.target_bandwidth_gbs+" GB/s; f="+fmt(r.kernel_share))] : []),
         el("p", t("予測元：", "Baseline: ")+machine(r.baseline_id).name),
         el("p", local(method,"note")));
       const observed = view.results.find(v => v.case_id === c.id && v.machine_id === r.machine_id && v.kind === "measured");
@@ -294,7 +353,7 @@
               const a=methodLink(r.method_id,c);a.className="runtime-method-label";a.title=a.textContent;
               a.textContent=({"bandwidth-proportional":t("帯域比例","Bandwidth"),"profile-assisted":t("時間比併用","Time-share"),"kernel-roofline":t("カーネル別","Per-kernel")})[r.method_id];
               const baseLabel=el("small",machine(r.baseline_id).name.split(/[ -]/)[0]);baseLabel.title=machine(r.baseline_id).name;
-              column.append(el("small",slotLabel),a,baseLabel);
+              column.append(el("small",slotLabel),a,modelVersionLink(r,c),baseLabel);
             }
             group.append(column);
           });cell.append(group);
