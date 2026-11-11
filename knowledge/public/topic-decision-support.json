@@ -2,7 +2,7 @@
   "schema_version": "0.2.0",
   "export_id": "TOPIC-DECISION-SUPPORT-001",
   "status": "published",
-  "as_of": "2026-11-03",
+  "as_of": "2026-11-11",
   "research_status": "provisional",
   "consensus_status": "incomplete",
   "regions": [
@@ -3252,8 +3252,8 @@
     },
     {
       "topic_id": "ARCH-12",
-      "summary_ja": "MN-Core 0.8、Metis施設提供、PIM転送配置と台数依存の実測条件を追加する。単一のAIモデル暫定調査。",
-      "summary_en": "Add MN-Core 0.8, Metis facility access and measured conditions for PIM placement/scaling. Provisional single-model research.",
+      "summary_ja": "MN-Core 0.8、Metis施設提供、PIM転送配置と台数依存の実測条件を追加する。単一のAIモデル暫定調査。 今回の限定追補：Blackhole限定compiler評価とOCI特化推論の提供計画。既存履歴・未解決Gapを保持し、独立Consensusは未完了。",
+      "summary_en": "Add MN-Core 0.8, Metis facility access and measured conditions for PIM placement/scaling. Provisional single-model research. Bounded addition: Scoped Blackhole compiler evaluation and OCI specialized-inference plans. Prior history and open gaps remain; independent Consensus is incomplete.",
       "sections": [
         {
           "section_id": "TDS-ARCH02-DOMESTIC",
@@ -4840,6 +4840,48 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-N03-ARCH009-703",
+          "title_ja": "Blackhole限定compiler評価とOCI特化推論の提供計画",
+          "title_en": "Scoped Blackhole compiler evaluation and OCI specialized-inference plans",
+          "summary_ja": "公開一次資料の限定追補。独立検証・Consensus未完了。",
+          "summary_en": "Bounded public-primary-source addition; independent validation and Consensus incomplete.",
+          "items": [
+            {
+              "item_id": "TDI-N03-ARCH009-703",
+              "name_ja": "Blackhole限定compiler評価とOCI特化推論の提供計画",
+              "name_en": "Scoped Blackhole compiler evaluation and OCI specialized-inference plans",
+              "stage": "current",
+              "maturity": "prototype",
+              "timing_ja": "論文v1提出2026-10-02。SambaNova/Oracle発表は2026-10-27の日精度。repo公表・更新日時とSN50提供日は不明。Cerebrasは暦2027年予定、確認日は11月3日。",
+              "timing_en": "Preprint v1 submitted October2,2026. Partner announcements are dated October27,day precision. Repository publication/update and SN50 availability dates are unknown. Cerebras availability is planned for calendar2027; check date November3.",
+              "statement_ja": "10月2日のpreprintは、Blackhole p150a上の静的affine CUDA部分集合で、自己compiler既定比のBF16 Gaussian4.2倍、FP32 Gaussian/Jacobi2.1–2.2倍を報告する。L1内working set・host転送除外、Gaussian右辺更新省略、1000-step BF16 Jacobiの不正確さを保持し、artifactのfrontend未収録を区別する。別の10月27日発表はOCIへのSN50導入を計画し、Cerebras推論は2027年提供予定とするが機種は明記しない。新製品の提供達成・CS-4出荷・HPC適合は立証しない。",
+              "statement_en": "An October 2 preprint reports Blackhole p150a policy comparisons: BF16 Gaussian4.2x and FP32 Gaussian/Jacobi2.1–2.2x versus its own compiler defaults. L1 scope, excluded host transfers, omitted Gaussian RHS and inaccurate1000-step BF16 Jacobi limit scientific comparisons; the artifact omits the frontend. Separately, October27 partner announcements plan SN50 deployment on OCI and Cerebras inference availability in2027, without identifying the Cerebras model. They do not establish delivered service, CS-4 shipment or HPC suitability.",
+              "hpci_relevance_ja": "限定kernelの計時・精度・再生成範囲と、OCIでの提供計画・受入確認を分ける。既存日程とGapを保持し、予定を供給保証や科学HPC実績へ格上げしない。",
+              "hpci_relevance_en": "Separate kernel timing, accuracy and regeneration scope from OCI availability plans and acceptance. Preserve existing schedules and gaps; plans are not supply guarantees or scientific-HPC results.",
+              "adoption_conditions_ja": [
+                "独立再現・実アプリ受入・国内供給・HPCI適用は未検証。",
+                "古いSN50製品自体を新launchにしない。Cerebras機種・SN50提供日・実供用は不明。",
+                "論文とartifactは同じ研究起源、partner発表は重なるOracle系統で独立裏付けに加算しない。GAP-TDS-030/058とConsensus未完了を保持。"
+              ],
+              "adoption_conditions_en": [
+                "Independent reproduction, application acceptance, Japanese supply and HPCI applicability are unverified.",
+                "Do not relabel the previously reported SN50 product as a new launch; Cerebras model, SN50 availability date and actual service are unknown.",
+                "Paper/artifact share research origin; overlapping Oracle-partner announcements do not add independent corroboration. Retain GAP-TDS-030/058 and incomplete Consensus."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-N03-703-01",
+                "SRC-N03-703-02",
+                "SRC-N03-703-03",
+                "SRC-N03-703-04",
+                "SRC-N03-703-05"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -5016,6 +5058,17 @@
           ],
           "created_at": "2026-10-31T15:44:17.139610+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000703",
+          "bundle_sha256": "40f80d95ab1a355ea64c7b1f0a1c0a715aef3a1dbb9e7a92ca5803465c843ad3",
+          "base_commit": "438bec822b7753b1e73cf7795c816d67c109a2b4",
+          "unit_ids": [
+            "ARCH-12-U01",
+            "ARCH-12-U03"
+          ],
+          "created_at": "2026-11-03T20:02:44.989343+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -5046,7 +5099,8 @@
               "TDS-OCT03-ARCH009-ACCESS",
               "TDS-OCT05-ARCH009-INTEGRATED-READABLE",
               "TDS-D31-ARCH009-01",
-              "TDS-D31-ARCH009-02"
+              "TDS-D31-ARCH009-02",
+              "TDS-N03-ARCH009-703"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -6668,8 +6722,8 @@
     },
     {
       "topic_id": "ARCH-03",
-      "summary_ja": "メモリの出荷・試供・製品掲載と規格の適用範囲を区別する暫定調査。512GB RDIMMの地域別発表日は同一発表であり、最大容量・速度の同時達成条件は未確認です。CXL Type-3 SLDインターリーブとアクセラレータのbundled portsを区別し、既存の実機評価条件・未確認事項を保持します。 不揮発性メモリ素子の実証範囲とシステム評価への接点を追補します。 今回の限定追補：HBF初ダイのtape-out報告とCXLワークロードPoCの範囲。既存履歴・未解決Gapを保持し、独立Consensusは未完了。",
-      "summary_en": "Provisional research distinguishing memory shipment, sampling, product listings and specification scope. Localized 512GB RDIMM dates describe one announcement; simultaneous maximum capacity/speed conditions are unverified. Distinguish Type-3 SLD interleaving from accelerator bundled ports, retaining existing hardware-evaluation conditions and open gaps. Adds NVM device evidence scope and its connection to system-level evaluation. Bounded addition: HBF first-die tape-out report and the scope of CXL workload PoCs. Prior history and open gaps remain; independent Consensus is incomplete.",
+      "summary_ja": "メモリの出荷・試供・製品掲載と規格の適用範囲を区別する暫定調査。512GB RDIMMの地域別発表日は同一発表であり、最大容量・速度の同時達成条件は未確認です。CXL Type-3 SLDインターリーブとアクセラレータのbundled portsを区別し、既存の実機評価条件・未確認事項を保持します。 不揮発性メモリ素子の実証範囲とシステム評価への接点を追補します。 今回の限定追補：HBF初ダイのtape-out報告とCXLワークロードPoCの範囲。既存履歴・未解決Gapを保持し、独立Consensusは未完了。 HBM4E/5/5E/6のメーカー量産目標とHPB/iHBMを追補し、実績・予定・未確認を区別する。",
+      "summary_en": "Provisional research distinguishing memory shipment, sampling, product listings and specification scope. Localized 512GB RDIMM dates describe one announcement; simultaneous maximum capacity/speed conditions are unverified. Distinguish Type-3 SLD interleaving from accelerator bundled ports, retaining existing hardware-evaluation conditions and open gaps. Adds NVM device evidence scope and its connection to system-level evaluation. Bounded addition: HBF first-die tape-out report and the scope of CXL workload PoCs. Prior history and open gaps remain; independent Consensus is incomplete. Adds HBM4E/5/5E/6 vendor volume targets and HPB/iHBM, separating observed events, plans and unknowns.",
       "page_layout": {
         "layout_version": "1.0",
         "components": [
@@ -6691,7 +6745,8 @@
               "TDS-MEM26-RDIMM-CLARIFICATION",
               "TDS-NVM26-DEVICES",
               "TDS-D31-ARCH003-01",
-              "TDS-N03-ARCH003-687"
+              "TDS-N03-ARCH003-687",
+              "TDS-N11-ARCH003-HBM-SUCCESSORS"
             ],
             "comparison_refs": [
               {
@@ -6783,7 +6838,8 @@
             "type": "research-unit",
             "unit_id": "ARCH-03-U02",
             "section_ids": [
-              "TDS-HW1-ARCH-03-U02"
+              "TDS-HW1-ARCH-03-U02",
+              "TDS-N11-ARCH003-THERMAL-SUCCESSORS"
             ],
             "comparison_refs": [
               {
@@ -8196,6 +8252,109 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-N11-ARCH003-HBM-SUCCESSORS",
+          "title_ja": "HBM4EからHBM6・垂直メモリへの後継計画",
+          "title_en": "Successor plans from HBM4E to HBM6 and vertical memory",
+          "summary_ja": "発表・試供・高量産目標を区別する。",
+          "summary_en": "Separate disclosure, sampling and high-volume targets.",
+          "items": [
+            {
+              "item_id": "TDI-N11-ARCH003-HBM-SUCCESSORS",
+              "name_ja": "Micron HBM4E・5・5E・6とvHBM/vEIM",
+              "name_en": "Micron HBM4E/5/5E/6 and vHBM/vEIM",
+              "stage": "near-term",
+              "maturity": "announced",
+              "timing_ja": "2026年10月21日公表。年単位の量産目標で四半期・実際の開始日は未確認。",
+              "timing_en": "Disclosed October21,2026; year-only targets, with quarters and actual starts unverified.",
+              "statement_ja": "Micronの10月21日資料はHBM4Eを2027年、HBM5を2028年、HBM5Eを2029年、HBM6を2030年の高量産目標とする。変更可能なメーカー目標であり量産実績ではない。HBM4Eは主要顧客へ試供済みと報告されるが初回試供日は不明。vHBMは計算ダイ上の垂直積層、vEIMは垂直エッジ推論メモリであり、各Gen1/2/3を2028/2029/2030年の目標として別系列に示す。標準HBMの置換時期やJEDEC規格公開日は示さない。",
+              "statement_en": "Micron’s October21 presentation targets high-volume manufacturing of HBM4E in2027, HBM5 in2028, HBM5E in2029 and HBM6 in2030; these are changeable vendor targets, not production observations. HBM4E samples to key customers are reported, without a first-sample date. Vertical HBM stacks memory on compute; vertical edge inference memory is a separate family. Each vHBM/vEIM Gen1/2/3 targets2028/2029/2030, without establishing replacement or JEDEC publication dates.",
+              "hpci_relevance_ja": "次世代アクセラレータの帯域・電力・熱設計の調査対象。採用判断ではない。",
+              "hpci_relevance_en": "Research input for accelerator bandwidth, power and thermal design; not an adoption decision.",
+              "adoption_conditions_ja": [
+                "製品別の試供、認定、高量産開始、出荷を継続確認する。",
+                "他メーカーの時期・標準化・実性能は個別の一次資料で確認する。"
+              ],
+              "adoption_conditions_en": [
+                "Recheck product-specific sampling, qualification, production and shipments.",
+                "Verify other suppliers, standards and measured performance separately."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-N11-MICRON-TECH-WEBINAR"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-N11-ARCH003-THERMAL-SUCCESSORS",
+          "title_ja": "HBM後継世代に向けたHPB・iHBMの熱設計",
+          "title_en": "HPB and iHBM thermal design for successor HBM generations",
+          "summary_ja": "実装方式、試作・検証、採用計画と量産時期を分ける。",
+          "summary_en": "Separate implementation, prototype/validation, adoption plans and production timing.",
+          "items": [
+            {
+              "item_id": "TDI-N11-ARCH003-HPB",
+              "name_ja": "Samsung HPB: HBM4E検証とHBM5採用計画",
+              "name_en": "Samsung HPB: HBM4E validation and HBM5 adoption plan",
+              "stage": "research",
+              "maturity": "prototype",
+              "timing_ja": "HPB展示はCOMPUTEX 2026（6月2–5日）。記事公表日・HBM5採用日・量産開始日は未確認。",
+              "timing_en": "HPB exhibited at COMPUTEX June2–5,2026. Article publication, HBM5 adoption and production-start dates remain unverified.",
+              "statement_ja": "HPBはD2D PHYから放熱する経路を追加する方式。HBM4Eで検証中、将来HBM5への採用計画。COMPUTEXではモックアップとサンプルを展示。量産開始日は記載なし。",
+              "statement_en": "HPB adds a thermal path from the D2D PHY. Samsung reports HBM4E validation and planned HBM5 adoption; the exhibit included mock-ups and samples. No volume-production date is stated.",
+              "hpci_relevance_ja": "高積層・高帯域メモリの熱設計候補。量産・供給・アプリ性能の認定ではない。",
+              "hpci_relevance_en": "Thermal-design candidate for dense high-bandwidth memory; not qualification of production, supply or application performance.",
+              "adoption_conditions_ja": [
+                "適用世代、熱設計条件、製品認定、量産開始・出荷開始を一次資料で別々に確認。",
+                "メーカーの改善率を独立測定やHPCIアプリ全体の高速化へ換算しない。"
+              ],
+              "adoption_conditions_en": [
+                "Verify supported generation, thermal conditions, qualification, production and shipment separately from primary sources.",
+                "Do not translate vendor improvement claims into independent measurement or HPCI application speedup."
+              ],
+              "actor_ids": [
+                "ACT-SAMSUNG"
+              ],
+              "source_ids": [
+                "SRC-N11-ARCH003-HPB"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-N11-ARCH003-IHBM",
+              "name_ja": "SK hynix iHBM: 次世代HBM向け放熱経路",
+              "name_en": "SK hynix iHBM: thermal path for successor HBM",
+              "stage": "research",
+              "maturity": "announced",
+              "timing_ja": "2026年5月26日発表。搭載製品の量産開始日・HBM5採用日は未確認。",
+              "timing_en": "Announced May26,2026. Product production-start and HBM5-adoption dates remain unverified.",
+              "statement_ja": "iHBMはD2D PHY域へICEを組み込み放熱経路を追加。HBM5を含む次世代HBMへの展開予定。MR-MUF/WLPの量産能力の説明は搭載製品の量産開始日の証明ではない。",
+              "statement_en": "iHBM places integrated cooling elements in the D2D PHY region. Deployment is planned for next-generation HBM including HBM5. MR-MUF/WLP manufacturing capability does not establish a product production-start date.",
+              "hpci_relevance_ja": "高積層・高帯域メモリの熱設計候補。量産・供給・アプリ性能の認定ではない。",
+              "hpci_relevance_en": "Thermal-design candidate for dense high-bandwidth memory; not qualification of production, supply or application performance.",
+              "adoption_conditions_ja": [
+                "適用世代、熱設計条件、製品認定、量産開始・出荷開始を一次資料で別々に確認。",
+                "メーカーの改善率を独立測定やHPCIアプリ全体の高速化へ換算しない。"
+              ],
+              "adoption_conditions_en": [
+                "Verify supported generation, thermal conditions, qualification, production and shipment separately from primary sources.",
+                "Do not translate vendor improvement claims into independent measurement or HPCI application speedup."
+              ],
+              "actor_ids": [
+                "ACT-SKHYNIX"
+              ],
+              "source_ids": [
+                "SRC-N11-ARCH003-IHBM"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -8371,6 +8530,17 @@
             "ARCH-03-U03"
           ],
           "created_at": "2026-11-03T19:09:14.916650+00:00",
+          "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000719",
+          "bundle_sha256": "274920519cbd0ffc0f487b9fd6a956548187c978727855dc9a4fa7bdd52470e5",
+          "base_commit": "e7d1de1916ef64c6cf83e38bff1702b0444485c5",
+          "unit_ids": [
+            "ARCH-03-U01",
+            "ARCH-03-U02"
+          ],
+          "created_at": "2026-11-11T05:20:59.253567+00:00",
           "consensus_status": "incomplete"
         }
       ]
@@ -10403,8 +10573,8 @@
     },
     {
       "topic_id": "ARCH-05",
-      "summary_ja": "不老・弐の現行ストレージ記載と既存値の差、公開割当単位、Alpsの論理的区画の境界を限定的に追記する草案です。供用達成、最適構成、独立Consensusを認定しません。 指定GPU混在、独立CPU rack、サービス別保守予定を限定追補。",
-      "summary_en": "Bounded draft adding Furo-II’s current storage discrepancy and allocation units and the logical-partition boundary of Alps. It does not certify service launch, an optimal configuration or independent Consensus. Add scoped named mixed-GPU composition, standalone CPU rack and service-specific maintenance plans.",
+      "summary_ja": "不老・弐の現行ストレージ記載と既存値の差、公開割当単位、Alpsの論理的区画の境界を限定的に追記する草案です。供用達成、最適構成、独立Consensusを認定しません。 指定GPU混在、独立CPU rack、サービス別保守予定を限定追補。 今回の限定追補：共有AMD根拠をラック構成と設置・試験段階へ対応付け。既存履歴・未解決Gapを保持し、独立Consensusは未完了。",
+      "summary_en": "Bounded draft adding Furo-II’s current storage discrepancy and allocation units and the logical-partition boundary of Alps. It does not certify service launch, an optimal configuration or independent Consensus. Add scoped named mixed-GPU composition, standalone CPU rack and service-specific maintenance plans. Bounded addition: Map shared AMD evidence to rack composition and installation/testing stage. Prior history and open gaps remain; independent Consensus is incomplete.",
       "sections": [
         {
           "section_id": "TDS-ARCH05-CURRENT",
@@ -12179,6 +12349,43 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-N03-ARCH005-693",
+          "title_ja": "共有AMD根拠をラック構成と設置・試験段階へ対応付け",
+          "title_en": "Map shared AMD evidence to rack composition and installation/testing stage",
+          "summary_ja": "公開一次資料の限定追補。独立検証・Consensus未完了。",
+          "summary_en": "Bounded public-primary-source addition; independent validation and Consensus incomplete.",
+          "items": [
+            {
+              "item_id": "TDI-N03-ARCH005-693",
+              "name_ja": "共有AMD根拠をラック構成と設置・試験段階へ対応付け",
+              "name_en": "Map shared AMD evidence to rack composition and installation/testing stage",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "Helion発表2026-10-12（日精度）、Meta発表2026-10-27 08:15 CDT（分精度）。11月3日は確認日で、新規発表日ではない。設置・試験開始日は不明。",
+              "timing_en": "Helion announcement October12,2026 (day precision); Meta announcement October27 08:15 CDT (minute precision). November3 is a check date, not a new publication date. Installation/test-start dates are unknown.",
+              "statement_ja": "AMDの10月12日Helion設計案には、agent実行用CPU専用ラック（最大32,768コア、model推論基盤は別接続）と、EPYC CPU・MI350P GPU・汎用計算の混載例がある。空冷・液冷の構成選択を示すが、OCPへの仕様提供と11月のpartner構成提供は予定である。10月27日の別発表はMetaにHelios初期ラックを設置し試験中とする。これを本番供用・任意構成の相互運用や日本向け納入の証明にはしない。",
+              "statement_en": "AMD’s October12 Helion blueprint gives CPU-only agent-execution racks (up to32,768 cores, linked to separate model-inference infrastructure) and combined EPYC/MI350P/general-compute examples, with air/liquid-cooled options. OCP contribution and November partner availability remain plans. Its October27 announcement reports initial Helios racks installed and testing at Meta, not production service, arbitrary-configuration interoperability or Japanese delivery.",
+              "hpci_relevance_ja": "ラックのCPU実行・別推論基盤・混載・冷却選択と、設置・試験・本番受入を区別する。対応する計算・blueprint roadmapにはRUP683で同じ根拠が既に採用されており、同じ文と出典を再追加しない。",
+              "hpci_relevance_en": "Distinguish CPU execution, separate inference, mixed racks and cooling options from installation, testing and production acceptance. RUP683 already covers the same evidence in compute/blueprint roadmaps; do not append duplicate text or sources.",
+              "adoption_conditions_ja": [
+                "実提供、OCP提出完了、規模・実構成、相互運用、日本向け供給、実効HPC・施設性能は未確認。",
+                "ARCH001と共有するAMD2原典であり、新しい独立裏付けや新NEWSとして二重加算しない。既存Gap・日程・Consensus未完了を保持。"
+              ],
+              "adoption_conditions_en": [
+                "Actual availability, completed OCP contribution, scale/configuration, interoperability, Japanese supply and delivered HPC/facility performance are unverified.",
+                "The two AMD sources are shared with ARCH001, not additional independent corroboration or new NEWS. Preserve gaps, schedules and incomplete Consensus."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-N03-683-01",
+                "SRC-N03-683-02"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -12441,6 +12648,16 @@
           ],
           "created_at": "2026-10-31T15:44:17.139610+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000693",
+          "bundle_sha256": "ae159a13979d0fc99fe158d55094548683b2b0748a96da32596a4fa02e48fae7",
+          "base_commit": "438bec822b7753b1e73cf7795c816d67c109a2b4",
+          "unit_ids": [
+            "ARCH-05-U01"
+          ],
+          "created_at": "2026-11-03T20:02:44.989343+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -12477,7 +12694,8 @@
               "TDS-OCT05-ARCH005-INTEGRATED-READABLE",
               "TDS-OCT05-ARCH005-INTEGRATED-RETAINED",
               "TDS-OCT23-ARCH005-HPE-MIXED",
-              "TDS-OCT23-ARCH005-SUPERMICRO-CPU"
+              "TDS-OCT23-ARCH005-SUPERMICRO-CPU",
+              "TDS-N03-ARCH005-693"
             ],
             "comparison_refs": [
               {
@@ -20719,8 +20937,8 @@
     },
     {
       "topic_id": "SSW-05",
-      "summary_ja": "媒体・規格・製品・転送を同じ階層で比較し、EXAScaler 6.3.9の追加根拠と規模主張の差、保守・鍵復旧の条件を追記。 NEC Vector Engineの限定的な一次資料追補。実機適合性と独立Consensusは未完了。 Personal 3.3.2のsetup範囲と共有RAG indexの工程別比較を限定追記。",
-      "summary_en": "Append matched-layer media, protocol, product and transfer evidence, including EXAScaler 6.3.9, divergent scale claims, maintenance and key-recovery conditions. Scoped NEC Vector Engine primary-source supplement; hardware compatibility and independent Consensus remain incomplete. Scoped Personal 3.3.2 setup and shared RAG phase-comparison notes.",
+      "summary_ja": "媒体・規格・製品・転送を同じ階層で比較し、EXAScaler 6.3.9の追加根拠と規模主張の差、保守・鍵復旧の条件を追記。 NEC Vector Engineの限定的な一次資料追補。実機適合性と独立Consensusは未完了。 Personal 3.3.2のsetup範囲と共有RAG indexの工程別比較を限定追記。 今回の限定追補：GCS5.4.99のS3認証・転送修正と更新条件。既存履歴・未解決Gapを保持し、独立Consensusは未完了。",
+      "summary_en": "Append matched-layer media, protocol, product and transfer evidence, including EXAScaler 6.3.9, divergent scale claims, maintenance and key-recovery conditions. Scoped NEC Vector Engine primary-source supplement; hardware compatibility and independent Consensus remain incomplete. Scoped Personal 3.3.2 setup and shared RAG phase-comparison notes. Bounded addition: GCS5.4.99 S3 credentials, transfer fixes and upgrade conditions. Prior history and open gaps remain; independent Consensus is incomplete.",
       "sections": [
         {
           "section_id": "TDS-SSW05-CURRENT",
@@ -23719,6 +23937,45 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-N03-ARCH012-695",
+          "title_ja": "GCS5.4.99のS3認証・転送修正と更新条件",
+          "title_en": "GCS5.4.99 S3 credentials, transfer fixes and upgrade conditions",
+          "summary_ja": "公開一次資料の限定追補。独立検証・Consensus未完了。",
+          "summary_en": "Bounded public-primary-source addition; independent validation and Consensus incomplete.",
+          "items": [
+            {
+              "item_id": "TDI-N03-ARCH012-695",
+              "name_ja": "GCS5.4.99のS3認証・転送修正と更新条件",
+              "name_en": "GCS5.4.99 S3 credentials, transfer fixes and upgrade conditions",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "5.4.99は2026-10-22（日精度）。installation guideは公開・更新日不明。5.4.100の日付は今回のWeb抽出間で10/28と10/29が不一致のため採用せず、既存記録を変更しない。",
+              "timing_en": "5.4.99 dated October22,2026, day precision; installation guide publication/update unknown. Retrieved5.4.100 dates differ October28/29; do not adopt or change the existing record.",
+              "statement_ja": "GCS5.4.99の10月22日変更履歴はS3の短期AWS資格情報とsession token対応、S3への転送終了時に時折起こるcrash・接続停止の修正を記載する。Debian11、Ubuntu25.10、OpenSUSE Leap15.6、SLES15.6の支援終了も示す。multi-DTN更新手順は稼働nodeの同版維持を要求し、DTNのサービス再起動を伴う。rolling更新は停止最小化の手順であり、実可用性や無停止を保証する実測ではない。",
+              "statement_en": "The October22 GCS5.4.99 changelog adds short-term AWS credentials/session tokens for S3 and fixes occasional crashes or hung connections at the end of transfers into S3. It drops Debian11, Ubuntu25.10, OpenSUSE Leap15.6 and SLES15.6 support. Multi-DTN upgrades require enabled nodes to share a version and restart DTN services. Rolling updates describe downtime minimization, not measured availability or guaranteed zero downtime.",
+              "hpci_relevance_ja": "既存storage継続性の版固定・資格情報寿命・転送完了・再起動・構成同期の受入条件へ限定追補する。5.4.100 domain移行や既存support期限を重複追加せず、実導入・可用性改善を認定しない。",
+              "hpci_relevance_en": "Append version-pinned credential lifetime, transfer completion, restart and configuration-sync acceptance conditions to storage continuity. Do not duplicate5.4.100 domain migration/support deadlines or certify site deployment/availability gains.",
+              "adoption_conditions_ja": [
+                "施設での導入、資格情報運用、転送成功率、停止時間、互換性、復旧・独立検証は未確認。",
+                "両資料は同じGlobus起源。修正の公開と現地での適用・効果は別。",
+                "設定変更、資格情報参照、node無効化・再起動・更新・実転送は行っていない。"
+              ],
+              "adoption_conditions_en": [
+                "Site deployment, credential operations, transfer success, downtime, compatibility, recovery and independent validation are unverified.",
+                "Both documents share Globus origin. Published fixes do not establish local application or effects.",
+                "No settings, credential inspection, node disabling, restart, upgrades or live transfers performed."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-N03-695-01",
+                "SRC-N03-695-02"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -24062,6 +24319,16 @@
           ],
           "created_at": "2026-10-31T15:44:17.139610+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000695",
+          "bundle_sha256": "17db1a7803f80c74b5a1aa819ab69bc9be9cdea47be46b9866277356361488a4",
+          "base_commit": "438bec822b7753b1e73cf7795c816d67c109a2b4",
+          "unit_ids": [
+            "SSW-05-U04"
+          ],
+          "created_at": "2026-11-03T20:02:44.989343+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -24228,7 +24495,8 @@
               "TDS-WC374-SSW-05-01",
               "TDS-OCT03-ARCH012-U04",
               "TDS-OCT23-ARCH012-GCP332",
-              "TDS-D31-ARCH012-01"
+              "TDS-D31-ARCH012-01",
+              "TDS-N03-ARCH012-695"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -27067,8 +27335,8 @@
     },
     {
       "topic_id": "APP-02",
-      "summary_ja": "CEEDの問題・カーネル境界とExtra-Pのスケーリング・反復・適合度を評価契約へ追加する暫定調査。性能予測は生成しない。 旧混在節を履歴保存し、再読したベンチマーク・測定基盤と参考試算の明示的訂正で置き換える。 OpenFSの分類訂正は受入済みローカル公開アーティファクトに基づき、ネットワーク取得成功とは扱わない。 NEC Vector Engineの限定的な一次資料追補。実機適合性と独立Consensusは未完了。",
-      "summary_en": "Provisional addition of CEED problem/kernel boundaries and Extra-P scaling, repetition and fit semantics to the evaluation contract. No performance forecasts are generated. Archive the old mixed section and replace it with reread benchmark/infrastructure evidence and an explicit legacy-illustration correction. The OpenFS status correction is grounded in the accepted local public artifact, not a successful network retrieval. Scoped NEC Vector Engine primary-source supplement; hardware compatibility and independent Consensus remain incomplete.",
+      "summary_ja": "CEEDの問題・カーネル境界とExtra-Pのスケーリング・反復・適合度を評価契約へ追加する暫定調査。性能予測は生成しない。 旧混在節を履歴保存し、再読したベンチマーク・測定基盤と参考試算の明示的訂正で置き換える。 OpenFSの分類訂正は受入済みローカル公開アーティファクトに基づき、ネットワーク取得成功とは扱わない。 NEC Vector Engineの限定的な一次資料追補。実機適合性と独立Consensusは未完了。 今回の限定追補：Kripke1.2.8のGPU通信・メモリ条件を版固定する。既存履歴・未解決Gapを保持し、独立Consensusは未完了。",
+      "summary_en": "Provisional addition of CEED problem/kernel boundaries and Extra-P scaling, repetition and fit semantics to the evaluation contract. No performance forecasts are generated. Archive the old mixed section and replace it with reread benchmark/infrastructure evidence and an explicit legacy-illustration correction. The OpenFS status correction is grounded in the accepted local public artifact, not a successful network retrieval. Scoped NEC Vector Engine primary-source supplement; hardware compatibility and independent Consensus remain incomplete. Bounded addition: Pin GPU communication and memory conditions for Kripke 1.2.8. Prior history and open gaps remain; independent Consensus is incomplete.",
       "sections": [
         {
           "section_id": "TDS-SSW07-CURRENT",
@@ -29788,6 +30056,44 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-N03-APP002-697",
+          "title_ja": "Kripke1.2.8のGPU通信・メモリ条件を版固定する",
+          "title_en": "Pin GPU communication and memory conditions for Kripke 1.2.8",
+          "summary_ja": "公開一次資料の限定追補。独立検証・Consensus未完了。",
+          "summary_en": "Bounded public-primary-source addition; independent validation and Consensus incomplete.",
+          "items": [
+            {
+              "item_id": "TDI-N03-APP002-697",
+              "name_ja": "Kripke1.2.8のGPU通信・メモリ条件を版固定する",
+              "name_en": "Pin GPU communication and memory conditions for Kripke 1.2.8",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "release画面は30 Oct19:59と表示するが年・timezoneは本文にない。API取得失敗により今回UTC秒は再確認していない。11月3日は確認日。",
+              "timing_en": "The release UI displays30 Oct19:59 without an exposed year/time zone. The API failed, so UTC seconds were not reverified here. November3 is the inspection date.",
+              "statement_ja": "LLNLのKripke1.2.8はCUDA/HIP非同期sweep、GPU-aware MPI、device pool、Caliper/Adiak計測を追加する。tagのcommitは46563d6d19afe7fdf65fc564638c7ec13615866f。fresh buildでGPU-aware MPIは既定OFFで、CUDA/HIP・MPI有効化とdevice buffer対応MPIが必要である。pool指定はrankごとの初期要求で、GPU容量上限ではない。版・入力・分解・通信経路を固定し、科学妥当性と測定区間を別途検証する。HPCI実行・採用・性能向上は未確認。",
+              "statement_en": "LLNL Kripke 1.2.8 adds asynchronous CUDA/HIP sweeps, GPU-aware MPI, device pools and Caliper/Adiak instrumentation. Its tag links commit46563d6d19afe7fdf65fc564638c7ec13615866f. GPU-aware MPI defaults OFF in fresh builds and requires a GPU backend, enabled MPI and device-buffer-capable MPI. Pool sizing requests initial memory per rank; it is not a GPU capacity limit. Pin version, input, decomposition and communication path; separately validate science and timing boundaries. HPCI execution, adoption and speedups remain unverified.",
+              "hpci_relevance_ja": "既存のcore suite・継続比較へKripkeの版、MPI・pool条件、科学妥当性と計測区間を結び付ける限定候補。日程・採用・性能改善を認定しない。",
+              "hpci_relevance_en": "Candidate conditions for the existing suite: pin Kripke version, MPI/pool configuration, science checks and timing scope. No schedule, adoption or speedup is established.",
+              "adoption_conditions_ja": [
+                "HPCI実行・科学検証・測定・性能向上・採用は未確認。release・README・commitは同一起源で独立証拠に加算しない。",
+                "API取得失敗により公開年・UTC秒の独立再確認なし。親の以前の精密時刻を今回再取得したと表示しない。既存Gap・日程・partialとConsensus未完了を保持。"
+              ],
+              "adoption_conditions_en": [
+                "HPCI execution, scientific validation, measurements, speedups and adoption are unverified. Release, README and commit share one origin.",
+                "Release year/UTC seconds were not independently API-reverified; retain the failed retrieval and distinguish the parent earlier timestamp. Preserve gaps, dates, partial units and incomplete Consensus."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-N03-697-01",
+                "SRC-N03-697-02",
+                "SRC-N03-697-03"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -30100,6 +30406,17 @@
           ],
           "created_at": "2026-10-31T17:14:44.487655+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000697",
+          "bundle_sha256": "b6ac26193fa573e0951d890a613f1ca64ebe18cdb747330a1d0e54f8feaac057",
+          "base_commit": "438bec822b7753b1e73cf7795c816d67c109a2b4",
+          "unit_ids": [
+            "APP-02-U01",
+            "APP-02-U03"
+          ],
+          "created_at": "2026-11-03T20:02:44.989343+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -30132,7 +30449,8 @@
               "TDS-NEC26-PERFORMANCE",
               "TDS-D31-APP002-01",
               "TDS-D31-APP002-02",
-              "TDS-L31-APP002-01"
+              "TDS-L31-APP002-01",
+              "TDS-N03-APP002-697"
             ],
             "comparison_refs": [
               {
@@ -34594,8 +34912,8 @@
     },
     {
       "topic_id": "APP-01",
-      "summary_ja": "科学的精度、採択バイアス、実時間の全工程、オンラインデータ消費を需要調査に追加。日本・欧州・米国の一次情報に基づく暫定更新。",
-      "summary_en": "Add scientific accuracy, allocation-selection bias, end-to-end deadlines and online data consumption to demand assessment using Japanese, European and US primary evidence.",
+      "summary_ja": "科学的精度、採択バイアス、実時間の全工程、オンラインデータ消費を需要調査に追加。日本・欧州・米国の一次情報に基づく暫定更新。 今回の限定追補：銀河シミュレーションのMiyabi GPU結果と配置条件。既存履歴・未解決Gapを保持し、独立Consensusは未完了。",
+      "summary_en": "Add scientific accuracy, allocation-selection bias, end-to-end deadlines and online data consumption to demand assessment using Japanese, European and US primary evidence. Bounded addition: Miyabi GPU galaxy-simulation result and placement boundaries. Prior history and open gaps remain; independent Consensus is incomplete.",
       "sections": [
         {
           "section_id": "TDS-APP01-CURRENT",
@@ -36530,6 +36848,43 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-N03-APP001-696",
+          "title_ja": "銀河シミュレーションのMiyabi GPU結果と配置条件",
+          "title_en": "Miyabi GPU galaxy-simulation result and placement boundaries",
+          "summary_ja": "公開一次資料の限定追補。独立検証・Consensus未完了。",
+          "summary_en": "Bounded public-primary-source addition; independent validation and Consensus incomplete.",
+          "items": [
+            {
+              "item_id": "TDI-N03-APP001-696",
+              "name_ja": "銀河シミュレーションのMiyabi GPU結果と配置条件",
+              "name_en": "Miyabi GPU galaxy-simulation result and placement boundaries",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "成果発表2025-11-21、SC25発表は11月20日。解説2026-10-02。いずれも日精度。11月3日は確認日で、新規成果日ではない。",
+              "timing_en": "Research release November21,2025; SC25 presentation November20. Explanatory article October2,2026. Day precision; November3 is the check date, not a new result date.",
+              "statement_ja": "理研の2025年11月21日発表は、富岳約15万ノードで星・星間ガス等を表す3,000億粒子を扱い、Miyabi GPUの重力計算で並列化効率約38%を得たと報告する。既存資料の256ノード約10%と条件一致は未確認で、改善倍率は算出しない。学習GPU・推論CPUの配置と選択的サロゲート利用を区別する。2026年10月2日は同成果の解説で、Gaia照合は将来目標である。",
+              "statement_en": "RIKEN’s November 21, 2025 report describes 300 billion particles representing stars, gas and other components on about150,000 Fugaku nodes, and approximately38% parallel efficiency for Miyabi GPU gravity calculations. Conditions are not matched to the existing256-node/10% account, so no improvement ratio follows. Distinguish GPU training, CPU inference and selective surrogate use. The October2,2026 article explains the earlier work; Gaia comparisons remain prospective.",
+              "hpci_relevance_ja": "配置・スケーリング・科学妥当性を条件別に扱う既存評価へ接続する事例。全国需要の代表性や整備比率の根拠に外挿しない。",
+              "hpci_relevance_en": "A case for existing placement, scaling and scientific-validity checks, without extrapolation to national demand or capacity shares.",
+              "adoption_conditions_ja": [
+                "38%の問題規模・分解・比較基準の詳細と、既存10%との条件一致は未確認。最大20倍は限定条件で、全GPU性能の値ではない。",
+                "両記事は同じ研究系統で独立裏付けではない。全国規模での代表性・長期運用・Gaia照合完了は未確認。"
+              ],
+              "adoption_conditions_en": [
+                "The38% workload/decomposition/reference details and comparability to10% are unresolved. Up-to20× is conditional, not whole-GPU performance.",
+                "Both articles share one research lineage. National representativeness, sustained operations and completed Gaia comparison are unverified."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-N03-696-01",
+                "SRC-N03-696-02"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -36780,6 +37135,16 @@
           ],
           "created_at": "2026-10-31T17:14:44.487655+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000696",
+          "bundle_sha256": "4fcbbb79b0ad7d5adb13b0cfc3d7abc14d7fc0a8a6cc1ce4107d4e656abd32e3",
+          "base_commit": "438bec822b7753b1e73cf7795c816d67c109a2b4",
+          "unit_ids": [
+            "APP-01-U02"
+          ],
+          "created_at": "2026-11-03T20:02:44.989343+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -36832,7 +37197,8 @@
               "TDS-CD56-APP-01-HETEROGENEOUS-COUPLED-WORKLOADS",
               "TDS-OCT03-APP001-U02",
               "TDS-D31-APP001-02",
-              "TDS-L31-APP001-02"
+              "TDS-L31-APP001-02",
+              "TDS-N03-APP001-696"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -36858,8 +37224,8 @@
     },
     {
       "topic_id": "APP-12",
-      "summary_ja": "科学エージェントの検証範囲と段階別実行予算を一次論文本文から追記する。既存の学習・推論モデルと国内需要の根拠は保持する。単一のAIモデルの暫定調査でConsensus未完了。",
-      "summary_en": "Append primary-paper evidence on scientific-agent validation scope and stage-specific execution budgets. Preserve existing training/inference models and Japanese-demand evidence. Provisional single-model research; Consensus incomplete.",
+      "summary_ja": "科学エージェントの検証範囲と段階別実行予算を一次論文本文から追記する。既存の学習・推論モデルと国内需要の根拠は保持する。単一のAIモデルの暫定調査でConsensus未完了。 今回の限定追補：仮想実験エージェントの操作と解析を分離評価。既存履歴・未解決Gapを保持し、独立Consensusは未完了。",
+      "summary_en": "Append primary-paper evidence on scientific-agent validation scope and stage-specific execution budgets. Preserve existing training/inference models and Japanese-demand evidence. Provisional single-model research; Consensus incomplete. Bounded addition: Separate virtual-instrument operation from scientific analysis. Prior history and open gaps remain; independent Consensus is incomplete.",
       "sections": [
         {
           "section_id": "TDS-APP03-CURRENT",
@@ -38436,6 +38802,42 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-N03-APP012-714",
+          "title_ja": "仮想実験エージェントの操作と解析を分離評価",
+          "title_en": "Separate virtual-instrument operation from scientific analysis",
+          "summary_ja": "公開一次資料の限定追補。独立検証・Consensus未完了。",
+          "summary_en": "Bounded public-primary-source addition; independent validation and Consensus incomplete.",
+          "items": [
+            {
+              "item_id": "TDI-N03-APP012-714",
+              "name_ja": "仮想実験エージェントの操作と解析を分離評価",
+              "name_en": "Separate virtual-instrument operation from scientific analysis",
+              "stage": "current",
+              "maturity": "research",
+              "timing_ja": "v1公開2026-10-30（日精度）。11月3日は確認日。",
+              "timing_en": "v1 dated October30,2026 (day precision); November3 is the check date.",
+              "statement_ja": "q-devBench/instrMCPの37課題×10構成×5試行は、実験データの補間主体の仮想QCoDeS評価である。操作rubric充足70–83%、解析28–46%は完全成功率ではない。解析のみ比較はsession除去とcleanCSV置換を同時に行い、単一原因を分離しない。",
+              "statement_en": "q-devBench/instrMCP evaluates37 tasks×10 configurations×5 trials using virtual QCoDeS devices, mostly interpolating real data. Measurement70–83% and analysis28–46% are rubric-criterion rates, not complete-task success. The analysis-only comparison simultaneously removes sessions and supplies clean referenceCSV, preventing single-cause attribution.",
+              "hpci_relevance_ja": "仮想系と実機、安全評価、来歴、評価段階を分離する。学習/推論需要や施設性能の実証へ転用しない。",
+              "hpci_relevance_en": "Separate virtual/live operation, safety, provenance and grading stages; do not infer facility performance or training/inference demand.",
+              "adoption_conditions_ja": [
+                "危険な冷却操作は対象外、実時間/費用・drift等は再現不十分。207件の別判定は第2段階のみで、共有の第1段階は独立監査なし。",
+                "dataURLは未記入、qdevbench公開URLは今回404。非公開資産の不存在や削除を意味しない。"
+              ],
+              "adoption_conditions_en": [
+                "High-risk cooling is excluded; timing/cost and drift fidelity are limited. The207-run audit changes only the second-stage judge; shared first-stage output is not independently audited.",
+                "The data URL remains a placeholder; the qdevbench URL returned404. This does not establish deletion or absence of private assets."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-N03-714-01"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -38692,6 +39094,16 @@
           ],
           "created_at": "2026-10-31T17:14:44.487655+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000714",
+          "bundle_sha256": "47b0ed2150e31d7903b1645512365009dde35f8123a471a33bf66f77793ff410",
+          "base_commit": "438bec822b7753b1e73cf7795c816d67c109a2b4",
+          "unit_ids": [
+            "APP-12-U02"
+          ],
+          "created_at": "2026-11-03T20:02:44.989343+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -38743,7 +39155,8 @@
               "TDS-CD1-APP-12-U02",
               "TDS-CD2-APP-12-U02",
               "TDS-CD15-APP-12-JAPAN-SCIENTIST-AI-JAM",
-              "TDS-OCT03-APP012-AGENT-VALIDATION"
+              "TDS-OCT03-APP012-AGENT-VALIDATION",
+              "TDS-N03-APP012-714"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -38770,8 +39183,8 @@
     },
     {
       "topic_id": "APP-13",
-      "summary_ja": "今回の限定追補：NIM trace入力と実受理設定の検証手順。既存本文・原資料・Gapを保持する暫定更新で、独立検証とConsensusは未完了。提供予定・実施実績・測定値を混同しない。",
-      "summary_en": "This bounded update adds: NIM trace and effective-configuration validation method. Existing evidence and gaps are retained. The update is provisional; independent validation and Consensus remain incomplete. Plans, observed events and measurements remain distinct.",
+      "summary_ja": "今回の限定追補：NIM trace入力と実受理設定の検証手順。既存本文・原資料・Gapを保持する暫定更新で、独立検証とConsensusは未完了。提供予定・実施実績・測定値を混同しない。 今回の限定追補：DLNetBenchの代替計算とMLPerf Agents開発計画。既存履歴・未解決Gapを保持し、独立Consensusは未完了。",
+      "summary_en": "This bounded update adds: NIM trace and effective-configuration validation method. Existing evidence and gaps are retained. The update is provisional; independent validation and Consensus remain incomplete. Plans, observed events and measurements remain distinct. Bounded addition: DLNetBench surrogate computation and MLPerf Agents development. Prior history and open gaps remain; independent Consensus is incomplete.",
       "sections": [
         {
           "section_id": "TDS-APP04-CURRENT",
@@ -42031,6 +42444,45 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-N03-APP013-715",
+          "title_ja": "DLNetBenchの代替計算とMLPerf Agents開発計画",
+          "title_en": "DLNetBench surrogate computation and MLPerf Agents development",
+          "summary_ja": "公開一次資料の限定追補。独立検証・Consensus未完了。",
+          "summary_en": "Bounded public-primary-source addition; independent validation and Consensus incomplete.",
+          "items": [
+            {
+              "item_id": "TDI-N03-APP013-715",
+              "name_ja": "DLNetBenchの代替計算とMLPerf Agents開発計画",
+              "name_en": "DLNetBench surrogate computation and MLPerf Agents development",
+              "stage": "current",
+              "maturity": "research",
+              "timing_ja": "arXiv v2表示2026-09-03。初稿9/1は親候補で今回未確認。MLCommons2026-10-15。固定GitHub treeはrestricted URL取得失敗で内容未検証。",
+              "timing_en": "arXiv v2 prints September3,2026. Parent first-versionSeptember1 lead not independently checked here. MLCommonsOctober15,2026. Fixed GitHub tree retrieval restricted; contents unverified.",
+              "statement_ja": "DLNetBench論文v2は5種の並列化・配置・競合を評価するが、実tensor演算を実行せず、公称BF16演算性能・帯域のrooflineに基づく待機で計算相を代替する。LUMI単node8GPUの同構成DPでPyTorchは約2.5倍遅いとの著者報告であり、実学習の完了時間・品質予測の検証ではない。MLCommonsは10月15日、2年350万ドルでMLPerf Agentsを開発すると発表。成功確認付きtaskの時間・費用・energy等をworkflow全体で測る計画で、完成規則や結果ではない。",
+              "statement_en": "DLNetBench v2 studies five parallelization strategies, placement and contention. It substitutes roofline-based delays using vendor BF16 throughput/bandwidth for real tensor operations. Authors report PyTorch DP approximately2.5times slower on one eight-GPU LUMI node under the same configuration; this does not validate real-training completion or quality predictions. On October15 MLCommons announced a two-year,$3.5million MLPerf Agents development award to measure successful task workflows, including time,cost and energy; rules/results are not completed evidence.",
+              "hpci_relevance_ja": "既存AI benchmarkの計時境界と正確性・成功判定へ、通信実行と代替計算の区別、版・配置・競合条件、workflow全費用を評価条件として追補する。HPCI採用・完成仕様・品質・省電力実績へ昇格しない。",
+              "hpci_relevance_en": "Append communication execution versus surrogate compute, version/placement/contention and whole-workflow cost boundaries to AI benchmarking acceptance. Do not infer HPCI adoption, completed specifications, quality or energy gains.",
+              "adoption_conditions_ja": [
+                "固定repo commitの内容・実験との一致は取得拒否で未検証。論文と著者repoは独立起源として二重計上しない。",
+                "実学習品質・電力費用・独立再現は未検証。2.5倍を全機種・全並列化へ一般化しない。",
+                "MLPerf Agents計画はMLPerf Storageと別。実行・導入・契約・評価は行わない。"
+              ],
+              "adoption_conditions_en": [
+                "Fixed repo contents and experimental correspondence remain unverified after restricted retrieval. Paper and author repo are one lineage.",
+                "Training quality,energy/cost and independent reproduction are unverified;2.5times is not universal.",
+                "MLPerf Agents planning is separate from MLPerf Storage; no installation,execution,contract or benchmark evaluation performed."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-N03-715-01",
+                "SRC-N03-715-02"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -42360,6 +42812,18 @@
           ],
           "created_at": "2026-11-01T16:43:33.572640+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000715",
+          "bundle_sha256": "acca76343a0a14d578bf7d75dbb9965ec634642b52a510a9134d2624ae171af5",
+          "base_commit": "438bec822b7753b1e73cf7795c816d67c109a2b4",
+          "unit_ids": [
+            "APP-13-U01",
+            "APP-13-U02",
+            "APP-13-U03"
+          ],
+          "created_at": "2026-11-03T20:02:44.989343+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -42391,7 +42855,8 @@
               "TDS-OCT03-APP013-INFERENCE61-POWER",
               "TDS-OCT03-APP013-POSTTRAIN-CONTRACT",
               "TDS-OCT05-APP013-INTEGRATED-READABLE",
-              "TDS-L31-APP013-02"
+              "TDS-L31-APP013-02",
+              "TDS-N03-APP013-715"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -42529,8 +42994,8 @@
     },
     {
       "topic_id": "APP-05",
-      "summary_ja": "今回の限定追補：修正申告と実証を分離する小規模静的監査。既存根拠・Gap・日程を保持する暫定更新で、独立検証とConsensusは未完了。",
-      "summary_en": "This bounded addition concerns Small static audit separates fix claims from demonstrated evidence. Existing evidence, gaps and dates are retained; independent validation and Consensus remain incomplete.",
+      "summary_ja": "今回の限定追補：修正申告と実証を分離する小規模静的監査。既存根拠・Gap・日程を保持する暫定更新で、独立検証とConsensusは未完了。 今回の限定追補：PETSCAgent-Benchの評価境界とupper_bound判定の限界。既存履歴・未解決Gapを保持し、独立Consensusは未完了。",
+      "summary_en": "This bounded addition concerns Small static audit separates fix claims from demonstrated evidence. Existing evidence, gaps and dates are retained; independent validation and Consensus remain incomplete. Bounded addition: PETSCAgent-Bench evaluation boundaries and upper-bound-check limitation. Prior history and open gaps remain; independent Consensus is incomplete.",
       "sections": [
         {
           "section_id": "TDS-APP05-CURRENT",
@@ -43665,6 +44130,46 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-N03-APP005-698",
+          "title_ja": "PETSCAgent-Benchの評価境界とupper_bound判定の限界",
+          "title_en": "PETSCAgent-Bench evaluation boundaries and upper-bound-check limitation",
+          "summary_ja": "公開一次資料の限定追補。独立検証・Consensus未完了。",
+          "summary_en": "Bounded public-primary-source addition; independent validation and Consensus incomplete.",
+          "items": [
+            {
+              "item_id": "TDI-N03-APP005-698",
+              "name_ja": "PETSCAgent-Benchの評価境界とupper_bound判定の限界",
+              "name_en": "PETSCAgent-Bench evaluation boundaries and upper-bound-check limitation",
+              "stage": "current",
+              "maturity": "research",
+              "timing_ja": "preprint初稿2026-03-16、v2改訂2026-09-10。固定READMEはcommit 7b4f25fac082bf90c8f1c0892b531e0a2d911027の内容を11月3日に確認。commit日時と論文実験との対応は未確認。",
+              "timing_en": "Preprint v1 March16 and v2 September10, 2026; pinned README checked November3. Commit date and correspondence to the paper experiment remain unverified.",
+              "statement_ja": "PETSCAgent-Benchの著者preprint v2は、PETScのsolver選択・API慣行・エラー処理・資源管理を、compile/runのbinary gate、実行測定、LLM品質評価で区別する。6課題・3モデル・各3回のone-shot評価は単一workstationで、GPU、大規模分散、実工数改善は未評価。固定READMEではGPU課題は既定対象外であり、upper_bound判定の課題は解かず0.0を出すagentでも条件を満たし得ると明記する。この具体的限界を全reference-checkへ一般化せず、論文v2の実験と後続commitの仕様を同一視しない。",
+              "statement_en": "PETSCAgent-Bench v2 separates PETSc-specific solver/API/resource practices from compilation gates, measured execution and LLM quality judgments. Its six-task, three-model, three-repeat one-shot study uses one workstation; GPU, large-scale distributed execution and labor savings are untested. The pinned README excludes GPU tasks by default and warns that an agent printing 0.0 without solving can satisfy an upper_bound case. This specific loophole does not invalidate every reference check. Keep the paper experiment separate from later repository behavior.",
+              "hpci_relevance_ja": "既存評価gateで、生成コードの実行・数値妥当性・PETSc慣行・審査者依存を分ける。GPUや大規模HPCIの適合、実工数、独立expert監査は未確認とし、upper_boundの抜け道を特定の判定方式の限界として保持する。",
+              "hpci_relevance_en": "Separate execution, numerical validity, library conventions and judge dependence. Retain untested HPCI scale, labor costs and expert audit; record the specific upper_bound loophole.",
+              "adoption_conditions_ja": [
+                "審査bias・学習データ汚染は未排除。第二judgeでの限定再採点を独立したPETSc専門家監査や安全認証としない。",
+                "GPU・複数node・日本の大規模科学コード・実工数の未評価、GAP-TDS-023/069、provisional/Consensus incompleteを保持。",
+                "READMEのupper_bound 0.0の具体例を、全固定参照の無効性や論文実験での実被害へ一般化しない。"
+              ],
+              "adoption_conditions_en": [
+                "Judge bias and contamination remain possible; no independent expert certification.",
+                "Retain GPU, distributed-scale and labor-evidence gaps023/069; Consensus incomplete.",
+                "Do not generalize the upper_bound loophole or allege observed exploitation."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-N03-698-01",
+                "SRC-N03-698-02",
+                "SRC-N03-698-03"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -43820,6 +44325,16 @@
           ],
           "created_at": "2026-11-02T15:11:04.965845+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000698",
+          "bundle_sha256": "ab305c6452626926918c9423da195e630d05a5aae878dda0b7868b32b0ac9513",
+          "base_commit": "438bec822b7753b1e73cf7795c816d67c109a2b4",
+          "unit_ids": [
+            "APP-05-U01"
+          ],
+          "created_at": "2026-11-03T20:02:44.989343+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -43851,7 +44366,8 @@
               "TDS-D31-APP005-02",
               "TDS-L31-APP005-01",
               "TDS-L31-APP005-02",
-              "TDS-N02-APP005-672"
+              "TDS-N02-APP005-672",
+              "TDS-N03-APP005-698"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -43878,8 +44394,8 @@
     },
     {
       "topic_id": "APP-14",
-      "summary_ja": "既存の放射光・自律実験を保持し、核融合のショット間HPC解析とショット内推論を区別する。国内IOWNは実証の再確認に限定する。単一のAIモデルの暫定調査でConsensusは未完了。",
-      "summary_en": "Retain existing light-source/autonomous-experiment evidence and distinguish fusion inter-shot HPC analysis from in-shot inference. Japanese IOWN evidence is a demonstration reconfirmation only. Provisional single-model research; Consensus incomplete.",
+      "summary_ja": "既存の放射光・自律実験を保持し、核融合のショット間HPC解析とショット内推論を区別する。国内IOWNは実証の再確認に限定する。単一のAIモデルの暫定調査でConsensusは未完了。 今回の限定追補：SPIRE選定と施設内実績・将来自律化の境界。既存履歴・未解決Gapを保持し、独立Consensusは未完了。",
+      "summary_en": "Retain existing light-source/autonomous-experiment evidence and distinguish fusion inter-shot HPC analysis from in-shot inference. Japanese IOWN evidence is a demonstration reconfirmation only. Provisional single-model research; Consensus incomplete. Bounded addition: SPIRE selection, bounded facility evidence and future autonomy. Prior history and open gaps remain; independent Consensus is incomplete.",
       "sections": [
         {
           "section_id": "TDS-APP06-CURRENT",
@@ -45274,6 +45790,45 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-N03-APP014-716",
+          "title_ja": "SPIRE選定と施設内実績・将来自律化の境界",
+          "title_en": "SPIRE selection, bounded facility evidence and future autonomy",
+          "summary_ja": "公開一次資料の限定追補。独立検証・Consensus未完了。",
+          "summary_en": "Bounded public-primary-source addition; independent validation and Consensus incomplete.",
+          "items": [
+            {
+              "item_id": "TDI-N03-APP014-716",
+              "name_ja": "SPIRE選定と施設内実績・将来自律化の境界",
+              "name_en": "SPIRE selection, bounded facility evidence and future autonomy",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "DOE・SLACとも2026-10-08公表（日精度）。初期実績の実施日・全体配備日は不明。",
+              "timing_en": "Both published October8,2026, day precision. Dates of early demonstrations and integrated deployment are unknown.",
+              "statement_ja": "DOEは10月8日SPIREを選定し、試料操作・検出器・装置制御・実験状態・edge/HPC統合を計画するが、選定はaward交渉で資金確約ではない。SLACはSSRL→S3DF転送の初期版と特定実験の適応取得を報告し、全体の自律閉ループは将来目標とする。別のbeam再構成例は約5分と施設が報告するが、計時境界・tail・欠落・成功率は示されない。microseconds～hoursは意思決定の尺度で共通SLAではない。",
+              "statement_en": "DOE selected SPIRE on October8 to integrate sample handling, detectors, controls, persistent experiment state and edge/HPC. Selection enters award negotiations, not a funding commitment. SLAC reports early SSRL-to-S3DF transfer and adaptive acquisition in selected experiments; an integrated autonomous loop remains future work. A separate beam-reconstruction example takes about five minutes by facility report, without timing-boundary,tail,loss or success-rate evidence. Microseconds-to-hours describes decision timescales, not a common SLA.",
+              "hpci_relevance_ja": "既存実験workflow受入へ、選定・初期転送・限定適応取得・将来閉ループを分け、入力完全性・計時点・tail・科学品質・安全guardrail・手動fallbackの条件を追補する。共通期限・稼働率・無欠損保証・HPCI本番提供を認定しない。",
+              "hpci_relevance_en": "Separate selection, early transfer, bounded adaptive acquisition and future closed loop within existing experiment-workflow acceptance. Record completeness,timing points,tails,scientific quality,safety guardrails and manual fallback. Certify no common deadline,availability,losslessness or HPCI production service.",
+              "adoption_conditions_ja": [
+                "施設自己報告であり、独立再現・広域期限達成・科学品質・費用/電力・安全認定は未確認。",
+                "DOEとSLACは同じ選定事象。SLACを独立した資金確約又は全体稼働証拠として数えない。",
+                "将来の機器操作・安全策は調査対象で実行指示ではない。施設接続・制御・job投入なし。"
+              ],
+              "adoption_conditions_en": [
+                "Operator reports; independent reproduction,wide-area deadlines,scientific quality,cost/energy and safety qualification remain unverified.",
+                "DOE and SLAC describe the same selection; SLAC is not independent funding commitment or full-deployment proof.",
+                "Source control/safety descriptions are not execution authority. No facility login,control or jobs."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-N03-716-01",
+                "SRC-N03-716-02"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -45471,6 +46026,16 @@
           ],
           "created_at": "2026-10-31T17:14:44.487655+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000716",
+          "bundle_sha256": "373f749e0f0758768a32f2c4d655279c8e282a8a8aa255e90bad61d0c82bb5e1",
+          "base_commit": "438bec822b7753b1e73cf7795c816d67c109a2b4",
+          "unit_ids": [
+            "APP-14-U01"
+          ],
+          "created_at": "2026-11-03T20:02:44.989343+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -45502,7 +46067,8 @@
               "TDS-WC383-APP-14-01",
               "TDS-OCT03-APP014-LOOP-BOUNDARIES",
               "TDS-D31-APP014-01",
-              "TDS-L31-APP014-01"
+              "TDS-L31-APP014-01",
+              "TDS-N03-APP014-716"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -45980,8 +46546,8 @@
     },
     {
       "topic_id": "CROSS-03",
-      "summary_ja": "共通IDと拠点固有手続きに加え、CMSの申込・容量制限、京都大学の課題別会計、課題終了時のデータ退避を公開運用手順で具体化する。単一のAIモデルの暫定調査でConsensusは未完了。",
-      "summary_en": "Public operating procedures make common identity and local responsibilities concrete through CMS application/capacity limits, Kyoto project accounting, and project-end data evacuation. Provisional single-model research; Consensus incomplete.",
+      "summary_ja": "共通IDと拠点固有手続きに加え、CMSの申込・容量制限、京都大学の課題別会計、課題終了時のデータ退避を公開運用手順で具体化する。単一のAIモデルの暫定調査でConsensusは未完了。 今回の限定追補：認証系と共用ストレージの障害統計の対象を分ける。既存履歴・未解決Gapを保持し、独立Consensusは未完了。",
+      "summary_en": "Public operating procedures make common identity and local responsibilities concrete through CMS application/capacity limits, Kyoto project accounting, and project-end data evacuation. Provisional single-model research; Consensus incomplete. Bounded addition: Separate authentication and shared-storage incident populations. Prior history and open gaps remain; independent Consensus is incomplete.",
       "sections": [
         {
           "section_id": "TDS-CROSS03-CURRENT",
@@ -47316,6 +47882,42 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-N03-OPS007-699",
+          "title_ja": "認証系と共用ストレージの障害統計の対象を分ける",
+          "title_en": "Separate authentication and shared-storage incident populations",
+          "summary_ja": "公開一次資料の限定追補。独立検証・Consensus未完了。",
+          "summary_en": "Bounded public-primary-source addition; independent validation and Consensus incomplete.",
+          "items": [
+            {
+              "item_id": "TDI-N03-OPS007-699",
+              "name_ja": "認証系と共用ストレージの障害統計の対象を分ける",
+              "name_en": "Separate authentication and shared-storage incident populations",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "既存資料metadataは2026-03-05。認証系FY2022–24、理研ストレージFY2024の報告値。11月3日は本文確認日で、新規障害日ではない。",
+              "timing_en": "Existing source metadata dates the report March 5, 2026. Authentication covers FY2022–24; RIKEN storage covers FY2024. November 3 is the inspection date, not a new incident date.",
+              "statement_ja": "HPCI運営の自己点検報告は、認証系でFY2022–24に計9件の障害を記録し、内訳をネットワーク2件・運用7件としている。同じ報告の理研ストレージ欄は、FY2024の重大度レベル3の障害2件、データ消失なし、年間稼働率99.8%を報告する。対象と期間が異なるため件数を足し合わせず、停止時間や復旧性能、全国共通SLAの証拠にはしない。過去の運営者報告の未収録詳細であり、新規障害の発生告知ではない。",
+              "statement_en": "The HPCI self-evaluation records nine authentication-system incidents across FY2022–24: two network-related and seven operational. A separate RIKEN storage section reports two level-3 incidents, no data loss and 99.8% annual availability for FY2024. Keep the populations and periods separate; these figures do not establish outage duration, recovery performance or a nationwide SLA. This is an older operator report, not a new incident announcement.",
+              "hpci_relevance_ja": "認証系とストレージ系の期間・障害分類・稼働率の分母を別に保持し、停止時間、利用者影響、復旧、科学ワークフローの再開を別途検証する既存条件へ接続する。",
+              "hpci_relevance_en": "Retain separate periods, incident classes and availability denominators for authentication and storage, and retain independent checks of outage duration, user impact, recovery and scientific-workflow resumption.",
+              "adoption_conditions_ja": [
+                "停止時間・障害定義・利用者影響・復旧時間・稼働率対象範囲と独立検証は未確認。GAP-TDS-082を閉じない。",
+                "単一報告書中の異なる統計であり独立裏付けとして加算しない。予定CMS保守や既出動画を障害実績へ読み替えない。"
+              ],
+              "adoption_conditions_en": [
+                "Outage durations, incident definitions, user impact, recovery times, availability coverage and independent validation remain unverified; retain GAP-TDS-082.",
+                "Different statistics in one report are not independent corroboration. Planned CMS maintenance and an existing video are not incident observations."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-CDS345"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -47492,6 +48094,16 @@
           ],
           "created_at": "2026-10-31T15:44:17.139610+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000699",
+          "bundle_sha256": "4a82d0057ec87888bf7e95c96af353905c3c1648c0dbe78970d7f3e5547ac13e",
+          "base_commit": "438bec822b7753b1e73cf7795c816d67c109a2b4",
+          "unit_ids": [
+            "CROSS-03-U01"
+          ],
+          "created_at": "2026-11-03T20:02:44.989343+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -47522,7 +48134,8 @@
               "TDS-WC384-CROSS-03-01",
               "TDS-OCT03-OPS007-U01",
               "TDS-OCT05-OPS007-INTEGRATED-READABLE",
-              "TDS-D31-OPS007-01"
+              "TDS-D31-OPS007-01",
+              "TDS-N03-OPS007-699"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -47550,8 +48163,8 @@
     },
     {
       "topic_id": "CROSS-06",
-      "summary_ja": "今回の限定追補：量子サービス開始とLUMI-IQ本体の段階導入を分離。既存本文・原資料・Gapを保持する暫定更新で、独立検証とConsensusは未完了。提供予定・実施実績・測定値を混同しない。",
-      "summary_en": "This bounded update adds: Separate initial quantum services from staged LUMI-IQ installation. Existing evidence and gaps are retained. The update is provisional; independent validation and Consensus remain incomplete. Plans, observed events and measurements remain distinct.",
+      "summary_ja": "今回の限定追補：量子サービス開始とLUMI-IQ本体の段階導入を分離。既存本文・原資料・Gapを保持する暫定更新で、独立検証とConsensusは未完了。提供予定・実施実績・測定値を混同しない。 今回の限定追補：LUMI-IQ初期配備の2027年秋予定という補足。既存履歴・未解決Gapを保持し、独立Consensusは未完了。",
+      "summary_en": "This bounded update adds: Separate initial quantum services from staged LUMI-IQ installation. Existing evidence and gaps are retained. The update is provisional; independent validation and Consensus remain incomplete. Plans, observed events and measurements remain distinct. Bounded addition: Autumn-2027 scheduling detail for initial LUMI-IQ deployment. Prior history and open gaps remain; independent Consensus is incomplete.",
       "sections": [
         {
           "section_id": "TDS-CROSS06-CURRENT",
@@ -50183,6 +50796,43 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-N03-OPS010-701",
+          "title_ja": "LUMI-IQ初期配備の2027年秋予定という補足",
+          "title_en": "Autumn-2027 scheduling detail for initial LUMI-IQ deployment",
+          "summary_ja": "公開一次資料の限定追補。独立検証・Consensus未完了。",
+          "summary_en": "Bounded public-primary-source addition; independent validation and Consensus incomplete.",
+          "items": [
+            {
+              "item_id": "TDI-N03-OPS010-701",
+              "name_ja": "LUMI-IQ初期配備の2027年秋予定という補足",
+              "name_en": "Autumn-2027 scheduling detail for initial LUMI-IQ deployment",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "2027年秋は施設の配備予定（季節精度）。両案内の公表・更新日は不明。確認日2026-11-03。",
+              "timing_en": "Autumn 2027 is an operator deployment target at season precision. Both page publication/update dates are unknown; checked November 3, 2026.",
+              "statement_ja": "CSCの現在の量子計算案内とLUMI AI Factory案内は、150量子ビットのHalocene H4を使うLUMI-IQ初期システムの配備を2027年秋に予定すると記載する。両ページの公表・更新日は確認できず、11月3日は読取日である。既存の2027・2028・2029年の段階整備計画を保持し、秋という季節表現を四半期へ変換しない。2026年10月28日に公表されたVLQ・既存LUMIによる初期量子サービスとは別で、LUMI-IQ本体の納入・検収・支払・実サービス開始の完了を示さない。",
+              "statement_en": "Current CSC quantum-computing and LUMI AI Factory pages schedule initial LUMI-IQ deployment, using a 150-qubit Halocene H4, for autumn 2027. Publication/update dates are unverified; November 3 is the read date. Retain the existing 2027–2029 staged plan and do not translate autumn into a quarter. This is separate from the October 28 announcement of initial quantum services using VLQ and existing LUMI resources, and does not establish completed LUMI-IQ delivery, acceptance, payment or service commencement.",
+              "hpci_relevance_ja": "LUMI-IQ初期H4の既存2027年targetへ、CSC現行案内の「2027年秋に配備予定」を限定注記する。year・quarter・maturity・2028/2029更新日程と既存サービス履歴は変更せず、季節予定と納入・検収・支払・運用開始を分離する。",
+              "hpci_relevance_en": "Annotate the existing initial-H4 2027 target with CSC’s current autumn-2027 deployment wording. Retain year, quarter, maturity, the 2028/2029 upgrades and existing service history; distinguish the seasonal target from delivery, acceptance, payment and operational commencement.",
+              "adoption_conditions_ja": [
+                "公表・更新日、具体的な配備日・四半期、実納入・検収・支払・本体サービス開始と個別条件は未確認。",
+                "同じCSCによる2ページであり独立した2起源と数えない。既存の2028/2029計画・10月28日サービス公表・未解決Gapを保持。"
+              ],
+              "adoption_conditions_en": [
+                "Publication/update dates, a concrete deployment day or quarter, actual delivery, acceptance, payment, system service commencement and individual terms remain unverified.",
+                "Both pages originate from CSC and are not independent corroboration. Retain the 2028/2029 plans, October28 service history and unresolved gaps."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-N03-701-01",
+                "SRC-N03-701-02"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -50530,6 +51180,16 @@
           ],
           "created_at": "2026-11-01T17:11:12.301132+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000701",
+          "bundle_sha256": "11dd8a5a5015e7fea0371f73723e7b74729960f25bf9b07fb1c8fff764e538e9",
+          "base_commit": "438bec822b7753b1e73cf7795c816d67c109a2b4",
+          "unit_ids": [
+            "CROSS-06-U02"
+          ],
+          "created_at": "2026-11-03T20:02:44.989343+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -50592,7 +51252,8 @@
               "TDS-CD13-CROSS-06-U02",
               "TDS-OCT03-OPS010-U02",
               "TDS-OCT03-OPS010-U02-PRESERVED",
-              "TDS-N01-OPS010-665"
+              "TDS-N01-OPS010-665",
+              "TDS-N03-OPS010-701"
             ],
             "comparison_refs": [
               {
@@ -55120,8 +55781,8 @@
     },
     {
       "topic_id": "SSW-10",
-      "summary_ja": "既存の正答性・探索費用の論点に、コンパイラ判断記録、実効target、cache評価数の意味、実験的schedulerの依存版条件を追加する。実機での正味改善と転用性は未検証であり、既存のGapとConsensus未完了を維持する。",
-      "summary_en": "Add compiler-decision records, effective targets, cache evaluation accounting and experimental-scheduler dependency constraints to existing correctness and cost coverage. Net hardware gains and transferability remain unverified; retain the existing Gap and incomplete Consensus.",
+      "summary_ja": "既存の正答性・探索費用の論点に、コンパイラ判断記録、実効target、cache評価数の意味、実験的schedulerの依存版条件を追加する。実機での正味改善と転用性は未検証であり、既存のGapとConsensus未完了を維持する。 今回の限定追補：OPSの形状探索費用とreplay性能の分離。既存履歴・未解決Gapを保持し、独立Consensusは未完了。",
+      "summary_en": "Add compiler-decision records, effective targets, cache evaluation accounting and experimental-scheduler dependency constraints to existing correctness and cost coverage. Net hardware gains and transferability remain unverified; retain the existing Gap and incomplete Consensus. Bounded addition: Separating OPS search cost from replay performance. Prior history and open gaps remain; independent Consensus is incomplete.",
       "sections": [
         {
           "section_id": "TDS-CD1-SSW-10-U01",
@@ -55569,6 +56230,42 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-N03-SSW010-705",
+          "title_ja": "OPSの形状探索費用とreplay性能の分離",
+          "title_en": "Separating OPS search cost from replay performance",
+          "summary_ja": "公開一次資料の限定追補。独立検証・Consensus未完了。",
+          "summary_en": "Bounded public-primary-source addition; independent validation and Consensus incomplete.",
+          "items": [
+            {
+              "item_id": "TDI-N03-SSW010-705",
+              "name_ja": "OPSの形状探索費用とreplay性能の分離",
+              "name_en": "Separating OPS search cost from replay performance",
+              "stage": "current",
+              "maturity": "research",
+              "timing_ja": "v1表記日2026-10-31（日精度）。2026-11-03は今回の確認日。",
+              "timing_en": "v1 dated October 31, 2026, day precision; checked November 3.",
+              "statement_ja": "10月31日付v1の著者preprintは、5 GPUで完了・memory条件を通過した995条件中923改善・72低下、GPU別中央値1.02–1.18倍を報告する。比は既定実行/replayで探索費用を含まない。例としてMI300AのSENGA2は既定184.33秒、探索を含む実行499.81秒、replay159.28秒であり一般化しない。kernel・device・入力形状に対応するkeyと不一致時の既定設定へのfallbackを扱う。",
+              "statement_en": "The October 31 v1 preprint reports 923 improvements and 72 regressions among 995 completed, memory-qualified cases on five GPUs; GPU medians are 1.02–1.18x. These compare default execution with replay, excluding search. For MI300A SENGA2, default/search-inclusive/replay times are 184.33/499.81/159.28 seconds; do not generalize. Replay keys distinguish kernel, device and input shape, falling back to defaults when unmatched.",
+              "hpci_relevance_ja": "既存の探索総費用・再利用・失敗保持の評価条件へ接続し、replayだけの改善を総費用削減と扱わない。",
+              "hpci_relevance_en": "Connect to existing total-cost, reuse and failure gates; replay gains do not establish net savings.",
+              "adoption_conditions_ja": [
+                "科学的正確性・未見入力・energy・独立再現とHPCI適合は本確認で未検証。",
+                "代表例、完了・memory選別、探索費用の除外を保持。既存Gap・目標・日程を変更しない。"
+              ],
+              "adoption_conditions_en": [
+                "Scientific correctness, unseen inputs, energy, independent reproduction and HPCI qualification remain unverified here.",
+                "Preserve selection and excluded-search-cost limitations; retain existing gaps and targets."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-N03-705-01"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -55673,6 +56370,16 @@
           ],
           "created_at": "2026-10-31T17:14:44.487655+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000705",
+          "bundle_sha256": "66b0d7cb1a15202a6a334005cf5c1bc8e32672b2f4e497fd97d66b432127fa88",
+          "base_commit": "438bec822b7753b1e73cf7795c816d67c109a2b4",
+          "unit_ids": [
+            "SSW-10-U01"
+          ],
+          "created_at": "2026-11-03T20:02:44.989343+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -55697,7 +56404,8 @@
               "TDS-CD8-SSW-10-TOPOLOGY-AUTOTUNING",
               "TDS-OCT03-SSW010-U01",
               "TDS-OCT05-SSW010-INTEGRATED-READABLE",
-              "TDS-L31-SSW010-01"
+              "TDS-L31-SSW010-01",
+              "TDS-N03-SSW010-705"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -55727,8 +56435,8 @@
     },
     {
       "topic_id": "SSW-16",
-      "summary_ja": "既存のDAG・stream・施設連携・量子HPC監視に、実験装置の不可逆性、成功来歴と失敗監査の区別、queue権限とworker隔離、実行先別の資源契約を追加する。共通障害試験、施設間認証、運用負荷の比較は未実施であり、GAP-TDS-066とConsensus未完了を維持する。",
-      "summary_en": "Extend existing DAG, stream, facility-integration and quantum-HPC monitoring evidence with physical irreversibility, successful-result lineage versus failure audit, queue permissions versus worker isolation, and executor-specific resource contracts. Common fault tests, cross-site identity and operational-effort comparisons remain unperformed; retain GAP-TDS-066 and incomplete Consensus.",
+      "summary_ja": "既存のDAG・stream・施設連携・量子HPC監視に、実験装置の不可逆性、成功来歴と失敗監査の区別、queue権限とworker隔離、実行先別の資源契約を追加する。共通障害試験、施設間認証、運用負荷の比較は未実施であり、GAP-TDS-066とConsensus未完了を維持する。 今回の限定追補：Nextflow 26.10.5の投入再試行条件とtyped DAG表示。既存履歴・未解決Gapを保持し、独立Consensusは未完了。",
+      "summary_en": "Extend existing DAG, stream, facility-integration and quantum-HPC monitoring evidence with physical irreversibility, successful-result lineage versus failure audit, queue permissions versus worker isolation, and executor-specific resource contracts. Common fault tests, cross-site identity and operational-effort comparisons remain unperformed; retain GAP-TDS-066 and incomplete Consensus. Bounded addition: Nextflow26.10.5 submission-retry conditions and typed DAG display. Prior history and open gaps remain; independent Consensus is incomplete.",
       "sections": [
         {
           "section_id": "TDS-CD1-SSW-16-U01",
@@ -56480,6 +57188,44 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-N03-SSW012-709",
+          "title_ja": "Nextflow 26.10.5の投入再試行条件とtyped DAG表示",
+          "title_en": "Nextflow26.10.5 submission-retry conditions and typed DAG display",
+          "summary_ja": "公開一次資料の限定追補。独立検証・Consensus未完了。",
+          "summary_en": "Bounded public-primary-source addition; independent validation and Consensus incomplete.",
+          "items": [
+            {
+              "item_id": "TDI-N03-SSW012-709",
+              "name_ja": "Nextflow 26.10.5の投入再試行条件とtyped DAG表示",
+              "name_en": "Nextflow26.10.5 submission-retry conditions and typed DAG display",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "release画面は2026-11-02 17:43と表示（timezone・秒は未確認）。PR7952は10月28日、PR7979は11月2日merge表示。確認11月3日。",
+              "timing_en": "Release UI shows November2,2026 at17:43; timezone and seconds unverified. PR7952 merged October28; PR7979 November2. Checked November3.",
+              "statement_ja": "Nextflow26.10.5はSeqera executorのsched-client0.113.0を含む。同一createTasks/createRun API呼出しの通信再試行には同じIdempotency-Keyを使うが、対応sched serverの先行配備が必要で、未対応serverでは重複taskが生じ得る。Nextflow task自体の再試行は新しい呼出し・keyである。typed processのsource-channel edge修正はDAG表示・接続の修正であり、実行順序修正や全施設のexactly-once保証とはしない。",
+              "statement_en": "Nextflow26.10.5 includes sched-client0.113.0 for the Seqera executor. Retries of one createTasks/createRun API call reuse an Idempotency-Key; server support must precede client deployment, or duplicates remain possible. A Nextflow task retry uses a new call and key. The typed-process source-edge change repairs DAG representation; it does not establish execution-order changes or cross-site exactly-once guarantees.",
+              "hpci_relevance_ja": "既存workflowの障害・再試行評価でAPI再送とtask再実行、server/client版、応答喪失時のtask同一性、DAG表示と実行来歴を区別する。既存日程・閾値・Gap066を維持。",
+              "hpci_relevance_en": "Distinguish API retransmission from task retry, pin server/client versions, check task identity after lost responses, and separate rendered DAGs from execution provenance. Retain dates, thresholds and Gap066.",
+              "adoption_conditions_ja": [
+                "server実装・現地配備と独立障害試験は未確認。releaseとPRは同じ上流系統で独立裏付けではない。",
+                "typed DAGの追加unit testはDAG変更を覆うがProcessDef経路まで単独で検出できないとのreviewer注記を保持。全CI成功や施設受入は認定しない。"
+              ],
+              "adoption_conditions_en": [
+                "Server implementation, deployment and independent fault tests remain unverified. Release and PRs are one upstream lineage.",
+                "Reviewer notes the added unit test alone does not cover the ProcessDef path; do not infer comprehensive CI or site acceptance."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-N03-709-01",
+                "SRC-N03-709-02",
+                "SRC-N03-709-03"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -56622,6 +57368,16 @@
           ],
           "created_at": "2026-10-31T17:14:44.487655+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000709",
+          "bundle_sha256": "df71e3d4e2aeeab8ff23c7db895f10b39193aba322e888d456c89f2432f504c8",
+          "base_commit": "438bec822b7753b1e73cf7795c816d67c109a2b4",
+          "unit_ids": [
+            "SSW-16-U01"
+          ],
+          "created_at": "2026-11-03T20:02:44.989343+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -56650,7 +57406,8 @@
               "TDS-OCT03-SSW012-U01",
               "TDS-OCT05-SSW012-INTEGRATED-READABLE",
               "TDS-D31-SSW012-01",
-              "TDS-L31-SSW012-01"
+              "TDS-L31-SSW012-01",
+              "TDS-N03-SSW012-709"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -56679,8 +57436,8 @@
     },
     {
       "topic_id": "APP-11",
-      "summary_ja": "今回の限定追補：VULCAN v2の版固定と圧縮コストの区別。既存根拠・Gap・日程を保持する暫定更新で、独立検証とConsensusは未完了。",
-      "summary_en": "This bounded addition concerns Pin VULCAN v2 and distinguish compression costs. Existing evidence, gaps and dates are retained; independent validation and Consensus remain incomplete.",
+      "summary_ja": "今回の限定追補：VULCAN v2の版固定と圧縮コストの区別。既存根拠・Gap・日程を保持する暫定更新で、独立検証とConsensusは未完了。 今回の限定追補：QUBO++の品質修正と限定古典比較。既存履歴・未解決Gapを保持し、独立Consensusは未完了。",
+      "summary_en": "This bounded addition concerns Pin VULCAN v2 and distinguish compression costs. Existing evidence, gaps and dates are retained; independent validation and Consensus remain incomplete. Bounded addition: QUBO++ quality fixes and bounded classical comparisons. Prior history and open gaps remain; independent Consensus is incomplete.",
       "sections": [
         {
           "section_id": "TDS-CD1-APP-11-U01",
@@ -57537,6 +58294,43 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-N03-APP010-710",
+          "title_ja": "QUBO++の品質修正と限定古典比較",
+          "title_en": "QUBO++ quality fixes and bounded classical comparisons",
+          "summary_ja": "公開一次資料の限定追補。独立検証・Consensus未完了。",
+          "summary_en": "Bounded public-primary-source addition; independent validation and Consensus incomplete.",
+          "items": [
+            {
+              "item_id": "TDI-N03-APP010-710",
+              "name_ja": "QUBO++の品質修正と限定古典比較",
+              "name_en": "QUBO++ quality fixes and bounded classical comparisons",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "公式release表示は11月2日07:30（画面上timezone不明）。論文v1は11月1日（日精度）。11月3日は確認日。",
+              "timing_en": "Release displays November2 07:30 with no explicit timezone in the retrieved page. Preprint v1 is dated November1 (day precision). November3 is the check date.",
+              "statement_ja": "QUBO++ 2026.11.02は一時Solを渡すParams::hint()でhintより悪い解を返し得る不具合、整数配列の否定型、3項以上max/minのエラー表示を修正。速度改善の定量値はない。別のQUBO攻撃グラフpreprintは6合成topologyの古典比較で、多重比較補正後の回復率差は非有意、量子実機評価ではない。",
+              "statement_en": "QUBO++ 2026.11.02 fixes temporary-Sol hint quality, integer-array negation types and error reporting for max/min with three or more expressions. No speedup magnitude is given. A separate attack-graph preprint studies six synthetic topologies using classical heuristics; adjusted recovery contrasts are nonsignificant, with no quantum-hardware evaluation.",
+              "hpci_relevance_ja": "版とhint品質・配列型・入力エラーを固定検証し、可行性と最適性、完了/除外試行と計時境界を分ける。既存Gapを維持する。",
+              "hpci_relevance_en": "Pin the version and test hint quality, array types and input errors. Separate feasibility, optimality, completed/excluded calls and timing boundaries; preserve existing gaps.",
+              "adoption_conditions_ja": [
+                "独立再現、HPCI導入、性能値は未確認。10.31版やVULCAN v2の旧根拠を上書きしない。",
+                "論文は予定1440 calls中1434完了、6件はresource policyでsampling前除外。実行ソースはmodified worktreeでcommit単体では同定できず、公開artifact本体は未検証。"
+              ],
+              "adoption_conditions_en": [
+                "No independent replication, HPCI deployment or measured speedup is established; retain October31 and VULCAN v2 evidence.",
+                "The paper completed 1434 of1440 planned calls; six were excluded before sampling by resource policy. Its modified worktree is not identified by commit alone; public artifacts were not validated."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-N03-710-01",
+                "SRC-N03-710-02"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -57679,6 +58473,16 @@
           ],
           "created_at": "2026-11-02T15:11:04.965845+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000710",
+          "bundle_sha256": "06a9896fc15d5c0973fccc572142bc933439ac0a7e83eaa0e4bfd112f62ed634",
+          "base_commit": "438bec822b7753b1e73cf7795c816d67c109a2b4",
+          "unit_ids": [
+            "APP-11-U01"
+          ],
+          "created_at": "2026-11-03T20:02:44.989343+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -57710,7 +58514,8 @@
               "TDS-D31-APP010-02",
               "TDS-L31-APP010-01",
               "TDS-L31-APP010-02",
-              "TDS-N02-APP010-675"
+              "TDS-N02-APP010-675",
+              "TDS-N03-APP010-710"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -57736,8 +58541,8 @@
     },
     {
       "topic_id": "ARCH-13",
-      "summary_ja": "最小二乗の混合精度反復改良について、非零残差と条件数が停止判定・精度保証に与える制約を追加する。既存の科学分野別検証と性能・energyの未解決事項は保持する。",
-      "summary_en": "Add least-squares-specific residual and conditioning limits to refinement acceptance. Preserve domain validation evidence and unresolved performance/energy coverage.",
+      "summary_ja": "最小二乗の混合精度反復改良について、非零残差と条件数が停止判定・精度保証に与える制約を追加する。既存の科学分野別検証と性能・energyの未解決事項は保持する。 今回の限定追補：混合精度の格納・再始動に固有の正確性境界。既存履歴・未解決Gapを保持し、独立Consensusは未完了。",
+      "summary_en": "Add least-squares-specific residual and conditioning limits to refinement acceptance. Preserve domain validation evidence and unresolved performance/energy coverage. Bounded addition: Representation and restart boundaries in mixed precision. Prior history and open gaps remain; independent Consensus is incomplete.",
       "sections": [
         {
           "section_id": "TDS-CD1-ARCH-13-U01",
@@ -58410,6 +59215,43 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-N03-APP016-704",
+          "title_ja": "混合精度の格納・再始動に固有の正確性境界",
+          "title_en": "Representation and restart boundaries in mixed precision",
+          "summary_ja": "公開一次資料の限定追補。独立検証・Consensus未完了。",
+          "summary_en": "Bounded public-primary-source addition; independent validation and Consensus incomplete.",
+          "items": [
+            {
+              "item_id": "TDI-N03-APP016-704",
+              "name_ja": "混合精度の格納・再始動に固有の正確性境界",
+              "name_en": "Representation and restart boundaries in mixed precision",
+              "stage": "current",
+              "maturity": "research",
+              "timing_ja": "TOMOS v1投稿2026-10-13。AugGMRES初公開2026-08-12。11月3日は確認日。",
+              "timing_en": "TOMOS v1 submission October13; AugGMRES first publication August12, 2026. November3 is the check date.",
+              "statement_ja": "TOMOS preprintはFP16 primary viewの仮数1bit減と、BF16任意丸め時のFP32最下位bitとの交換を区別する。A100の合成LSQR例はsubnormalを0にするfast decodeで停滞し、成功例の速度比は限定条件である。18% underflowの行列IDはTable IIとFig.10で不一致のため確定しない。別のAugGMRES論文は有限精度GMRES-DR再始動の共線性喪失を扱い、真残差再計算のみでは構造を回復しない。MATLAB/chopの収束実験で時間・直接メモリ実測はない。",
+              "statement_en": "TOMOS distinguishes the lost primary FP16 mantissa bit from the optional BF16-rounding trade-off in the FP32 least-significant bit. Its A100 synthetic LSQR results are conditional; fast decoding that zeros subnormals can stagnate. Table II and Fig.10 disagree on the matrix ID with 18% underflow. Separately, AugGMRES identifies finite-precision GMRES-DR restart-collinearity loss that residual recomputation alone does not repair. MATLAB/chop convergence experiments provide no hardware timing or direct-memory measurements.",
+              "hpci_relevance_ja": "既存評価へ格納形式・subnormal・丸め・再始動構造・真残差の確認条件を追補する。収束と実時間・メモリ・energy評価を分離し、既存日程・閾値・Gap071を維持する。",
+              "hpci_relevance_en": "Append representation, subnormal, rounding, restart and true-residual checks to existing evaluation. Separate convergence from hardware cost; retain dates, thresholds and Gap071.",
+              "adoption_conditions_ja": [
+                "TOMOSはpreprintの合成LSQR・A100限定。表と図の行列ID矛盾は未解消。",
+                "実アプリ・他GPU・energy・HPCI適用を証明せず、GMRES収束曲線を実時間改善としない。独立Consensus未完了。"
+              ],
+              "adoption_conditions_en": [
+                "TOMOS is a preprint with synthetic LSQR/A100 evidence and an unresolved matrix-ID contradiction.",
+                "No real-application, other-GPU, energy or HPCI validation; convergence curves are not runtime improvements. Consensus remains incomplete."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-N03-704-01",
+                "SRC-N03-704-02"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -58527,6 +59369,17 @@
           ],
           "created_at": "2026-10-31T17:14:44.487655+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000704",
+          "bundle_sha256": "f89fe246273051e7993f2ffbcd46aef703e5ef7b0b234f13cdf3adb8fcd46c44",
+          "base_commit": "438bec822b7753b1e73cf7795c816d67c109a2b4",
+          "unit_ids": [
+            "ARCH-13-U01",
+            "ARCH-13-U02"
+          ],
+          "created_at": "2026-11-03T20:02:44.989343+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -58551,7 +59404,8 @@
               "TDS-OCT05-APP016-INTEGRATED-READABLE",
               "TDS-D31-APP016-01",
               "TDS-L31-APP016-01",
-              "TDS-L31-APP016-02"
+              "TDS-L31-APP016-02",
+              "TDS-N03-APP016-704"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -58596,8 +59450,8 @@
     },
     {
       "topic_id": "APP-15",
-      "summary_ja": "今回の限定追補：ADIOS2候補版の終了判定とstream追従の区別。既存根拠・Gap・日程を保持する暫定更新で、独立検証とConsensusは未完了。",
-      "summary_en": "This bounded addition distinguishes ADIOS2 prerelease termination from live-stream following. Existing evidence, gaps and dates remain; independent validation and Consensus are incomplete.",
+      "summary_ja": "今回の限定追補：ADIOS2候補版の終了判定とstream追従の区別。既存根拠・Gap・日程を保持する暫定更新で、独立検証とConsensusは未完了。 今回の限定追補：ePICの全量STFと低遅延TF標本を分ける。既存履歴・未解決Gapを保持し、独立Consensusは未完了。",
+      "summary_en": "This bounded addition distinguishes ADIOS2 prerelease termination from live-stream following. Existing evidence, gaps and dates remain; independent validation and Consensus are incomplete. Bounded addition: Separate complete ePIC STF data from low-latency TF samples. Prior history and open gaps remain; independent Consensus is incomplete.",
       "sections": [
         {
           "section_id": "TDS-CD1-APP-15-U01",
@@ -59820,6 +60674,43 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-N03-APP015-717",
+          "title_ja": "ePICの全量STFと低遅延TF標本を分ける",
+          "title_en": "Separate complete ePIC STF data from low-latency TF samples",
+          "summary_ja": "公開一次資料の限定追補。独立検証・Consensus未完了。",
+          "summary_en": "Bounded public-primary-source addition; independent validation and Consensus incomplete.",
+          "items": [
+            {
+              "item_id": "TDI-N03-APP015-717",
+              "name_ja": "ePICの全量STFと低遅延TF標本を分ける",
+              "name_en": "Separate complete ePIC STF data from low-latency TF samples",
+              "stage": "current",
+              "maturity": "prototype",
+              "timing_ja": "固定commitを特定したが今回取得本文で最終変更日を確認できず、日付は不明。latest文書の初出・更新日も不明。11月3日は確認日。",
+              "timing_en": "The commit is pinned; its last-change date was not confirmed in this retrieval. First-publication/update dates of the moving latest documentation are unknown. November3 is the check date.",
+              "statement_ja": "ePICの作業文書は全rawデータのSTF経路と低遅延TF標本経路を区別する。固定版はTF経路がretentionを実装しないと記すが、これはtestbed設計上の記述で運用保証ではない。秒単位のfast-path目標を実測SLAにせず、完全性、遅延、検証状態を経路別に評価する。",
+              "statement_en": "The ePIC working document separates complete-raw STF delivery from fast TF subsampling. The fixed text says the TF path does not implement retention, a design statement rather than an operational guarantee. Evaluate completeness, lag and validation separately; second-scale targets are not measured SLAs.",
+              "hpci_relevance_ja": "全量・標本の母集団とretention契約を別定義し、時計、lag分布、欠落、checksum、復旧を検証する案。試験環境を実施設の本番運用へ昇格しない。",
+              "hpci_relevance_en": "Define full/sample populations and retention contracts separately; test clocks, lag distributions, loss, checksums and recovery. Do not promote testbed evidence into production-facility operation.",
+              "adoption_conditions_ja": [
+                "試験環境・設計整理であり、実施設のtail遅延・科学品質・復旧保証は未確認。",
+                "2文書は同じ開発系統で独立裏付けでない。AI支援の原文属性・8月15日変更日は今回直接確認できず保留。ADIOS2既出とSC26 DAOS予定は採用しない。"
+              ],
+              "adoption_conditions_en": [
+                "Testbed/design evidence does not establish facility tail latency, scientific quality or recovery guarantees.",
+                "The sources share development origin. AI-assisted authorship and August15 change-date claims remain unconfirmed here. Existing ADIOS2 and unverified SC26 DAOS plans are excluded."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-N03-717-01",
+                "SRC-N03-717-02"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -60002,6 +60893,17 @@
           ],
           "created_at": "2026-11-02T15:12:56.637377+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000717",
+          "bundle_sha256": "31e5907fe47f46c15cd28107562833bde02bd97030c0f68e606c3c22d675e69e",
+          "base_commit": "438bec822b7753b1e73cf7795c816d67c109a2b4",
+          "unit_ids": [
+            "APP-15-U01",
+            "APP-15-U02"
+          ],
+          "created_at": "2026-11-03T20:02:44.989343+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -60028,7 +60930,8 @@
               "TDS-OCT03-APP015-U01",
               "TDS-OCT05-APP015-INTEGRATED-READABLE",
               "TDS-L31-APP015-01",
-              "TDS-L31-APP015-02"
+              "TDS-L31-APP015-02",
+              "TDS-N03-APP015-717"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -60081,8 +60984,8 @@
     },
     {
       "topic_id": "ARCH-10",
-      "summary_ja": "既存の稼働・障害・保守契約の根拠を保持し、GPU driverの支援期限とSlurm保守更新の状態復元条件を追加する。単一のAIモデルの暫定調査であり独立Consensusは未完了。",
-      "summary_en": "Retain operating, incident and maintenance-contract evidence while adding GPU-driver support horizons and Slurm maintenance-state recovery conditions. Provisional single-model research; independent Consensus remains incomplete.",
+      "summary_ja": "既存の稼働・障害・保守契約の根拠を保持し、GPU driverの支援期限とSlurm保守更新の状態復元条件を追加する。単一のAIモデルの暫定調査であり独立Consensusは未完了。 今回の限定追補：学習ジョブ横断の復旧制御と検知・アクション・再開の境界。既存履歴・未解決Gapを保持し、独立Consensusは未完了。",
+      "summary_en": "Retain operating, incident and maintenance-contract evidence while adding GPU-driver support horizons and Slurm maintenance-state recovery conditions. Provisional single-model research; independent Consensus remains incomplete. Bounded addition: Cross-workload recovery and detection, action and resumption boundaries. Prior history and open gaps remain; independent Consensus is incomplete.",
       "sections": [
         {
           "section_id": "TDS-CD1-ARCH-10-U01",
@@ -61320,6 +62223,46 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-N03-OPS002-702",
+          "title_ja": "学習ジョブ横断の復旧制御と検知・アクション・再開の境界",
+          "title_en": "Cross-workload recovery and detection, action and resumption boundaries",
+          "summary_ja": "公開一次資料の限定追補。独立検証・Consensus未完了。",
+          "summary_en": "Bounded public-primary-source addition; independent validation and Consensus incomplete.",
+          "items": [
+            {
+              "item_id": "TDI-N03-OPS002-702",
+              "name_ja": "学習ジョブ横断の復旧制御と検知・アクション・再開の境界",
+              "name_en": "Cross-workload recovery and detection, action and resumption boundaries",
+              "stage": "current",
+              "maturity": "prototype",
+              "timing_ja": "記事は2026-11-02公表。観測期間7月9日～10月9日は本文に年なし。release UIは27 Oct 20:16、年・timezone不明。11月3日は確認日で新規実測日ではない。",
+              "timing_en": "Article published November 2, 2026. The July 9–October 9 observation window omits its year. Release UI prints 27 Oct 20:16 without year/timezone. November 3 is the check date, not a new measurement date.",
+              "statement_ja": "NVIDIAの11月2日記事は、NVRxの個別ジョブ内復旧と別の複数学習ジョブ横断制御を説明する。単一クラスタの7月9日～10月9日（年は本文に明示なし）、約200ジョブ/日、約8,550検知、平均69秒の検知・94秒の復旧アクション到達をベンダーが報告する。再スケジュール・checkpoint復元後の学習再開時間ではない。上流READMEは実験段階・本番未適格とし、SlurmとSlinky経由のSlurm-on-Kubernetesを対象、native Kubernetes未実装とする。記事のjob array対応は将来予定。v1.0.1はcontrollerメモリ内のmilestoneが再起動で完了記録を失い得ると明記し、local検証はlive scheduler・GPU・本番collector資格を証明しない。",
+              "statement_en": "NVIDIA’s November 2 article distinguishes cross-workload recovery from NVRx recovery inside individual training jobs. It reports one cluster, July 9–October 9 with no year printed, nearly 200 jobs/day, about 8,550 detections and mean detection/action latencies of 69/94 seconds. Scheduling and checkpoint restoration occur afterward. The upstream README labels the project experimental and unsuitable for production; it supports Slurm and Slurm-on-Kubernetes through Slinky, while native Kubernetes is unimplemented. The article presents job-array recovery as future work. Release v1.0.1 warns that controller-memory milestones may lose completion records after restart, and that local checks do not qualify live schedulers, GPUs or production collectors.",
+              "hpci_relevance_ja": "既存の障害観測・隔離・再開・科学的整合性の評価へ、検知からアクションまでと実際の有用計算再開を別指標として接続する。ベンダー限定観測、実験段階、controller再起動時の記録欠落、版・scheduler・checkpoint契約を保持し、共通SLAやHPCI配備・復旧性能保証にしない。",
+              "hpci_relevance_en": "Connect to existing observation, isolation, resumption and scientific-integrity evaluation by separating detection/action latency from restored useful computation. Preserve vendor-limited observations, experimental maturity, controller-restart record loss and version/scheduler/checkpoint contracts; infer no common SLA, HPCI deployment or recovery guarantee.",
+              "adoption_conditions_ja": [
+                "検知母数・誤検知・復旧成功率・tail latency・checkpointからの科学的再開時間・HPCI導入と独立検証は不明。",
+                "READMEとreleaseはmoving main／固定tagという異なる状態。ベンダー記事のproduction観測を製品全体のproduction資格とせず、記事・repo・releaseを独立3起源として数えない。",
+                "監視・自動隔離・kill/requeue等の有効化は行っていない。原典の導入手順は実行指示ではない。"
+              ],
+              "adoption_conditions_en": [
+                "Detection denominator, false positives, recovery success/tails, scientific checkpoint resumption, HPCI deployment and independent validation are unknown.",
+                "Distinguish moving README from tagged release. Vendor production observations do not establish product-wide production qualification; article, repository and release share one origin.",
+                "No monitor, isolation, kill/requeue or autonomous action is enabled. Source deployment instructions are not execution authority."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-N03-702-01",
+                "SRC-N03-702-02",
+                "SRC-N03-702-03"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -61504,6 +62447,16 @@
           ],
           "created_at": "2026-10-31T17:14:44.487655+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000702",
+          "bundle_sha256": "731554618dcf8826df02642ae546d5a3ca2583e431b969868f5b4c7bd69f40f0",
+          "base_commit": "438bec822b7753b1e73cf7795c816d67c109a2b4",
+          "unit_ids": [
+            "ARCH-10-U01"
+          ],
+          "created_at": "2026-11-03T20:02:44.989343+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -61536,7 +62489,8 @@
               "TDS-D31-OPS002-01",
               "TDS-L31-OPS002-01",
               "TDS-L31-OPS002-02",
-              "TDS-L31-OPS002-03"
+              "TDS-L31-OPS002-03",
+              "TDS-N03-OPS002-702"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -61568,8 +62522,8 @@
     },
     {
       "topic_id": "SSW-11",
-      "summary_ja": "EFPは9システムと配分済み資源への共通workflow手順を文書化する段階へ進んだが、旧課題移行、smart schedulingの実測、共通SLAは別途確認が必要。富岳の迅速審査とNERSC実時間枠の条件を比較し、GAP-TDS-078とConsensus未完了を保持する。",
-      "summary_en": "EFP now documents nine connected systems and common workflows over allocated resources, while legacy-project migration, measured smart scheduling and common SLAs remain separate verification needs. Compare Fugaku expedited review and NERSC realtime restrictions; retain GAP-TDS-078 and incomplete consensus.",
+      "summary_ja": "EFPは9システムと配分済み資源への共通workflow手順を文書化する段階へ進んだが、旧課題移行、smart schedulingの実測、共通SLAは別途確認が必要。富岳の迅速審査とNERSC実時間枠の条件を比較し、GAP-TDS-078とConsensus未完了を保持する。 今回の限定追補：EFPの接続一覧と施設別利用開始の区別。既存履歴・未解決Gapを保持し、独立Consensusは未完了。",
+      "summary_en": "EFP now documents nine connected systems and common workflows over allocated resources, while legacy-project migration, measured smart scheduling and common SLAs remain separate verification needs. Compare Fugaku expedited review and NERSC realtime restrictions; retain GAP-TDS-078 and incomplete consensus. Bounded addition: EFP connected inventory and site access boundaries. Prior history and open gaps remain; independent Consensus is incomplete.",
       "sections": [
         {
           "section_id": "TDS-CD1-SSW-11-U01",
@@ -62287,6 +63241,46 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-N03-OPS003-706",
+          "title_ja": "EFPの接続一覧と施設別利用開始の区別",
+          "title_en": "EFP connected inventory and site access boundaries",
+          "summary_ja": "公開一次資料の限定追補。独立検証・Consensus未完了。",
+          "summary_en": "Bounded public-primary-source addition; independent validation and Consensus incomplete.",
+          "items": [
+            {
+              "item_id": "TDI-N03-OPS003-706",
+              "name_ja": "EFPの接続一覧と施設別利用開始の区別",
+              "name_en": "EFP connected inventory and site access boundaries",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "EFP一覧の公表・更新日は不明。NAISS loginは2026-11-03更新表示で統合日ではない。竣工発表は2026-09-08（日精度）。",
+              "timing_en": "EFP inventory publication/update date is unknown. NAISS login displays updated November 3, 2026, not an integration date. Inauguration announcement: September 8, 2026, day precision.",
+              "statement_ja": "11月3日のEFP文書のconnected一覧を集計すると10システム・23資源行で、Arrhenius CPU/GPUを含む。従来の9システム・部分統合の観測は履歴として保持し、現在の一覧観測を追補する。NAISS手順ではPIの配分確認と招待、利用者の施設規約同意、NAISS側の利用者作成処理を経て接続情報が通知される。9月8日のEuroHPC発表はArrheniusの竣工と施設アクセスを説明するが、EFP統合日ではない。",
+              "statement_en": "On November 3, counting the EFP connected table gives 10 systems and 23 resource rows, including Arrhenius CPU/GPU. Preserve the earlier nine-system and partial-integration observations as history and append this dated inventory observation. NAISS requires PI allocation confirmation/invitation, user acceptance of site terms and NAISS user creation before login information is sent. EuroHPC’s September 8 announcement describes inauguration and facility access, not the EFP integration date.",
+              "hpci_relevance_ja": "既存の連合実行受入条件へ、確認日付きの一覧、配分・施設規約・利用者作成・窓口分離を追補する。connectedを全面機能、共同予約、共通SLA、実行成功又は緊急計算期限達成へ昇格しない。",
+              "hpci_relevance_en": "Append dated inventory, allocation/site-terms/user-creation and support ownership to existing federation acceptance criteria. Connected does not certify full features, co-reservation, common SLA, successful execution or urgent deadlines.",
+              "adoption_conditions_ja": [
+                "EFP統合日、全機能の受入、会計整合性、性能、共通SLA、現地での実行成功は未検証。",
+                "migration文書は初回navigationのみ取得、本文の追加取得はTimeout fetching。6月1日利用開始という親候補は今回未確認で採用しない。",
+                "規約同意、アカウント作成、施設接続、ジョブ投入は行っていない。異なる文書を独立した実行実証とは数えない。"
+              ],
+              "adoption_conditions_en": [
+                "EFP integration date, feature acceptance, accounting correctness, performance, common SLA and successful site execution remain unverified.",
+                "Migration page yielded navigation only; focused body retrieval timed out. The parent lead of June1 use start is unverified here and not adopted.",
+                "No terms acceptance, account creation, site login or job submission. Documents do not constitute independent execution validation."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-CDO069",
+                "SRC-N03-706-02",
+                "SRC-N03-706-03"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -62390,6 +63384,16 @@
           ],
           "created_at": "2026-10-04T17:52:27.680443+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000706",
+          "bundle_sha256": "b73a7c75512beb84048322ad8ff577909c6ba03126999fc62929fabb79769838",
+          "base_commit": "438bec822b7753b1e73cf7795c816d67c109a2b4",
+          "unit_ids": [
+            "SSW-11-U01"
+          ],
+          "created_at": "2026-11-03T20:02:44.989343+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -62413,7 +63417,8 @@
               "TDS-CD10-SSW-11-U01",
               "TDS-CD10-SSW-11-EUROHPC-FEDERATION-SCALE",
               "TDS-OCT03-OPS003-FEDERATION-ACCESS",
-              "TDS-OCT05-OPS003-INTEGRATED-READABLE"
+              "TDS-OCT05-OPS003-INTEGRATED-READABLE",
+              "TDS-N03-OPS003-706"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -63622,8 +64627,8 @@
     },
     {
       "topic_id": "SSW-14",
-      "summary_ja": "既存HPC統制・storage・privacy根拠を保持し、機密VMの提供制約とattestationの外部依存・device別検証を追加する。単一のAIモデルの暫定結果。",
-      "summary_en": "Preserve prior HPC-control, storage and privacy evidence; add confidential-VM service restrictions and attestation dependencies/per-device appraisal. Provisional single-model findings.",
+      "summary_ja": "既存HPC統制・storage・privacy根拠を保持し、機密VMの提供制約とattestationの外部依存・device別検証を追加する。単一のAIモデルの暫定結果。 今回の限定追補：RCCL製品別緩和とCBMの信頼境界。既存履歴・未解決Gapを保持し、独立Consensusは未完了。",
+      "summary_en": "Preserve prior HPC-control, storage and privacy evidence; add confidential-VM service restrictions and attestation dependencies/per-device appraisal. Provisional single-model findings. Bounded addition: RCCL product-specific mitigation and CBM trust boundary. Prior history and open gaps remain; independent Consensus is incomplete.",
       "sections": [
         {
           "section_id": "TDS-CD1-SSW-14-U01",
@@ -64480,6 +65485,45 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-N03-OPS005-707",
+          "title_ja": "RCCL製品別緩和とCBMの信頼境界",
+          "title_en": "RCCL product-specific mitigation and CBM trust boundary",
+          "summary_ja": "公開一次資料の限定追補。独立検証・Consensus未完了。",
+          "summary_en": "Bounded public-primary-source addition; independent validation and Consensus incomplete.",
+          "items": [
+            {
+              "item_id": "TDI-N03-OPS005-707",
+              "name_ja": "RCCL製品別緩和とCBMの信頼境界",
+              "name_en": "RCCL product-specific mitigation and CBM trust boundary",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "AMD初版2026-09-30、製品表CVE訂正10-06。緩和提供日2026-07-15。CBM v1.0.0文書の公開・更新日不明。",
+              "timing_en": "AMD initial September30,2026; product-table CVE correction October6. Mitigation dated July15,2026. CBM v1.0.0 publication/update unknown.",
+              "statement_ja": "AMD-SB-6033はCVE-2026-43598についてRCCL proxy経路の入力検証不足を報告し、侵害peer rank又はネットワーク隣接者による情報漏えい・ASLR回避・RCCL権限でのコード実行の可能性を示す。対象Instinct製品表はROCm7.14を緩和版、7月15日を提供日とする。NVIDIA CBM v1.0.0はmodel ownerのOS・driver・workload・管理者とverifier/key-releaseサービスを信頼し、利用者データをmodel ownerから隔離しない。",
+              "statement_en": "AMD-SB-6033 describes CVE-2026-43598 in RCCL proxy validation: compromised peers or network-adjacent attackers may disclose memory, bypass ASLR and execute code as RCCL. Its Instinct product table lists ROCm7.14 mitigation dated July15. NVIDIA CBM v1.0.0 trusts model-owner OS, drivers, workloads, administrators and verifier/key-release services; it does not isolate end-user data from that owner.",
+              "hpci_relevance_ja": "製品・依存版・施設の適用状況を分離し、既存権限境界と更新受入へ追補する。NICがTCB外ならアクセス制限と機密通信暗号化が別途必要。物理保護と可用性は施設依存。",
+              "hpci_relevance_en": "Separate product/dependency versions from site patch status in existing boundary and update acceptance. Out-of-TCB NICs require restricted access and protected sensitive traffic. Physical safeguards and availability remain site dependencies.",
+              "adoption_conditions_ja": [
+                "施設の影響・被害・到達可能性・導入・バックポート・修復は未確認。全ROCm版・全GPUへの一般化は禁止。",
+                "CBMはmodel ownerからの利用者データ隔離・全経路暗号化・可用性を保証しない。",
+                "同じNVIDIA発表の構成説明と独立した実証に数えない。設定変更・検査・攻撃・更新は行っていない。"
+              ],
+              "adoption_conditions_en": [
+                "Site exposure, harm, reachability, deployment, backports and remediation are unverified; do not generalize to every GPU/ROCm release.",
+                "CBM does not guarantee end-user isolation from model owner, encryption of every path or availability.",
+                "Do not count related NVIDIA announcement as independent validation. No configuration change, scanning, exploitation or patching performed."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-N03-707-01",
+                "SRC-N03-707-02"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -64586,6 +65630,17 @@
           ],
           "created_at": "2026-10-31T17:14:44.487655+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000707",
+          "bundle_sha256": "09ac8cd0994ae53d0e5941a0eda3863a1aeeed3633efa19bacd4ab2b65f46a3b",
+          "base_commit": "438bec822b7753b1e73cf7795c816d67c109a2b4",
+          "unit_ids": [
+            "SSW-14-U01",
+            "SSW-14-U02"
+          ],
+          "created_at": "2026-11-03T20:02:44.989343+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -64609,7 +65664,8 @@
               "TDS-CD2-SSW-14-NIST-HPC-AI-SECURITY",
               "TDS-CD3-SSW-14-STORAGE-SECURITY",
               "TDS-L31-OPS005-01",
-              "TDS-L31-OPS005-02"
+              "TDS-L31-OPS005-02",
+              "TDS-N03-OPS005-707"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -64652,8 +65708,8 @@
     },
     {
       "topic_id": "SSW-15",
-      "summary_ja": "ジョブcapの実装、テレメトリ取得と分析周期、稼働環境の観測結果を追加。GPUと施設、推計と実績を区別しGapを保持する。",
-      "summary_en": "Add operational job-cap interfaces, acquisition versus analysis cadence and observations from an operating cluster. Preserve GPU/facility and estimate/outcome distinctions and open gaps.",
+      "summary_ja": "ジョブcapの実装、テレメトリ取得と分析周期、稼働環境の観測結果を追加。GPUと施設、推計と実績を区別しGapを保持する。 今回の限定追補：冷却ループの解析とFrontier選択テレメトリの計測境界。既存履歴・未解決Gapを保持し、独立Consensusは未完了。",
+      "summary_en": "Add operational job-cap interfaces, acquisition versus analysis cadence and observations from an operating cluster. Preserve GPU/facility and estimate/outcome distinctions and open gaps. Bounded addition: Cooling-loop analysis and selected Frontier telemetry boundaries. Prior history and open gaps remain; independent Consensus is incomplete.",
       "sections": [
         {
           "section_id": "TDS-CD1-SSW-15-U01",
@@ -65485,6 +66541,44 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-N03-OPS006-708",
+          "title_ja": "冷却ループの解析とFrontier選択テレメトリの計測境界",
+          "title_en": "Cooling-loop analysis and selected Frontier telemetry boundaries",
+          "summary_ja": "公開一次資料の限定追補。独立検証・Consensus未完了。",
+          "summary_en": "Bounded public-primary-source addition; independent validation and Consensus incomplete.",
+          "items": [
+            {
+              "item_id": "TDI-N03-OPS006-708",
+              "name_ja": "冷却ループの解析とFrontier選択テレメトリの計測境界",
+              "name_en": "Cooling-loop analysis and selected Frontier telemetry boundaries",
+              "stage": "current",
+              "maturity": "research",
+              "timing_ja": "熱管理論文の巻号掲載2026-11-01（online初出未確認）。datasetのRelease Date2026-09-02。確認11月3日。",
+              "timing_en": "Article issue/publication record November1,2026; online-first date unverified. Dataset release September2,2026. Checked November3.",
+              "statement_ja": "ORNL登録の熱管理論文はwaterfall図で圧損・pump電力と段階別TUEを関連付け、direct-to-chip構成をsimulationで比較する。施設の実測省エネ達成ではない。別のFrontier datasetは2024–25年の選択日に終了した152,400 jobs、同期間の非ゼロ実行割当job約6.8%で、正常活動と成功workflowを重視する。割当node/processorの電力・温度時系列と一部network情報は、job固有消費や施設冷却電力そのものではない。",
+              "statement_en": "The thermal-management article’s ORNL record describes simulation-based cooling architecture comparisons and waterfall diagrams linking pressure drop, pumping power and incremental TUE, not measured facility savings. The separate Frontier dataset covers152,400 jobs ending on selected2024–25 days, about6.8% of nonzero-runtime allocated jobs, emphasizing normal activity and successful workflows. Allocated-node/processor power and temperature, with some network series, are not job-exclusive energy or facility cooling measurements.",
+              "hpci_relevance_ja": "既存評価でsimulation/実測、TUE分母とloop境界、選択日・job母集団・node対応・時刻・単位を区別する。CROSS-005と共通DOIを再利用し独立証拠に二重計上しない。日程・閾値・Gap081は維持。",
+              "hpci_relevance_en": "Separate simulation from measurements; verify TUE denominator/loop boundary and sample days, job population, node mapping, clocks and units. Reuse CROSS-005’s shared DOI without independent-evidence double counting; retain dates, thresholds and Gap081.",
+              "adoption_conditions_ja": [
+                "本文・TUE分母・データ本体・周期・欠測・利用条件は未確認。metadata上Parquetだがschema/値の検証は未実施。",
+                "選択標本を通年・他施設・失敗job代表へ外挿しない。既存Frontier8.5%推計と同一データ/結果とは未確認。"
+              ],
+              "adoption_conditions_en": [
+                "Full article, TUE denominator, data body, cadence, missingness and usage terms remain unverified; Parquet metadata is not schema/value validation.",
+                "Do not extrapolate to annual, other-site or failed-job populations, or equate this dataset with the existing Frontier8.5% upper-bound result."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-N03-708-01",
+                "SRC-N03-708-02",
+                "SRC-N03-708-03"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -65628,6 +66722,16 @@
           ],
           "created_at": "2026-10-31T17:14:44.487655+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000708",
+          "bundle_sha256": "ac1e7dc6a3a207cdffdc5f3d08de1d0dcdbda9bbba9db1880fe6ea1d9b2c6940",
+          "base_commit": "438bec822b7753b1e73cf7795c816d67c109a2b4",
+          "unit_ids": [
+            "SSW-15-U01"
+          ],
+          "created_at": "2026-11-03T20:02:44.989343+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -65656,7 +66760,8 @@
               "TDS-OCT05-OPS006-INTEGRATED-READABLE",
               "TDS-D31-OPS006-01-MATURITY",
               "TDS-L31-OPS006-01",
-              "TDS-L31-OPS006-02"
+              "TDS-L31-OPS006-02",
+              "TDS-N03-OPS006-708"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -65683,8 +66788,8 @@
     },
     {
       "topic_id": "CROSS-05",
-      "summary_ja": "今回の限定追補：Braket1.127.7の結果archive展開。既存本文・原資料・Gapを保持する暫定更新で、独立検証とConsensusは未完了。提供予定・実施実績・測定値を混同しない。",
-      "summary_en": "This bounded update adds: Braket1.127.7 result-archive extraction. Existing evidence and gaps are retained. The update is provisional; independent validation and Consensus remain incomplete. Plans, observed events and measurements remain distinct.",
+      "summary_ja": "今回の限定追補：Braket1.127.7の結果archive展開。既存本文・原資料・Gapを保持する暫定更新で、独立検証とConsensusは未完了。提供予定・実施実績・測定値を混同しない。 今回の限定追補：QRMIのジョブスケジューラーとの連携範囲と模擬QPU展示の区別。既存履歴・未解決Gapを保持し、独立Consensusは未完了。",
+      "summary_en": "This bounded update adds: Braket1.127.7 result-archive extraction. Existing evidence and gaps are retained. The update is provisional; independent validation and Consensus remain incomplete. Plans, observed events and measurements remain distinct. Bounded addition: QRMI scheduler-integration scope and the simulated-QPU exhibit boundary. Prior history and open gaps remain; independent Consensus is incomplete.",
       "sections": [
         {
           "section_id": "TDS-CD1-CROSS-05-U01",
@@ -66687,6 +67792,44 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-N03-OPS009-700",
+          "title_ja": "QRMIのジョブスケジューラーとの連携範囲と模擬QPU展示の区別",
+          "title_en": "QRMI scheduler-integration scope and the simulated-QPU exhibit boundary",
+          "summary_ja": "公開一次資料の限定追補。独立検証・Consensus未完了。",
+          "summary_en": "Bounded public-primary-source addition; independent validation and Consensus incomplete.",
+          "items": [
+            {
+              "item_id": "TDI-N03-OPS009-700",
+              "name_ja": "QRMIのジョブスケジューラーとの連携範囲と模擬QPU展示の区別",
+              "name_en": "QRMI scheduler-integration scope and the simulated-QPU exhibit boundary",
+              "stage": "current",
+              "maturity": "prototype",
+              "timing_ja": "QRMI v1投稿2026-07-21、v2改訂2026-08-08（未刊行原稿）。Quandela告知2026-10-13。11月3日は確認日で新規発表日ではない。",
+              "timing_en": "QRMI v1 submitted July 21, 2026; v2 revised August 8, unpublished manuscript. Quandela notice dated October 13. November 3 is the check date, not a new announcement.",
+              "statement_ja": "QRMI未刊行原稿v2はSlurm・PBS・LSF・Grid Engineの資源取得・実行・解放を定性比較する。CINECA・BasQ・RPIのSlurm連携は著者報告で、Kubernetesは試作、Flux連携は未完了。資源発見・会計・workflow統合と定量評価は今後の課題である。別のQuandelaの10月13日告知は、GTC展示構成のQPUが模擬であると明記する。待ち時間改善、共同予約・SLA、HPCI適用や実QPU展示稼働を認定しない。",
+              "statement_en": "The unpublished QRMI v2 manuscript qualitatively compares resource acquisition, execution and release in Slurm, PBS, LSF and Grid Engine. CINECA, BasQ and RPI Slurm integrations are author-reported; Kubernetes is a prototype and Flux integration is incomplete. Discovery, accounting, workflows and quantitative evaluation remain future work. Separately, Quandela’s October 13 notice explicitly uses a simulated QPU in its GTC demonstrator. These sources do not establish queue-time improvements, atomic co-allocation, service guarantees, HPCI deployment or physical-QPU operation in that exhibit.",
+              "hpci_relevance_ja": "既存の量子・古典workflow評価にscheduler別の連携成熟度とQPU実機・模擬の区別を追補する。日程・閾値・Gap083は維持する。",
+              "hpci_relevance_en": "Append scheduler-specific maturity and physical-versus-simulated QPU boundaries to the existing workflow evaluation; retain dates, thresholds and Gap083.",
+              "adoption_conditions_ja": [
+                "未刊行原稿の定性分析・著者報告であり独立再現・商用SLA・共同予約の原子性・HPCI導入は未確認。",
+                "Quandelaの展示QPUは模擬。過去の実QPU検証という同社主張は今回の展示稼働・性能を証明しない。既存Gap083と独立Consensus未完了を保持。"
+              ],
+              "adoption_conditions_en": [
+                "Unpublished qualitative analysis and author reports do not establish independent replication, service guarantees, atomic co-allocation or HPCI deployment.",
+                "The exhibit QPU is simulated; the vendor’s earlier physical-QPU claim does not establish exhibit hardware operation or performance. Retain Gap083 and incomplete Consensus."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-N03-700-01",
+                "SRC-N03-700-02",
+                "SRC-N03-700-03"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -66870,6 +68013,16 @@
           ],
           "created_at": "2026-11-01T15:59:24.057055+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000700",
+          "bundle_sha256": "0ea3f2e2cc3252333706507601883881d2609938fae466fde323e89c42ba360e",
+          "base_commit": "438bec822b7753b1e73cf7795c816d67c109a2b4",
+          "unit_ids": [
+            "CROSS-05-U01"
+          ],
+          "created_at": "2026-11-03T20:02:44.989343+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -66903,7 +68056,8 @@
               "TDS-D31-OPS009-02",
               "TDS-L31-OPS009-01",
               "TDS-L31-OPS009-02",
-              "TDS-N01-OPS009-664"
+              "TDS-N01-OPS009-664",
+              "TDS-N03-OPS009-700"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -68536,8 +69690,8 @@
     },
     {
       "topic_id": "CROSS-16",
-      "summary_ja": "需要側電力地図の工期起算点、栃木の地域内APN実証計画、APSの実験中解析運用を追加する。地域順位・資源配分は決めない。Consensus未完了。",
-      "summary_en": "Add demand-side map lead-time boundaries, a Tochigi regional APN trial and APS experiment-time operations. No regional ranking or allocation decision; Consensus incomplete.",
+      "summary_ja": "需要側電力地図の工期起算点、栃木の地域内APN実証計画、APSの実験中解析運用を追加する。地域順位・資源配分は決めない。Consensus未完了。 今回の限定追補：SPring-8予防措置・保守と分散DC実証を分離。既存履歴・未解決Gapを保持し、独立Consensusは未完了。",
+      "summary_en": "Add demand-side map lead-time boundaries, a Tochigi regional APN trial and APS experiment-time operations. No regional ranking or allocation decision; Consensus incomplete. Bounded addition: Separate SPring-8 preventive measures, maintenance and distributed-DC demonstration. Prior history and open gaps remain; independent Consensus is incomplete.",
       "sections": [
         {
           "section_id": "TDS-CD1-CROSS-16-U01",
@@ -69201,6 +70355,44 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-N03-OPS013-713",
+          "title_ja": "SPring-8予防措置・保守と分散DC実証を分離",
+          "title_en": "Separate SPring-8 preventive measures, maintenance and distributed-DC demonstration",
+          "summary_ja": "公開一次資料の限定追補。独立検証・Consensus未完了。",
+          "summary_en": "Bounded public-primary-source addition; independent validation and Consensus incomplete.",
+          "items": [
+            {
+              "item_id": "TDI-N03-OPS013-713",
+              "name_ja": "SPring-8予防措置・保守と分散DC実証を分離",
+              "name_en": "Separate SPring-8 preventive measures, maintenance and distributed-DC demonstration",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "掲示10/22、VPN作業10/2午前・DC欄日付10/2、共同発表9/18。親候補の10/5掲示日は今回の2トップページでは再確認できない。",
+              "timing_en": "Notice October22; VPN work and DC news entry October2; joint release September18. The parent candidate October5 posting date was not re-established on these two homepages.",
+              "statement_ja": "SPring-8は10月22日、PHP脆弱性への予防措置としてサイト内internet公開サーバーの外部公開停止と確認後の順次再開方針を掲示した。侵害や現在の全停止を示すものではない。DCポータルは10月2日午前のVPN更新完了と作業中の複数回の一時session切断を事後報告する。NTT等5社は9月18日、8月開始のワット・ビット実証を公表し、2027年2月までの検証期間と広域10Gbps/東京近郊100Gbpsの構成を示した。",
+              "statement_en": "SPring-8 posted preventive external-access suspension for internet-facing site servers on October22, with phased reopening after checks; this does not prove compromise or current blanket outage. Its DC portal reports completed October2 morning VPN maintenance and temporary session interruptions. Five companies announced a watt-bit demonstration on September18, reporting an August start, a verification period through February2027, and wide-area10Gbps/Tokyo-area100Gbps configurations.",
+              "hpci_relevance_ja": "施設resilience・情報security措置と電力/通信連携の検証条件を別々に保持。通信構成速度を実測・CO2削減・HPC科学実行成功としない。",
+              "hpci_relevance_en": "Keep resilience/security actions separate from power/network validation; link capacities are not measured throughput, carbon savings or scientific HPC success.",
+              "adoption_conditions_ja": [
+                "現在の対象別復旧、侵害、実験被害、SLO、独立検証は不明。VPN同一事象を2障害に数えない。",
+                "実証のCO2/費用/性能改善は未確認、他コンソーシアムと混同しない。既存GAP-TDS-086を保持。"
+              ],
+              "adoption_conditions_en": [
+                "Per-server current recovery, compromise, experiment impact, SLOs and independent validation remain unknown; do not count one VPN event twice.",
+                "Demo carbon/cost/performance improvements remain unverified; distinguish other consortia and retain GAP-TDS-086."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-N03-713-01",
+                "SRC-OCT05-OPS013-08",
+                "SRC-N03-713-03"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -69313,6 +70505,16 @@
           ],
           "created_at": "2026-10-31T17:14:44.487655+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000713",
+          "bundle_sha256": "54cd32c3714404df28ff72f4213190dc337c1cc07a5d85abcc61b028c4fa9179",
+          "base_commit": "438bec822b7753b1e73cf7795c816d67c109a2b4",
+          "unit_ids": [
+            "CROSS-16-U01"
+          ],
+          "created_at": "2026-11-03T20:02:44.989343+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -69338,7 +70540,8 @@
               "TDS-CD36-CROSS-16-APN-REMOTE-GPU-PLACEMENT",
               "TDS-OCT03-OPS013-REGIONAL-CONSTRAINTS",
               "TDS-OCT05-OPS013-INTEGRATED-READABLE",
-              "TDS-L31-OPS013-01"
+              "TDS-L31-OPS013-01",
+              "TDS-N03-OPS013-713"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -69364,8 +70567,8 @@
     },
     {
       "topic_id": "CROSS-15",
-      "summary_ja": "今回の限定追補：ABCI FY2027事前公募の枠確保と後続購入を分離。既存本文・原資料・Gapを保持する暫定更新で、独立検証とConsensusは未完了。提供予定・実施実績・測定値を混同しない。",
-      "summary_en": "This bounded update adds: Separate ABCI FY2027 advance allocation and later purchase. Existing evidence and gaps are retained. The update is provisional; independent validation and Consensus remain incomplete. Plans, observed events and measurements remain distinct.",
+      "summary_ja": "今回の限定追補：ABCI FY2027事前公募の枠確保と後続購入を分離。既存本文・原資料・Gapを保持する暫定更新で、独立検証とConsensusは未完了。提供予定・実施実績・測定値を混同しない。 今回の限定追補：Miyabi料金改定・Wisteria移行・企業トライアルの条件を分離。既存履歴・未解決Gapを保持し、独立Consensusは未完了。",
+      "summary_en": "This bounded update adds: Separate ABCI FY2027 advance allocation and later purchase. Existing evidence and gaps are retained. The update is provisional; independent validation and Consensus remain incomplete. Plans, observed events and measurements remain distinct. Bounded addition: Separate Miyabi tariff revision, Wisteria migration and corporate trial conditions. Prior history and open gaps remain; independent Consensus is incomplete.",
       "sections": [
         {
           "section_id": "TDS-CD1-CROSS-15-U01",
@@ -71208,6 +72411,46 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-N03-GOV002-712",
+          "title_ja": "Miyabi料金改定・Wisteria移行・企業トライアルの条件を分離",
+          "title_en": "Separate Miyabi tariff revision, Wisteria migration and corporate trial conditions",
+          "summary_ja": "公開一次資料の限定追補。独立検証・Consensus未完了。",
+          "summary_en": "Bounded public-primary-source addition; independent validation and Consensus incomplete.",
+          "items": [
+            {
+              "item_id": "TDI-N03-GOV002-712",
+              "name_ja": "Miyabi料金改定・Wisteria移行・企業トライアルの条件を分離",
+              "name_en": "Separate Miyabi tariff revision, Wisteria migration and corporate trial conditions",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "Miyabi告知の公開日はサービス一覧で2026-10-19と確認。その他ページの初出日は今回未確認。公募日付は2026年度日程。",
+              "timing_en": "The Miyabi service index dates the notice October 19, 2026. First publication dates of other pages were not established here; call dates belong to FY2026.",
+              "statement_ja": "東大は2027年度Miyabi負担金を2026年度比ノード時間換算2倍としトークン購入制度へ移行すると告知。追加ディスク、Wisteria、Ipomoeaの負担金は据置。Wisteriaの移行無償サービス予定は2026年度利用者の2027年度継続を対象とするアカウント・ディスクのみでトークン付与・ジョブ実行なし。企業トライアル第4回は11月12日締切、12月上旬審査、2027年1月1日開始予定。別途資格審査・講習証明・資源上限・終了後1か月以内報告等を要する。",
+              "statement_en": "UTokyo announces FY2027 Miyabi charges at twice FY2026 per node-hour and a move to token purchases; additional disk, Wisteria and Ipomoea charges stay unchanged. Planned free Wisteria migration extends accounts and disk for FY2026 users continuing into FY2027, with no tokens or jobs. Corporate trial round four closes November 12, with review in early December and planned January 1, 2027 access; eligibility, training proof, resource limits and a report within one month after use remain separate conditions.",
+              "hpci_relevance_ja": "料金年度・課金単位・制度別条件を固定し、無償データ移行と通常トークン移行、企業利用を別々に比較。",
+              "hpci_relevance_en": "Fix fiscal year, billing unit and access route; separate free data migration, ordinary token transfers and corporate access.",
+              "adoption_conditions_ja": [
+                "料金告知から実支払・所有割合・全利用枠適用は導かない。応募・採択・実使用・移行成功は未確認。",
+                "同一東大発行元の5ページを独立な5起源と数えない。既存Gap・料金不一致・時期を保持。"
+              ],
+              "adoption_conditions_en": [
+                "Actual payment, ownership shares, universal route applicability, awards, usage and migration success remain unverified.",
+                "Five UTokyo pages are one publisher lineage; preserve existing gaps, tariff discrepancies and timing."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-N03-712-01",
+                "SRC-N03-712-02",
+                "SRC-N03-680-01",
+                "SRC-N03-712-04",
+                "SRC-N03-712-05"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -71481,6 +72724,16 @@
           ],
           "created_at": "2026-11-01T16:16:37.723454+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000712",
+          "bundle_sha256": "c8ef0c3542baea77fdde6e41c04c821714adabbb0326c8b853eb9c372353125a",
+          "base_commit": "438bec822b7753b1e73cf7795c816d67c109a2b4",
+          "unit_ids": [
+            "CROSS-15-U01"
+          ],
+          "created_at": "2026-11-03T20:02:44.989343+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -71521,7 +72774,8 @@
               "TDS-OCT05-GOV002-INTEGRATED-READABLE",
               "TDS-D31-GOV002-01",
               "TDS-L31-GOV002-01",
-              "TDS-N01-GOV002-667"
+              "TDS-N01-GOV002-667",
+              "TDS-N03-GOV002-712"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -71549,8 +72803,8 @@
     },
     {
       "topic_id": "ARCH-07",
-      "summary_ja": "米国・オランダ・中国の公布済み措置と日本の重要鉱物協力計画を区別し、製造拠点と調達可能量の違いを追記します。独立Consensusは未完了で、現行規則の網羅確認や取引判断を提供しません。",
-      "summary_en": "Adds distinctions among published US, Dutch and Chinese measures, Japanese critical-minerals cooperation plans, and manufacturing footprint versus procurable capacity. Independent Consensus is incomplete; this is neither an exhaustive current-law check nor a transaction determination.",
+      "summary_ja": "米国・オランダ・中国の公布済み措置と日本の重要鉱物協力計画を区別し、製造拠点と調達可能量の違いを追記します。独立Consensusは未完了で、現行規則の網羅確認や取引判断を提供しません。 今回の限定追補：TSMC台南の追加3nm工場計画を既存拠点計画と区別。既存履歴・未解決Gapを保持し、独立Consensusは未完了。",
+      "summary_en": "Adds distinctions among published US, Dutch and Chinese measures, Japanese critical-minerals cooperation plans, and manufacturing footprint versus procurable capacity. Independent Consensus is incomplete; this is neither an exhaustive current-law check nor a transaction determination. Bounded addition: Distinguish an additional Tainan 3nm fab plan from other site schedules. Prior history and open gaps remain; independent Consensus is incomplete.",
       "sections": [
         {
           "section_id": "TDS-CD1-ARCH-07-U01",
@@ -72131,6 +73385,42 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-N03-CROSS001-694",
+          "title_ja": "TSMC台南の追加3nm工場計画を既存拠点計画と区別",
+          "title_en": "Distinguish an additional Tainan 3nm fab plan from other site schedules",
+          "summary_ja": "公開一次資料の限定追補。独立検証・Consensus未完了。",
+          "summary_en": "Bounded public-primary-source addition; independent validation and Consensus incomplete.",
+          "items": [
+            {
+              "item_id": "TDI-N03-CROSS001-694",
+              "name_ja": "TSMC台南の追加3nm工場計画を既存拠点計画と区別",
+              "name_en": "Distinguish an additional Tainan 3nm fab plan from other site schedules",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "説明会2026-10-15 06:00 GMT（分精度）。2028年上期は予定の期間精度で、日付へ変換しない。11月3日は確認日。",
+              "timing_en": "Call: October15,2026 06:00 GMT (minute precision). First-half2028 is a planned interval, not an exact date. November3 is the check date.",
+              "statement_ja": "TSMCの10月15日決算説明は、既存の台南3nm工場の2027年上期量産計画に加え、別の追加台南3nm工場を2028年上期に量産予定とした。Arizona第2工場は2027年第3四半期、日本第2工場の3nmは2028年の予定であり、台南追加工場と同じ案件ではない。",
+              "statement_en": "At its October15 earnings call, TSMC scheduled another Tainan3nm fab for volume production in the first half of2028, distinct from the Tainan fab targeted for the first half of2027, Arizona’s second fab for Q32027, and Japan’s second fab using3nm in2028.",
+              "hpci_relevance_ja": "追加台南工場は供給拠点拡張の予定として保持し、建設・装置・顧客認定・量産・製品割当を分離する。既存拠点計画や供給制約を置換しない。",
+              "hpci_relevance_en": "Track the additional Tainan fab as a site-expansion plan, separating construction, tooling, qualification, volume production and product allocation. Retain other site schedules and supply constraints.",
+              "adoption_conditions_ja": [
+                "実稼働、歩留まり、能力・製品別割当、日本向け供給やHPCI納期は未確認。",
+                "TSMCがホストする経営発言の編集transcriptであり独立検証ではない。既存Gap・成熟度・日程を維持する。"
+              ],
+              "adoption_conditions_en": [
+                "Actual operation, yields, capacity/product allocations, Japanese supply and HPCI delivery are unverified.",
+                "This TSMC-hosted management-call edited transcript is not independent validation. Preserve existing gaps, maturity and schedules."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-N03-694-01"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -72223,6 +73513,16 @@
           ],
           "created_at": "2026-10-31T17:14:44.487655+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000694",
+          "bundle_sha256": "db412382b8a1e8d14c95730b01fcf8a2bce6199271ac7f62dc16a482f8d6167b",
+          "base_commit": "438bec822b7753b1e73cf7795c816d67c109a2b4",
+          "unit_ids": [
+            "ARCH-07-U01"
+          ],
+          "created_at": "2026-11-03T20:02:44.989343+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -72246,7 +73546,8 @@
               "TDS-CD2-ARCH-07-SUPPLIER-DUE-DILIGENCE",
               "TDS-OCT03-CROSS001-POLICY-SUPPLY",
               "TDS-OCT05-CROSS001-INTEGRATED-READABLE",
-              "TDS-L31-CROSS001-01"
+              "TDS-L31-CROSS001-01",
+              "TDS-N03-CROSS001-694"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -72273,8 +73574,8 @@
     },
     {
       "topic_id": "CROSS-11",
-      "summary_ja": "今回の限定追補：MONAKAの単体CPU・サーバー段階と試用状況を区別。既存根拠・Gap・日程を保持する暫定更新で、独立検証とConsensusは未完了。",
-      "summary_en": "This bounded addition concerns Separate MONAKA standalone-CPU, server-business and field-trial stages. Existing evidence, gaps and dates are retained; independent validation and Consensus remain incomplete.",
+      "summary_ja": "今回の限定追補：MONAKAの単体CPU・サーバー段階と試用状況を区別。既存根拠・Gap・日程を保持する暫定更新で、独立検証とConsensusは未完了。 今回の限定追補：MN-Core Lazy Tensorの移植容易性とtrace費用を分離。既存履歴・未解決Gapを保持し、独立Consensusは未完了。",
+      "summary_en": "This bounded addition concerns Separate MONAKA standalone-CPU, server-business and field-trial stages. Existing evidence, gaps and dates are retained; independent validation and Consensus remain incomplete. Bounded addition: Separate MN-Core Lazy Tensor portability from tracing costs. Prior history and open gaps remain; independent Consensus is incomplete.",
       "sections": [
         {
           "section_id": "TDS-CD1-CROSS-11-U01",
@@ -73070,6 +74371,42 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-N03-CROSS003-711",
+          "title_ja": "MN-Core Lazy Tensorの移植容易性とtrace費用を分離",
+          "title_en": "Separate MN-Core Lazy Tensor portability from tracing costs",
+          "summary_ja": "公開一次資料の限定追補。独立検証・Consensus未完了。",
+          "summary_en": "Bounded public-primary-source addition; independent validation and Consensus incomplete.",
+          "items": [
+            {
+              "item_id": "TDI-N03-CROSS003-711",
+              "name_ja": "MN-Core Lazy Tensorの移植容易性とtrace費用を分離",
+              "name_en": "Separate MN-Core Lazy Tensor portability from tracing costs",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "2026-10-26公開（日精度）、2026年夏季開発の報告。",
+              "timing_en": "Published October26,2026, day precision, reporting summer development.",
+              "statement_ja": "PFNの10月26日技術記事は夏季インターンでtorch_mncoreランタイムを実装し実機動作を確認したと報告。MN-Core上の既存Context API比でResNet-18学習batch32は時間1.05倍、4層MLP batch64は軽い条件で約5倍、幅4096で1.10倍。GPT-2 smallの639→563msはCUDAバックエンド上の同期/最適化非同期比較でMN-Core実績ではない。MN-Core codegen制限により実モデル評価はResNet-18のみだったとする。",
+              "statement_en": "PFN reports an internship implementation of the torch_mncore runtime on hardware. Relative to its Context API on MN-Core, step time is 1.05x for ResNet-18 training at batch32; a four-layer MLP at batch64 takes about5x for light cases and1.10x at width4096. GPT-2 small improves from639 to563ms between synchronous and optimized asynchronous execution on the CUDA backend, not MN-Core. Codegen limitations restricted evaluated MN-Core real models to ResNet-18.",
+              "hpci_relevance_ja": "国内技術候補のsoftware互換性・移植費・保守と独立比較を既存条件で評価し、限定時間比を他GPUとの性能優位へ変換しない。",
+              "hpci_relevance_en": "Retain software compatibility, porting cost, maintenance and independent comparison gates; limited runtime ratios do not establish superiority over other GPUs.",
+              "adoption_conditions_ja": [
+                "一般配布、ソフトウェア版/固定commit、第三者再現、他社GPUとの同条件比較、保守/供給は未確認。",
+                "ベンダー単一起源。実機の正確な構成・精度・反復統計は今回未確認。既存Gap・日程を保持。"
+              ],
+              "adoption_conditions_en": [
+                "General release, version or fixed commit, independent reproduction, matched comparisons with other vendors, maintenance and supply remain unverified.",
+                "Single vendor origin; exact hardware, numerical precision and repetition statistics were not established here. Preserve existing gaps and dates."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-N03-711-01"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -73209,6 +74546,16 @@
           ],
           "created_at": "2026-11-02T15:11:04.965845+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000711",
+          "bundle_sha256": "30c58448515a1f8057e962edd5a1cea9f850990fde00e41e2f155c8c2376c49d",
+          "base_commit": "438bec822b7753b1e73cf7795c816d67c109a2b4",
+          "unit_ids": [
+            "CROSS-11-U02"
+          ],
+          "created_at": "2026-11-03T20:02:44.989343+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -73254,7 +74601,8 @@
             "section_ids": [
               "TDS-CD1-CROSS-11-U02",
               "TDS-CD2-CROSS-11-U02",
-              "TDS-OCT03-CROSS003-COMPARISON"
+              "TDS-OCT03-CROSS003-COMPARISON",
+              "TDS-N03-CROSS003-711"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -73282,8 +74630,8 @@
     },
     {
       "topic_id": "CROSS-19",
-      "summary_ja": "月次集計の資源意味・変換版と継続公開の開示審査を補強する方法論を追加。実運用の数値更新は行わない。",
-      "summary_en": "Add methodology for monthly resource semantics, conversion versions and repeated-release review, without updating operational values.",
+      "summary_ja": "月次集計の資源意味・変換版と継続公開の開示審査を補強する方法論を追加。実運用の数値更新は行わない。 今回の限定追補：Frontier公開標本のjob–node対応と外挿限界。既存履歴・未解決Gapを保持し、独立Consensusは未完了。",
+      "summary_en": "Add methodology for monthly resource semantics, conversion versions and repeated-release review, without updating operational values. Bounded addition: Job–node linkage and extrapolation limits of the Frontier public sample. Prior history and open gaps remain; independent Consensus is incomplete.",
       "sections": [
         {
           "section_id": "TDS-OPS-CROSS-19-U01",
@@ -73554,6 +74902,43 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-N03-CROSS005-718",
+          "title_ja": "Frontier公開標本のjob–node対応と外挿限界",
+          "title_en": "Job–node linkage and extrapolation limits of the Frontier public sample",
+          "summary_ja": "公開一次資料の限定追補。独立検証・Consensus未完了。",
+          "summary_en": "Bounded public-primary-source addition; independent validation and Consensus incomplete.",
+          "items": [
+            {
+              "item_id": "TDI-N03-CROSS005-718",
+              "name_ja": "Frontier公開標本のjob–node対応と外挿限界",
+              "name_en": "Job–node linkage and extrapolation limits of the Frontier public sample",
+              "stage": "current",
+              "maturity": "research",
+              "timing_ja": "Constellation Detailsの公開日2026-09-02。原典確認はOPS-006で2026-11-03に実施、本担当では再取得せず再利用。",
+              "timing_en": "Constellation Details gives release September2,2026. Original-source reads from OPS-006 on November3 are reused without refetch.",
+              "statement_ja": "ORNLのFrontier Job-Centric Telemetry Datasetは、2024–25年の選択日に終了した152,400 jobs、同期間の非ゼロ実行割当job約6.8%を対象とする。割当node/processorの電力・温度時系列と一部network系列を対応付け、正常活動と成功workflowを重視した選択標本である。時刻整合・対応率・単位・計測境界を確認してから分析し、通年/月次やHPCI需要、job固有消費・施設全体電力へ外挿しない。",
+              "statement_en": "ORNL’s Frontier dataset links152,400 jobs ending on selected2024–25 days—about6.8% of nonzero-runtime allocated jobs—to allocated-node/processor power and temperature, with some network series. Sampling emphasizes normal activity and successful workflows. Verify clock alignment, linkage coverage, units and measurement boundaries before analysis; do not extrapolate to annual/monthly HPCI demand, job-exclusive energy or whole-facility consumption.",
+              "hpci_relevance_ja": "既存の月次母集団・対応関係の評価へ選択日と成功条件、対応不能/曖昧記録、時刻・単位・node計測境界の確認を追補する。公開抑制・丸め・Gap092–094と既存日程/閾値を維持し、新しい需要値を導出しない。",
+              "hpci_relevance_en": "Append selected-day/success conditioning, unmatched or ambiguous links, clocks, units and node-measurement boundaries to existing population and linkage checks. Retain disclosure suppression, rounding, Gaps092–094, dates and thresholds; derive no new demand values.",
+              "adoption_conditions_ja": [
+                "データ本体・schema・周期・欠測・利用条件と施設需要代表性は未検証。metadataのParquet記載を内容検証としない。",
+                "OPS-006と同一DOIの共通出典。独立証拠に二重計上せず、既存Frontier8.5%上限推計との同一性や2s/15s周期を移し替えない。"
+              ],
+              "adoption_conditions_en": [
+                "Data body, schema, cadence, missingness, terms and facility-demand representativeness remain unverified; Parquet metadata is not validation.",
+                "Shared DOI with OPS-006 is one evidence lineage; do not transfer the earlier Frontier8.5% upper bound or2s/15s cadence to this dataset."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-N03-708-02",
+                "SRC-N03-708-03"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -73608,7 +74993,8 @@
               "TDS-OPS-CROSS-19-U01",
               "TDS-OCT03-CROSS005-METHOD",
               "TDS-OCT05-CROSS005-INTEGRATED-READABLE",
-              "TDS-L31-CROSS005-01"
+              "TDS-L31-CROSS005-01",
+              "TDS-N03-CROSS005-718"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -73670,6 +75056,16 @@
             "CROSS-19-U01"
           ],
           "created_at": "2026-10-31T17:14:44.487655+00:00",
+          "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000718",
+          "bundle_sha256": "812d23f89a08bb1f9a9f48868b07a7ebbd30ccc843361427bc3d14c805bb0684",
+          "base_commit": "438bec822b7753b1e73cf7795c816d67c109a2b4",
+          "unit_ids": [
+            "CROSS-19-U01"
+          ],
+          "created_at": "2026-11-03T20:02:44.989343+00:00",
           "consensus_status": "incomplete"
         }
       ]
@@ -89503,6 +90899,454 @@
       "url": "https://github.com/sgl-project/sglang/pull/41187",
       "source_class": "official-project",
       "published_or_updated": "Merged2026-10-23; PR discussion began2026-09-24; day precision"
+    },
+    {
+      "source_id": "SRC-N03-694-01",
+      "title": "TSMC Q3 2026 earnings call edited transcript",
+      "publisher": "TSMC-hosted / LSEG transcript",
+      "url": "https://investor.tsmc.com/english/encrypt/files/encrypt_file/reports/2026-10/eba4fac72873bf546b669bd2b5d973df5c93215d/TSMC%203Q26%20Transcript.pdf",
+      "source_class": "official-project",
+      "published_or_updated": "2026-10-15T06:00Z"
+    },
+    {
+      "source_id": "SRC-N03-695-01",
+      "title": "GCS5.4 changes:5.4.99",
+      "publisher": "Globus",
+      "url": "https://docs.globus.org/globus-connect-server/v5/changes/",
+      "source_class": "official-project",
+      "published_or_updated": "2026-10-22"
+    },
+    {
+      "source_id": "SRC-N03-695-02",
+      "title": "GCS installation:multi-node upgrade",
+      "publisher": "Globus",
+      "url": "https://docs.globus.org/globus-connect-server/v5.4/",
+      "source_class": "official-project",
+      "published_or_updated": "publication/update unknown; checked2026-11-03"
+    },
+    {
+      "source_id": "SRC-N03-696-01",
+      "title": "3,000億粒子の天の川銀河シミュレーションをAI×富岳で実現",
+      "publisher": "RIKEN / Kobe University / University of Tsukuba",
+      "url": "https://www.riken.jp/press/2025/20251117_2/index.html",
+      "source_class": "official-project",
+      "published_or_updated": "2025-11-21"
+    },
+    {
+      "source_id": "SRC-N03-696-02",
+      "title": "AIとスパコンで迫る天の川銀河の進化",
+      "publisher": "RIKEN",
+      "url": "https://www.riken.jp/pr/closeup/2026/20261002_1/index.html",
+      "source_class": "official-project",
+      "published_or_updated": "2026-10-02"
+    },
+    {
+      "source_id": "SRC-N03-697-01",
+      "title": "Kripke v1.2.8 release",
+      "publisher": "LLNL Kripke project",
+      "url": "https://github.com/LLNL/Kripke/releases/tag/v1.2.8",
+      "source_class": "official-project",
+      "published_or_updated": "Displayed30 Oct19:59; year/timezone not exposed; parent 2026-10-30UTC lead not independently API-reverified"
+    },
+    {
+      "source_id": "SRC-N03-697-02",
+      "title": "Kripke v1.2.8 README",
+      "publisher": "LLNL Kripke project",
+      "url": "https://github.com/LLNL/Kripke/blob/v1.2.8/README.md",
+      "source_class": "official-project",
+      "published_or_updated": "Tag-linked documentation; independent file publication time unknown"
+    },
+    {
+      "source_id": "SRC-N03-697-03",
+      "title": "Kripke v1.2.8 linked commit",
+      "publisher": "LLNL Kripke project",
+      "url": "https://github.com/llnl/Kripke/commit/46563d6d19afe7fdf65fc564638c7ec13615866f",
+      "source_class": "official-project",
+      "published_or_updated": "Commit identity verified from release link; release time not inferred from commit"
+    },
+    {
+      "source_id": "SRC-N03-698-01",
+      "title": "An Agentic Evaluation Framework for AI-Generated Scientific Code in PETSc, v2",
+      "publisher": "PETSc benchmark authors / arXiv",
+      "url": "https://arxiv.org/html/2603.15976v2",
+      "source_class": "research-artifact",
+      "published_or_updated": "2026-09-10 v2; preprint, not peer-review assertion"
+    },
+    {
+      "source_id": "SRC-N03-698-02",
+      "title": "PETSCAgent-Bench submission history",
+      "publisher": "PETSc benchmark authors / arXiv",
+      "url": "https://arxiv.org/abs/2603.15976",
+      "source_class": "research-artifact",
+      "published_or_updated": "v1 2026-03-16T22:46:10Z; v2 2026-09-10T02:04:26Z"
+    },
+    {
+      "source_id": "SRC-N03-698-03",
+      "title": "PETSc Agent Benchmark pinned README",
+      "publisher": "PETSc project",
+      "url": "https://github.com/petsc/petscagent-bench/blob/7b4f25fac082bf90c8f1c0892b531e0a2d911027/README.md",
+      "source_class": "official-project",
+      "published_or_updated": "Commit date unknown; content pinned to7b4f25fac082bf90c8f1c0892b531e0a2d911027; checked2026-11-03"
+    },
+    {
+      "source_id": "SRC-N03-700-01",
+      "title": "Examining QRMI as a Unified Interface for Quantum-HPC Integration, v2",
+      "publisher": "Badts et al. / arXiv",
+      "url": "https://arxiv.org/html/2607.19591v2",
+      "source_class": "research-artifact",
+      "published_or_updated": "2026-08-08 revised v2; unpublished manuscript"
+    },
+    {
+      "source_id": "SRC-N03-700-02",
+      "title": "QRMI manuscript submission history",
+      "publisher": "Badts et al. / arXiv",
+      "url": "https://arxiv.org/abs/2607.19591",
+      "source_class": "research-artifact",
+      "published_or_updated": "v1 2026-07-21T21:33:29Z; v2 2026-08-08T15:08:54Z; submission/revision timestamps, not journal publication"
+    },
+    {
+      "source_id": "SRC-N03-700-03",
+      "title": "Quandela demonstrates its GPU–QPU integration architecture using NVIDIA NVQLink",
+      "publisher": "Quandela",
+      "url": "https://www.quandela.com/about-us/newsroom/gpu-qpu-integration-nvidia-nvqlink/",
+      "source_class": "official-vendor",
+      "published_or_updated": "2026-10-13 notice; GTC demonstration planned for October20-22, no completion inference"
+    },
+    {
+      "source_id": "SRC-N03-701-01",
+      "title": "Quantum computing enables new types of breakthroughs",
+      "publisher": "CSC",
+      "url": "https://csc.fi/en/our-expertise/quantum-computing/",
+      "source_class": "official-project",
+      "published_or_updated": "Publication/update date unknown; current page checked 2026-11-03; autumn2027 deployment target"
+    },
+    {
+      "source_id": "SRC-N03-701-02",
+      "title": "LUMI AI Factory integrates computing, data, and AI talent",
+      "publisher": "CSC",
+      "url": "https://csc.fi/en/our-expertise/high-performance-computing/lumi-ai-factory/",
+      "source_class": "official-project",
+      "published_or_updated": "Publication/update date unknown; current page checked 2026-11-03; autumn2027 deployment target"
+    },
+    {
+      "source_id": "SRC-N03-702-01",
+      "title": "Keep Distributed Training Running with Automated Workload Recovery",
+      "publisher": "NVIDIA",
+      "url": "https://developer.nvidia.com/blog/keep-distributed-training-running-with-automated-workload-recovery/",
+      "source_class": "official-vendor",
+      "published_or_updated": "2026-11-02"
+    },
+    {
+      "source_id": "SRC-N03-702-02",
+      "title": "NVIDIA Recovery upstream README",
+      "publisher": "NVIDIA / dsx-ai-factory project",
+      "url": "https://github.com/dsx-ai-factory/NVIDIA-Recovery",
+      "source_class": "official-project",
+      "published_or_updated": "Moving main publication/update date unknown; checked2026-11-03"
+    },
+    {
+      "source_id": "SRC-N03-702-03",
+      "title": "NVIDIA Recovery v1.0.1 release notes",
+      "publisher": "NVIDIA / dsx-ai-factory project",
+      "url": "https://github.com/dsx-ai-factory/NVIDIA-Recovery/releases/tag/v1.0.1",
+      "source_class": "official-project",
+      "published_or_updated": "UI27 Oct20:16, year/timezoneunprinted; API precision unavailable"
+    },
+    {
+      "source_id": "SRC-N03-703-01",
+      "title": "Annotation-Driven Migration of CUDA Programs to Tenstorrent Blackhole, v1",
+      "publisher": "Ohno and Takamaeda-Yamazaki / arXiv",
+      "url": "https://arxiv.org/html/2610.02658v1",
+      "source_class": "research-artifact",
+      "published_or_updated": "2026-10-02 (v1 submission, day precision)"
+    },
+    {
+      "source_id": "SRC-N03-703-02",
+      "title": "Annotation-driven CUDA to Tenstorrent artifact README",
+      "publisher": "casys-utokyo / paper authors",
+      "url": "https://github.com/casys-utokyo/annotation-driven-cuda-to-tenstorrent",
+      "source_class": "official-project",
+      "published_or_updated": "Publication/update date unknown; moving main observed November3,2026; full commit not captured"
+    },
+    {
+      "source_id": "SRC-N03-703-03",
+      "title": "SambaNova and Oracle inference collaboration",
+      "publisher": "SambaNova and Oracle",
+      "url": "https://sambanova.ai/press/sambanova-and-oracle-collaborate-to-bring-high-performance-inference-to-oracle-cloud-infrastructure",
+      "source_class": "official-vendor",
+      "published_or_updated": "2026-10-27"
+    },
+    {
+      "source_id": "SRC-N03-703-04",
+      "title": "Building the Next Decade of Oracle Cloud Infrastructure",
+      "publisher": "Oracle",
+      "url": "https://www.oracle.com/news/announcement/blog/ai-world-building-the-next-decade-of-oracle-cloud-infrastructure-2026-10-27/",
+      "source_class": "official-vendor",
+      "published_or_updated": "2026-10-27"
+    },
+    {
+      "source_id": "SRC-N03-703-05",
+      "title": "Cerebras and Oracle inference collaboration",
+      "publisher": "Oracle and Cerebras",
+      "url": "https://www.oracle.com/news/announcement/ai-world-cerebras-and-oracle-team-up-to-bring-cerebras-ai-inference-to-oracle-cloud-infrastructure-2026-10-27/",
+      "source_class": "official-vendor",
+      "published_or_updated": "2026-10-27"
+    },
+    {
+      "source_id": "SRC-N03-704-01",
+      "title": "TOMOS: Eliminating Data Duplication in Mixed-Precision Matrix Computations, v1",
+      "publisher": "Georgiou and Drineas / arXiv",
+      "url": "https://arxiv.org/html/2610.19047v1",
+      "source_class": "research-artifact",
+      "published_or_updated": "2026-10-13 submission"
+    },
+    {
+      "source_id": "SRC-N03-704-02",
+      "title": "Mixed Precision Augmented GMRES",
+      "publisher": "Jang, Jolivet and Mary / Wiley",
+      "url": "https://onlinelibrary.wiley.com/doi/full/10.1002/nla.70117",
+      "source_class": "peer-reviewed",
+      "published_or_updated": "2026-08-12 first publication"
+    },
+    {
+      "source_id": "SRC-N03-705-01",
+      "title": "Autotuning GPU Thread Block Sizes for Large-Scale Stencil Applications Using the OPS DSL",
+      "publisher": "Kevin Antonio Nava Garcia and Istvan Zoltan Reguly / arXiv",
+      "url": "https://arxiv.org/html/2611.00968v1",
+      "source_class": "research-artifact",
+      "published_or_updated": "v1 dated 2026-10-31; day precision, exact submission UTC not checked"
+    },
+    {
+      "source_id": "SRC-N03-706-02",
+      "title": "Arrhenius login: EuroHPC users",
+      "publisher": "NAISS",
+      "url": "https://user.naiss.se/arrhenius_hpc/login/login/",
+      "source_class": "official-project",
+      "published_or_updated": "last updated2026-11-03; not integration date"
+    },
+    {
+      "source_id": "SRC-N03-706-03",
+      "title": "Arrhenius inauguration",
+      "publisher": "EuroHPC JU",
+      "url": "https://www.eurohpc-ju.europa.eu/eurohpc-ju-inaugurates-arrhenius-new-mid-range-supercomputer-together-naiss-sweden-2026-09-08_en",
+      "source_class": "official-project",
+      "published_or_updated": "2026-09-08"
+    },
+    {
+      "source_id": "SRC-N03-707-01",
+      "title": "RCCL Vulnerability AMD-SB-6033",
+      "publisher": "AMD",
+      "url": "https://www.amd.com/en/resources/product-security/bulletin/amd-sb-6033.html",
+      "source_class": "official-vendor",
+      "published_or_updated": "initial2026-09-30; revised2026-10-06"
+    },
+    {
+      "source_id": "SRC-N03-707-02",
+      "title": "CBM Trust and Threat Model v1.0.0",
+      "publisher": "NVIDIA",
+      "url": "https://docs.nvidia.com/confidential-computing/bare-metal/threat-model",
+      "source_class": "official-vendor",
+      "published_or_updated": "publication/update unknown; checked2026-11-03"
+    },
+    {
+      "source_id": "SRC-N03-708-01",
+      "title": "Holistic energy analysis method for thermal management architectures of data centers",
+      "publisher": "Park et al. / ORNL publication registry",
+      "url": "https://impact.ornl.gov/en/publications/holistic-energy-analysis-method-for-thermal-management-architectu/",
+      "source_class": "official-project",
+      "published_or_updated": "2026-11-01 issue record; DOI10.1016/j.ijheatmasstransfer.2026.128971"
+    },
+    {
+      "source_id": "SRC-N03-708-02",
+      "title": "Frontier Job-Centric Telemetry Dataset",
+      "publisher": "ORNL dataset registry",
+      "url": "https://impact.ornl.gov/en/datasets/frontier-job-centric-telemetry-dataset/",
+      "source_class": "official-project",
+      "published_or_updated": "2026 year-level registry"
+    },
+    {
+      "source_id": "SRC-N03-708-03",
+      "title": "Frontier Job-Centric Telemetry Dataset Details",
+      "publisher": "ORNL Constellation",
+      "url": "https://doi.ccs.ornl.gov/dataset/2cfa2292-3f9d-549c-b2d2-c9aff1557218",
+      "source_class": "official-project",
+      "published_or_updated": "2026-09-02 release; DOI10.13139/OLCF/3013979"
+    },
+    {
+      "source_id": "SRC-N03-709-01",
+      "title": "Version26.10.5",
+      "publisher": "Nextflow maintainers / GitHub",
+      "url": "https://github.com/nextflow-io/nextflow/releases/tag/v26.10.5",
+      "source_class": "official-project",
+      "published_or_updated": "2026-11-02 release, UI17:43 timezone unverified"
+    },
+    {
+      "source_id": "SRC-N03-709-02",
+      "title": "sched-client0.113.0 idempotent submit PR7952",
+      "publisher": "Nextflow maintainers / GitHub",
+      "url": "https://github.com/nextflow-io/nextflow/pull/7952",
+      "source_class": "official-project",
+      "published_or_updated": "2026-10-28 merge"
+    },
+    {
+      "source_id": "SRC-N03-709-03",
+      "title": "Typed-process source-channel DAG edges PR7979",
+      "publisher": "Nextflow maintainers / GitHub",
+      "url": "https://github.com/nextflow-io/nextflow/pull/7979",
+      "source_class": "official-project",
+      "published_or_updated": "2026-11-02 merge"
+    },
+    {
+      "source_id": "SRC-N03-710-01",
+      "title": "QUBO++ 2026.11.02",
+      "publisher": "qubo-plus",
+      "url": "https://github.com/qubo-plus/qbpp/releases/tag/2026.11.02",
+      "source_class": "official-project",
+      "published_or_updated": "2026-11-02"
+    },
+    {
+      "source_id": "SRC-N03-710-02",
+      "title": "A Matched Evaluation of QUBO Action Models and Defensive Remediation in Cyber Attack Graphs",
+      "publisher": "Khubiev et al.",
+      "url": "https://arxiv.org/html/2611.02179v1",
+      "source_class": "research-artifact",
+      "published_or_updated": "2026-11-01"
+    },
+    {
+      "source_id": "SRC-N03-711-01",
+      "title": "MN-Core PyTorch APIをより簡単に：Lazy Tensorランタイムの開発",
+      "publisher": "Preferred Networks",
+      "url": "https://www.preferred.jp/ja/blog/tech/mncore-pytorch-api-lazy-tensor",
+      "source_class": "official-vendor",
+      "published_or_updated": "2026-10-26"
+    },
+    {
+      "source_id": "SRC-N03-712-01",
+      "title": "2027年度Miyabi利用負担金",
+      "publisher": "University of Tokyo ITC",
+      "url": "https://www.cc.u-tokyo.ac.jp/guide/notice/202610_notice.php",
+      "source_class": "official-project",
+      "published_or_updated": "2026-10-19 per service index"
+    },
+    {
+      "source_id": "SRC-N03-712-02",
+      "title": "Miyabi service index",
+      "publisher": "University of Tokyo ITC",
+      "url": "https://www.cc.u-tokyo.ac.jp/supercomputer/miyabi/service/",
+      "source_class": "official-project",
+      "published_or_updated": "notice listing dated 2026-10-19; page publication unknown"
+    },
+    {
+      "source_id": "SRC-N03-712-04",
+      "title": "Corporate use calls",
+      "publisher": "University of Tokyo ITC",
+      "url": "https://www.cc.u-tokyo.ac.jp/guide/company/",
+      "source_class": "official-project",
+      "published_or_updated": "page publication unknown"
+    },
+    {
+      "source_id": "SRC-N03-712-05",
+      "title": "Corporate trial application",
+      "publisher": "University of Tokyo ITC",
+      "url": "https://www.cc.u-tokyo.ac.jp/guide/company/application_trial.php",
+      "source_class": "official-project",
+      "published_or_updated": "page publication unknown"
+    },
+    {
+      "source_id": "SRC-N03-713-01",
+      "title": "SPring-8 data/network notices",
+      "publisher": "RIKEN/JASRI operations",
+      "url": "https://dncom.spring8.or.jp/",
+      "source_class": "official-project",
+      "published_or_updated": "2026-10-22 notice; page initial publication unknown"
+    },
+    {
+      "source_id": "SRC-N03-713-03",
+      "title": "Watt-bit distributed-DC demonstration",
+      "publisher": "NTT Docomo Business and four partners",
+      "url": "https://www.ntt.com/about-us/press-releases/news/article/2026/0918.html",
+      "source_class": "official-vendor",
+      "published_or_updated": "2026-09-18"
+    },
+    {
+      "source_id": "SRC-N03-714-01",
+      "title": "Evaluating Instrument-Centered AI Agents for Table-Top Science Experiments",
+      "publisher": "Cai et al.",
+      "url": "https://arxiv.org/html/2610.41717v1",
+      "source_class": "research-artifact",
+      "published_or_updated": "2026-10-30"
+    },
+    {
+      "source_id": "SRC-N03-715-01",
+      "title": "DLNetBench multi-tenancy study v2",
+      "publisher": "DLNetBench authors/arXiv",
+      "url": "https://arxiv.org/html/2609.00817v2",
+      "source_class": "research-artifact",
+      "published_or_updated": "2026-09-03 v2"
+    },
+    {
+      "source_id": "SRC-N03-715-02",
+      "title": "MLPerf Agents NSF-backed challenge",
+      "publisher": "MLCommons",
+      "url": "https://mlcommons.org/2026/10/nsf-stride-ai-efficiency-challenge/",
+      "source_class": "official-project",
+      "published_or_updated": "2026-10-15"
+    },
+    {
+      "source_id": "SRC-N03-716-01",
+      "title": "DOE four autonomous-science project selections",
+      "publisher": "DOE Office of Science",
+      "url": "https://www.energy.gov/science/articles/doe-announces-four-national-laboratory-led-selections-advance-robotics-and",
+      "source_class": "official-project",
+      "published_or_updated": "2026-10-08"
+    },
+    {
+      "source_id": "SRC-N03-716-02",
+      "title": "SLAC SPIRE self-driving laboratory",
+      "publisher": "SLAC",
+      "url": "https://www6.slac.stanford.edu/news/2026-10-08-slac-leads-new-project-build-self-driving-laboratory-future",
+      "source_class": "official-project",
+      "published_or_updated": "2026-10-08"
+    },
+    {
+      "source_id": "SRC-N03-717-01",
+      "title": "The ePIC E0-E1 Interface, fixed commit4622627102ee1cc0283744197ae2d21d7bd72756",
+      "publisher": "BNLNPPS/swf-testbed",
+      "url": "https://github.com/BNLNPPS/swf-testbed/blob/4622627102ee1cc0283744197ae2d21d7bd72756/docs/e0-e1-interface.md",
+      "source_class": "official-project",
+      "published_or_updated": "unknown (publication/update date not verified)"
+    },
+    {
+      "source_id": "SRC-N03-717-02",
+      "title": "Streaming Processing",
+      "publisher": "ePIC WFMS documentation",
+      "url": "https://epic-wfms-docs.readthedocs.io/en/latest/streaming/",
+      "source_class": "official-project",
+      "published_or_updated": "unknown (publication/update date not verified)"
+    },
+    {
+      "source_id": "SRC-N11-MICRON-TECH-WEBINAR",
+      "title": "Micron Technology and product webinar, October21,2026",
+      "publisher": "Micron",
+      "url": "https://s25.q4cdn.com/621799436/files/doc_downloads/2026/10/MU-TP-Webinar.pdf",
+      "source_class": "official-vendor",
+      "published_or_updated": "2026-10-21"
+    },
+    {
+      "source_id": "SRC-N11-ARCH003-HPB",
+      "publisher": "Samsung",
+      "url": "https://semiconductor.samsung.com/news-events/tech-blog/samsung-showcases-next-generation-ai-semiconductor-innovations-at-computex-2026/",
+      "published_or_updated": "Not stated in managed text; event June 2–5, 2026; do not substitute event for publication date.",
+      "title": "Samsung HPB at COMPUTEX2026",
+      "source_class": "official-vendor"
+    },
+    {
+      "source_id": "SRC-N11-ARCH003-IHBM",
+      "publisher": "SK hynix",
+      "url": "https://news.skhynix.com/en/ihbm-solution/",
+      "published_or_updated": "2026-05-26",
+      "title": "SK hynix iHBM solution",
+      "source_class": "official-vendor"
     }
   ],
   "coverage_gaps": [
@@ -90687,7 +92531,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-DAILY41-WAVE3-PUBLIC-20261103",
-    "human_approval_directive_id": "DIR-900174"
+    "publication_decision_id": "PUBDEC-HBM-SUCCESSORS-20261111",
+    "human_approval_directive_id": "DIR-900176"
   }
 }
