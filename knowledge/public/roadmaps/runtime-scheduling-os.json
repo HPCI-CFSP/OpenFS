@@ -83,8 +83,8 @@
       "summary_en": "Cover workload placement, accounting, and power constraints.",
       "current_state_ja": "Slurmはエネルギー会計設定を公開していますが、HPCI横断の共通実装を意味しません。 2026年10月3日の確認では、Slurmは25.05以降cgroup v1へ新機能を追加せず、ノード内のv1/v2混在は非対応だがノード別の異なる版は許容する。v2のno_file_cache設定ではMaxRSSがポーリング由来となり短いピークを取り逃し得る。AutoDetect=nvidiaはMIG/NVLinkを検出しない。Apptainer 1.5.4はsuid/CDIの権限境界とUbuntu 24.04以降のrootless build向けAppArmorを修正した。 今回の限定的な追補：9月のFlux core・scheduler・accountingの独立releaseを8月履歴に追加し、queue recovery・quota enforcement機能を統合配備済みとしない。親queue共有・policy override・実効設定を別に固定し、fairness・accounting・復旧を試験する。moving stable docs、Slurm26系列EOL矛盾、HPCI採用・共通SLA未確認を保持する。 EFPの既存9systemの運用文書とArrheniusの部分的integration、2027–2029提供者目標を区別し、10番目の全面受入とはしない。9月29日MEXT案を既存の6月根拠と併記するが採択済み共通要件へ昇格しない。Slurm federationのorigin failure・requeue・accounting viewを既存queue/SLA試験条件へ追加し、共通SLA・緊急締切達成・複数施設実験は未確認とする。",
       "current_state_en": "Slurm documents energy accounting, but this does not establish a common HPCI-wide implementation. The October 3, 2026 read confirms no new Slurm cgroup v1 features from 25.05; within-node hybrid controllers are unsupported, while node-wise version differences are allowed. With v2 no_file_cache, polling-based MaxRSS can miss short peaks. AutoDetect=nvidia does not detect MIG/NVLink. Apptainer 1.5.4 fixes a suid/CDI privilege boundary and AppArmor for rootless builds on Ubuntu 24.04 and later. Scoped additions in this batch: Append separate September Flux core/scheduler/accounting releases to August history without calling queue recovery/quota enforcement integrated deployment. Pin parent-queue sharing, policy overrides and effective configuration separately; test fairness/accounting/recovery. Retain moving-stable documentation, Slurm 26-series EOL dissent and unverified HPCI adoption/common SLAs. Distinguish nine-system EFP operational documentation from partial Arrhenius integration and provider 2027–2029 targets, not a fully accepted tenth system. Add September 29 MEXT draft context beside June history without adopted common requirements. Extend existing queue/SLA tests with Slurm origin failure, requeue and accounting views; common SLAs, urgent deadlines and multisite experiments remain unverified.",
-      "hpci_implications_ja": "資源記述、会計、優先度、緊急実行の意味をそろえる必要があります。 候補構成ではcgroup移行時の再起動、資源検出・隔離・会計の整合性、Slurm daemon/client/pluginの更新順序と旧ジョブ完了を検証する。daemon起動後の単純downgradeは非対応であり、状態・会計backupの復元可能性を確認する。26系支援終了表の年と18か月表記の不整合は未解決とし、確定終了日やHPCI移行日へ変換しない。 Apptainer1.5.5の公開修正について、Go版、suid/rootless・subuid/subgid・SIFとpull先条件を固定した現地試験を提案する。公開releaseは配備や隔離改善の実証ではない。 EOSC EU NodeはEFPとの初期統合を公表。カタログ探索・Web遷移と共通MyAccessIDによるSSOを提供するが、EuroHPCの割当とEOSCクレジットは別途必要。認可情報共有、基盤横断オーケストレーション、高速転送は今後の項目。 Flux core0.90.0/accounting0.62.0/sched0.56.0の版別候補を記録し、quota超過時の保留/解除、association間limitとINACTIVEまでのcharge、job更新counter、GPU containment、scheduler reload後allocation維持を試験する。センター採用・SLA認定・gap解消は未確認。 既存の実行環境・再現性評価に、Spack 1.2.0のGPG鍵信頼の対話既定と非対話時の明示選択を版固定の互換性条件として関連付ける。確認待ち・拒否・承認済み鍵を区別し、無条件の鍵信頼や施設の適用完了を認定しない。",
-      "hpci_implications_en": "Resource descriptions, accounting, priority, and urgent execution semantics need alignment. Candidate-stack tests should cover cgroup-conversion reboot, resource discovery/isolation/accounting consistency, Slurm daemon/client/plugin upgrade order and completion of old jobs. Simple downgrade after daemon startup is unsupported; verify restoration of state and accounting backups. The 26-series support table has conflicting end years and 18-month labels; do not turn them into definite end dates or HPCI migration deadlines. For the Apptainer1.5.5 fixes, propose site tests pinning Go, suid/rootless, subuid/subgid, SIF and pull destinations. A public release is not proof of deployment or improved isolation. EOSC EU Node reports an initial EFP integration: catalog discovery and web redirect, with shared MyAccessID SSO. Access still needs EuroHPC allocation and EOSC credits. Shared authorisation, cross-platform orchestration and high-throughput transfer are future work. Add version-specific qualification for quota hold/release, association limits and charges until INACTIVE, job-update counters, GPU containment and allocation retention after scheduler reload. No site adoption, SLA acceptance or gap closure is established. Relate the Spack 1.2.0 interactive GPG-trust default and explicit non-interactive choice to existing version-pinned runtime and reproducibility qualification. Distinguish waiting prompts, refusal and approved keys; do not endorse unconditional key trust or assert site adoption.",
+      "hpci_implications_ja": "資源記述、会計、優先度、緊急実行の意味をそろえる必要があります。 候補構成ではcgroup移行時の再起動、資源検出・隔離・会計の整合性、Slurm daemon/client/pluginの更新順序と旧ジョブ完了を検証する。daemon起動後の単純downgradeは非対応であり、状態・会計backupの復元可能性を確認する。26系支援終了表の年と18か月表記の不整合は未解決とし、確定終了日やHPCI移行日へ変換しない。 Apptainer1.5.5の公開修正について、Go版、suid/rootless・subuid/subgid・SIFとpull先条件を固定した現地試験を提案する。公開releaseは配備や隔離改善の実証ではない。 EOSC EU NodeはEFPとの初期統合を公表。カタログ探索・Web遷移と共通MyAccessIDによるSSOを提供するが、EuroHPCの割当とEOSCクレジットは別途必要。認可情報共有、基盤横断オーケストレーション、高速転送は今後の項目。 Flux core0.90.0/accounting0.62.0/sched0.56.0の版別候補を記録し、quota超過時の保留/解除、association間limitとINACTIVEまでのcharge、job更新counter、GPU containment、scheduler reload後allocation維持を試験する。センター採用・SLA認定・gap解消は未確認。 既存の実行環境・再現性評価に、Spack 1.2.0のGPG鍵信頼の対話既定と非対話時の明示選択を版固定の互換性条件として関連付ける。確認待ち・拒否・承認済み鍵を区別し、無条件の鍵信頼や施設の適用完了を認定しない。 既存の連合実行受入条件へ、確認日付きの一覧、配分・施設規約・利用者作成・窓口分離を追補する。connectedを全面機能、共同予約、共通SLA、実行成功又は緊急計算期限達成へ昇格しない。",
+      "hpci_implications_en": "Resource descriptions, accounting, priority, and urgent execution semantics need alignment. Candidate-stack tests should cover cgroup-conversion reboot, resource discovery/isolation/accounting consistency, Slurm daemon/client/plugin upgrade order and completion of old jobs. Simple downgrade after daemon startup is unsupported; verify restoration of state and accounting backups. The 26-series support table has conflicting end years and 18-month labels; do not turn them into definite end dates or HPCI migration deadlines. For the Apptainer1.5.5 fixes, propose site tests pinning Go, suid/rootless, subuid/subgid, SIF and pull destinations. A public release is not proof of deployment or improved isolation. EOSC EU Node reports an initial EFP integration: catalog discovery and web redirect, with shared MyAccessID SSO. Access still needs EuroHPC allocation and EOSC credits. Shared authorisation, cross-platform orchestration and high-throughput transfer are future work. Add version-specific qualification for quota hold/release, association limits and charges until INACTIVE, job-update counters, GPU containment and allocation retention after scheduler reload. No site adoption, SLA acceptance or gap closure is established. Relate the Spack 1.2.0 interactive GPG-trust default and explicit non-interactive choice to existing version-pinned runtime and reproducibility qualification. Distinguish waiting prompts, refusal and approved keys; do not endorse unconditional key trust or assert site adoption. Append dated inventory, allocation/site-terms/user-creation and support ownership to existing federation acceptance criteria. Connected does not certify full features, co-reservation, common SLA, successful execution or urgent deadlines.",
       "source_ids": [
         "SRC-CDO055",
         "SRC-OCT03-SSW006-APPTAINER154",
@@ -111,7 +111,9 @@
         "SRC-N01-661-01",
         "SRC-N01-661-02",
         "SRC-N01-661-03",
-        "SRC-N03-690-01"
+        "SRC-N03-690-01",
+        "SRC-N03-706-02",
+        "SRC-N03-706-03"
       ]
     }
   ],
@@ -783,6 +785,21 @@
       "publisher": "Spack Project",
       "url": "https://github.com/spack/spack/releases/tag/v1.2.0",
       "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-N03-706-02",
+      "title": "Arrhenius login: EuroHPC users",
+      "publisher": "NAISS",
+      "url": "https://user.naiss.se/arrhenius_hpc/login/login/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-N03-706-03",
+      "title": "Arrhenius inauguration",
+      "publisher": "EuroHPC JU",
+      "url": "https://www.eurohpc-ju.europa.eu/eurohpc-ju-inaugurates-arrhenius-new-mid-range-supercomputer-together-naiss-sweden-2026-09-08_en",
+      "source_class": "project-official",
+      "published_at": "2026-09-08"
     }
   ],
   "coverage_gaps": [
@@ -814,7 +831,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-DAILY41-WAVE3-PUBLIC-20261103",
-    "human_approval_directive_id": "DIR-900174"
+    "publication_decision_id": "PUBDEC-DAILY41-WAVE4-PUBLIC-20261103",
+    "human_approval_directive_id": "DIR-900175"
   }
 }
